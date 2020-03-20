@@ -170,6 +170,7 @@ namespace Chess {
 			main[orig_h][orig_w].removePiece();
 			main[h][w].addPiece('N', player);
 			main[h][w].checkPiecePoint()->firstMove();
+			return true;
 		}
 
 		bool Board::knightCaptureFile(int file, int h, int w, int player) {
@@ -324,6 +325,7 @@ namespace Chess {
 			main[orig_h][orig_w].removePiece();
 			main[h][w].addPiece('N', player);
 			main[h][w].checkPiecePoint()->firstMove();
+			return true;
 		}
 
 		bool Board::rookAmbiguousCapture(char dis, int h, int w, int player) {
@@ -416,6 +418,7 @@ namespace Chess {
 			main[orig_h][orig_w].removePiece();
 			main[h][w].addPiece('R', player);
 			main[h][w].checkPiecePoint()->firstMove();
+			return true;
 		}
 
 		bool Board::rookCaptureFile(int file, int h, int w, int player) {
@@ -494,6 +497,7 @@ namespace Chess {
 			main[orig_h][orig_w].removePiece();
 			main[h][w].addPiece('R', player);
 			main[h][w].checkPiecePoint()->firstMove();
+			return true;
 		}
 
 		bool Board::bishopAmbiguousCapture(char dis, int h, int w, int player) {
@@ -626,6 +630,7 @@ namespace Chess {
 			main[orig_h][orig_w].removePiece();
 			main[h][w].addPiece('B', player);
 			main[h][w].checkPiecePoint()->firstMove();
+			return true;
 		}
 
 		bool Board::bishopCaptureFile(int file, int h, int w, int player) {
@@ -745,6 +750,7 @@ namespace Chess {
 			main[orig_h][orig_w].removePiece();
 			main[h][w].addPiece('B', player);
 			main[h][w].checkPiecePoint()->firstMove();
+			return true;
 		}
 
 		bool Board::bishopDoubleAmbiguousCapture(int h_s, int w_s, int h_d, int w_d, int player) {
@@ -854,6 +860,7 @@ namespace Chess {
 			main[h_s][w_s].removePiece();
 			main[h_d][w_d].addPiece('B', player);
 			main[h_d][w_d].checkPiecePoint()->firstMove();
+			return true;
 		}
 
 		bool Board::queenAmbiguousCapture(char dis, int h, int w, int player) {
@@ -1049,6 +1056,7 @@ namespace Chess {
 			main[orig_h][orig_w].removePiece();
 			main[h][w].addPiece('Q', player);
 			main[h][w].checkPiecePoint()->firstMove();
+			return true;
 		}
 
 		bool Board::queenCaptureFile(int file, int h, int w, int player) {
@@ -1231,6 +1239,7 @@ namespace Chess {
 			main[orig_h][orig_w].removePiece();
 			main[h][w].addPiece('Q', player);
 			main[h][w].checkPiecePoint()->firstMove();
+			return true;
 		}
 
 		bool Board::queenDoubleAmbiguousCapture(int h_s, int w_s, int h_d, int w_d, int player)
@@ -1390,6 +1399,7 @@ namespace Chess {
 			main[h_s][w_s].removePiece();
 			main[h_d][w_d].addPiece('Q', player);
 			main[h_d][w_d].checkPiecePoint()->firstMove();
+			return true;
 		}
 
 		bool Board::kingAmbiguousCapture(char dis, int h, int w, int player) {
@@ -1468,6 +1478,7 @@ namespace Chess {
 			main[orig_h][orig_w].removePiece();
 			main[h][w].addPiece('K', player);
 			main[h][w].checkPiecePoint()->firstMove();
+			return true;
 		}
 
 		bool Board::kingCaptureFile(int file, int h, int w, int player) {
@@ -1532,6 +1543,7 @@ namespace Chess {
 			main[orig_h][orig_w].removePiece();
 			main[h][w].addPiece('K', player);
 			main[h][w].checkPiecePoint()->firstMove();
+			return true;
 		}
 	}
 }
