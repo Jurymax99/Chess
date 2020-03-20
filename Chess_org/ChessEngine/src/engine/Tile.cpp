@@ -16,7 +16,7 @@ namespace Chess {
 					using namespace Pieces;
 					empty = false;
 					piece = new Piece;
-					std::cout << "Allocating space for piece" << std::endl;
+					//std::cout << "Allocating space for piece" << std::endl;
 					piece-> newPlayer(newPlayer);
 					piece-> newType(newPiece);
 				}
@@ -24,14 +24,18 @@ namespace Chess {
 			else {
 				std::cout << "There was already another piece in the tile" << std::endl;
 			}
-
 		}
 
 		void Tile::removePiece()
 		{
-			delete piece;
-			std::cout << "Disallocating space for piece" << std::endl;
-			empty = true;
+			if (not empty) {
+				delete piece;
+				//std::cout << "Disallocating space for piece" << std::endl;
+				empty = true;
+			}
+			else {
+				std::cout << "Tile was already empty" << std::endl;
+			}
 		}
 
 		bool Tile::hasPiece() const {
@@ -57,13 +61,17 @@ namespace Chess {
 			piece = nullptr;
 		}
 
-		Tile::~Tile()
-		{
+		Tile::~Tile(){
 			//Memory leak
 			//Disallocating memory space
-			delete piece;
-			empty = true;
-			//std::cout << "Disallocating space for piece and destroying tile" << std::endl;
+			if (not empty) {
+				delete piece;
+				empty = true;
+				//std::cout << "Disallocating space for piece and destroying tile" << std::endl;
+			}
+			else {
+				//std::cout << "Tile was already empty" << std::endl;
+			}
 		}
 
 		Pieces::Piece Tile::checkPiece() const {
