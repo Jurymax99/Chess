@@ -20,7 +20,9 @@ namespace Chess {
 			int checkPlayer() const;
 			void addPiece(char newPiece, int newPlayer);
 			void removePiece();
+			int killPiece();
 			Pieces::Piece* checkPiecePoint();
+			Tile& operator =(Tile obj);
 		};
 	}
 }

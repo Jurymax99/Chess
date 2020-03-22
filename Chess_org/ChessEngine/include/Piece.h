@@ -1,9 +1,10 @@
 #pragma once
+#include <iostream>
 
 namespace Chess {
 	namespace Pieces {
 		class Piece {
-		protected:
+		private:
 			int color;
 			bool first = true;
 			char type;
@@ -14,6 +15,8 @@ namespace Chess {
 			int checkColor() const;
 			char checkType() const;
 			bool isFirst() const;
+			int checkPoints() const;
+			bool operator <(Piece& a) const;
 			void firstMove();
 		};
 	}

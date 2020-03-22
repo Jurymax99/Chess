@@ -74,6 +74,8 @@ namespace Chess {
 				main[h + 2][w].removePiece();
 				main[h][w].addPiece('P', BLUE);
 				main[h][w].checkPiecePoint()->firstMove();
+				target = { h, w, true };
+				std::cout << "Pawn at [" << h << ", " << w << "] is enpassantable" << std::endl;
 				return true;
 			}
 			else {
@@ -138,7 +140,9 @@ namespace Chess {
 				}
 				main[h - 2][w].removePiece();
 				main[h][w].addPiece('P', GREEN);
-				main[h][w].checkPiecePoint()->firstMove();
+				main[h][w].checkPiecePoint()->firstMove(); 
+				target = { h, w, true };
+				std::cout << "Pawn at [" << h << ", " << w << "] is enpassantable" << std::endl;
 				return true;
 			}
 			else {
@@ -179,9 +183,7 @@ namespace Chess {
 				std::cout << "#3::The pawn can only promote to Queen (Q), Rook (R), Bishop (B) and Knight (N)" << std::endl;
 				return false;
 			}
-			if (main[h + 1][w].hasPiece() and
-				main[h + 1][w].checkPieceType() == 'P' and
-				main[h + 1][w].checkPlayer() == BLUE) {
+			if (hasFriendly('P', h + 1, w, BLUE)) {
 
 				//Make the move
 				main[h + 1][w].removePiece();
@@ -212,9 +214,7 @@ namespace Chess {
 				std::cout << "#3::The pawn can only promote to Queen (Q), Rook (R), Bishop (B) and Knight (N)" << std::endl;
 				return false;
 			}
-			if (main[h - 1][w].hasPiece() and
-				main[h - 1][w].checkPieceType() == 'P' and
-				main[h - 1][w].checkPlayer() == GREEN) {
+			if (hasFriendly('P', h - 1, w, GREEN)) {
 
 				//Make the move
 				main[h - 1][w].removePiece();
@@ -242,20 +242,14 @@ namespace Chess {
 			int knight_count = 0;
 			int orig_h, orig_w;
 			//Check -2, -1
-			if (inBound(h - 2, w - 1) and
-				main[h - 2][w - 1].hasPiece() and
-				main[h - 2][w - 1].checkPieceType() == 'N' and
-				main[h - 2][w - 1].checkPlayer() == player) {
+			if (hasFriendly('N', h - 2, w - 1, player)) {
 
 				++knight_count;
 				orig_h = h - 2;
 				orig_w = w - 1;
 			}
 			//Check -2, 1
-			if (inBound(h - 2, w + 1) and
-				main[h - 2][w + 1].hasPiece() and
-				main[h - 2][w + 1].checkPieceType() == 'N' and
-				main[h - 2][w + 1].checkPlayer() == player) {
+			if (hasFriendly('N', h - 2, w + 1, player)) {
 				if (knight_count == 1) {
 					std::cout << "#3::More than one knight than can make this move" << std::endl;
 					return false;
@@ -265,10 +259,7 @@ namespace Chess {
 				orig_w = w + 1;
 			}
 			//Check -1, 2
-			if (inBound(h - 1, w + 2) and
-				main[h - 1][w + 2].hasPiece() and
-				main[h - 1][w + 2].checkPieceType() == 'N' and
-				main[h - 1][w + 2].checkPlayer() == player) {
+			if (hasFriendly('N', h - 1, w + 2, player)) {
 				if (knight_count == 1) {
 					std::cout << "#3::More than one knight than can make this move" << std::endl;
 					return false;
@@ -278,10 +269,7 @@ namespace Chess {
 				orig_w = w + 2;
 			}
 			//Check 1, 2
-			if (inBound(h + 1, w + 2) and
-				main[h + 1][w + 2].hasPiece() and
-				main[h + 1][w + 2].checkPieceType() == 'N' and
-				main[h + 1][w + 2].checkPlayer() == player) {
+			if (hasFriendly('N', h + 1, w + 2, player)) {
 				if (knight_count == 1) {
 					std::cout << "#3::More than one knight than can make this move" << std::endl;
 					return false;
@@ -291,10 +279,7 @@ namespace Chess {
 				orig_w = w + 2;
 			}
 			//Check 2, 1
-			if (inBound(h + 2, w + 1) and
-				main[h + 2][w + 1].hasPiece() and
-				main[h + 2][w + 1].checkPieceType() == 'N' and
-				main[h + 2][w + 1].checkPlayer() == player) {
+			if (hasFriendly('N', h + 2, w + 1, player)) {
 				if (knight_count == 1) {
 					std::cout << "#3::More than one knight than can make this move" << std::endl;
 					return false;
@@ -304,10 +289,7 @@ namespace Chess {
 				orig_w = w + 1;
 			}
 			//Check 2, -1
-			if (inBound(h + 2, w - 1) and
-				main[h + 2][w - 1].hasPiece() and
-				main[h + 2][w - 1].checkPieceType() == 'N' and
-				main[h + 2][w - 1].checkPlayer() == player) {
+			if (hasFriendly('N', h + 2, w - 1, player)) {
 				if (knight_count == 1) {
 					std::cout << "#3::More than one knight than can make this move" << std::endl;
 					return false;
@@ -317,10 +299,7 @@ namespace Chess {
 				orig_w = w - 1;
 			}
 			//Check 1,-2
-			if (inBound(h + 1, w - 2) and
-				main[h + 1][w - 2].hasPiece() and
-				main[h + 1][w - 2].checkPieceType() == 'N' and
-				main[h + 1][w - 2].checkPlayer() == player) {
+			if (hasFriendly('N', h + 1, w - 2, player)) {
 				if (knight_count == 1) {
 					std::cout << "#3::More than one knight than can make this move" << std::endl;
 					return false;
@@ -330,10 +309,7 @@ namespace Chess {
 				orig_w = w - 2;
 			}
 			//Check -1, -2
-			if (inBound(h - 1, w - 2) and
-				main[h - 1][w - 2].hasPiece() and
-				main[h - 1][w - 2].checkPieceType() == 'N' and
-				main[h - 1][w - 2].checkPlayer() == player) {
+			if (hasFriendly('N', h - 1, w - 2, player)) {
 				if (knight_count == 1) {
 					std::cout << "#3::More than one knight than can make this move" << std::endl;
 					return false;
@@ -374,9 +350,7 @@ namespace Chess {
 				++it;
 			}
 			std::cout << "Found piece at [" << it << ", " << w << "]" << std::endl;
-			if (inBound(it, w) and
-				main[it][w].checkPieceType() == 'R' and
-				main[it][w].checkPlayer() == player) {
+			if (hasFriendly('R', it, w, player)) {
 				++rook_count;
 				orig_h = it;
 				orig_w = w;
@@ -387,9 +361,7 @@ namespace Chess {
 				--it;
 			}
 			std::cout << "Found piece at [" << it << ", " << w << "]" << std::endl;
-			if (inBound(it, w) and
-				main[it][w].checkPieceType() == 'R' and
-				main[it][w].checkPlayer() == player) {
+			if (hasFriendly('R', it, w, player)) {
 				++rook_count;
 				orig_h = it;
 				orig_w = w;
@@ -404,9 +376,7 @@ namespace Chess {
 				++it;
 			}
 			std::cout << "Found piece at [" << h << ", " << it << "]" << std::endl;
-			if (inBound(h, it) and
-				main[h][it].checkPieceType() == 'R' and
-				main[h][it].checkPlayer() == player) {
+			if (hasFriendly('R', h, it, player)) {
 				++rook_count;
 				orig_h = h;
 				orig_w = it;
@@ -421,9 +391,7 @@ namespace Chess {
 				--it;
 			}
 			std::cout << "Found piece at [" << h << ", " << it << "]" << std::endl;
-			if (inBound(h, it) and
-				main[h][it].checkPieceType() == 'R' and
-				main[h][it].checkPlayer() == player) {
+			if (hasFriendly('R', h, it, player)) {
 				++rook_count;
 				orig_h = h;
 				orig_w = it;
@@ -467,9 +435,7 @@ namespace Chess {
 				--it_w;
 			}
 			std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
-			if (inBound(it_h, it_w) and
-				main[it_h][it_w].checkPieceType() == 'B' and
-				main[it_h][it_w].checkPlayer() == player) {
+			if (hasFriendly('B', it_h, it_w, player)) {
 				++bishop_count;
 				orig_h = it_h;
 				orig_w = it_w;
@@ -482,9 +448,7 @@ namespace Chess {
 				--it_w;
 			}
 			std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
-			if (inBound(it_h, it_w) and
-				main[it_h][it_w].checkPieceType() == 'B' and
-				main[it_h][it_w].checkPlayer() == player) {
+			if (hasFriendly('B', it_h, it_w, player)) {
 				++bishop_count;
 				orig_h = it_h;
 				orig_w = it_w;
@@ -501,9 +465,7 @@ namespace Chess {
 				++it_w;
 			}
 			std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
-			if (inBound(it_h, it_w) and
-				main[it_h][it_w].checkPieceType() == 'B' and
-				main[it_h][it_w].checkPlayer() == player) {
+			if (hasFriendly('B', it_h, it_w, player)) {
 				++bishop_count;
 				orig_h = it_h;
 				orig_w = it_w;
@@ -520,9 +482,7 @@ namespace Chess {
 				++it_w;
 			}
 			std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
-			if (inBound(it_h, it_w) and
-				main[it_h][it_w].checkPieceType() == 'B' and
-				main[it_h][it_w].checkPlayer() == player) {
+			if (hasFriendly('B', it_h, it_w, player)) {
 				++bishop_count;
 				orig_h = it_h;
 				orig_w = it_w;
@@ -565,9 +525,7 @@ namespace Chess {
 				--it_w;
 			}
 			std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
-			if (inBound(it_h, it_w) and
-				main[it_h][it_w].checkPieceType() == 'Q' and
-				main[it_h][it_w].checkPlayer() == player) {
+			if (hasFriendly('Q', it_h, it_w, player)) {
 				++queen_count;
 				orig_h = it_h;
 				orig_w = it_w;
@@ -580,9 +538,7 @@ namespace Chess {
 				--it_w;
 			}
 			std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
-			if (inBound(it_h, it_w) and
-				main[it_h][it_w].checkPieceType() == 'Q' and
-				main[it_h][it_w].checkPlayer() == player) {
+			if (hasFriendly('Q', it_h, it_w, player)) {
 				++queen_count;
 				orig_h = it_h;
 				orig_w = it_w;
@@ -599,9 +555,7 @@ namespace Chess {
 				++it_w;
 			}
 			std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
-			if (inBound(it_h, it_w) and
-				main[it_h][it_w].checkPieceType() == 'Q' and
-				main[it_h][it_w].checkPlayer() == player) {
+			if (hasFriendly('Q', it_h, it_w, player)) {
 				++queen_count;
 				orig_h = it_h;
 				orig_w = it_w;
@@ -618,9 +572,7 @@ namespace Chess {
 				++it_w;
 			}
 			std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
-			if (inBound(it_h, it_w) and
-				main[it_h][it_w].checkPieceType() == 'Q' and
-				main[it_h][it_w].checkPlayer() == player) {
+			if (hasFriendly('Q', it_h, it_w, player)) {
 				++queen_count;
 				orig_h = it_h;
 				orig_w = it_w;
@@ -635,9 +587,7 @@ namespace Chess {
 				++it;
 			}
 			std::cout << "Found piece at [" << it << ", " << w << "]" << std::endl;
-			if (inBound(it, w) and
-				main[it][w].checkPieceType() == 'Q' and
-				main[it][w].checkPlayer() == player) {
+			if (hasFriendly('Q', it, w, player)) {
 				++queen_count;
 				orig_h = it;
 				orig_w = w;
@@ -648,9 +598,7 @@ namespace Chess {
 				--it;
 			}
 			std::cout << "Found piece at [" << it << ", " << w << "]" << std::endl;
-			if (inBound(it, w) and
-				main[it][w].checkPieceType() == 'Q' and
-				main[it][w].checkPlayer() == player) {
+			if (hasFriendly('Q', it, w, player)) {
 				++queen_count;
 				orig_h = it;
 				orig_w = w;
@@ -665,9 +613,7 @@ namespace Chess {
 				++it;
 			}
 			std::cout << "Found piece at [" << h << ", " << it << "]" << std::endl;
-			if (inBound(h, it) and
-				main[h][it].checkPieceType() == 'Q' and
-				main[h][it].checkPlayer() == player) {
+			if (hasFriendly('Q', h, it, player)) {
 				++queen_count;
 				orig_h = h;
 				orig_w = it;
@@ -682,9 +628,7 @@ namespace Chess {
 				--it;
 			}
 			std::cout << "Found piece at [" << h << ", " << it << "]" << std::endl;
-			if (inBound(h, it) and
-				main[h][it].checkPieceType() == 'Q' and
-				main[h][it].checkPlayer() == player) {
+			if (hasFriendly('Q', h, it, player)) {
 				++queen_count;
 				orig_h = h;
 				orig_w = it;
@@ -728,9 +672,7 @@ namespace Chess {
 						std::cout << "#3::More than one king than can make this move" << std::endl;
 						return false;
 					}
-					if (inBound(it_h, it_w) and
-						main[it_h][it_w].checkPieceType() == 'K' and
-						main[it_h][it_w].checkPlayer() == player) {
+					if (hasFriendly('K', it_h, it_w, player)) {
 						++king_count;
 						orig_h = it_h;
 						orig_w = it_w;

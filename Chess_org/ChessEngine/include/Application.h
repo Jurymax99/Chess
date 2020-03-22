@@ -3,7 +3,7 @@
 namespace Chess {
 	namespace Engine {
 		class Application {
-			int gameCount = 1;
+			static int gameCount;
 			bool ended = true;
 		public:
 			Application();

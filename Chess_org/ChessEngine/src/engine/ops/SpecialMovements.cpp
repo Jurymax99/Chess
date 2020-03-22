@@ -27,18 +27,14 @@ namespace Chess {
 				}
 			}
 			//collision #2 rook not in position or not first movement
-			if (not (main[h][w_r].hasPiece() and
-				main[h][w_r].checkPieceType() == 'R' and
-				main[h][w_r].checkPlayer() == player and
+			if (not (hasFriendly('R', h, w_r, player) and
 				main[h][w_r].checkPiecePoint()->isFirst())) {
 
 				std::cout << "There is no friendly rook in position or can't take the move" << std::endl;
 				return false;
 			}
 			//collision #3 king not in position or not first movement
-			if (not (main[h][w_k].hasPiece() and
-				main[h][w_k].checkPieceType() == 'K' and
-				main[h][w_k].checkPlayer() == player and
+			if (not (hasFriendly('K', h, w_k, player) and
 				main[h][w_k].checkPiecePoint()->isFirst())) {
 
 				std::cout << "There is no friendly king in position or can't take the move" << std::endl;
@@ -80,18 +76,14 @@ namespace Chess {
 				}
 			}
 			//collision #2 rook not in position or not first movement
-			if (not (main[h][w_r].hasPiece() and
-				main[h][w_r].checkPieceType() == 'R' and
-				main[h][w_r].checkPlayer() == player and
+			if (not (hasFriendly('R', h, w_r, player) and
 				main[h][w_r].checkPiecePoint()->isFirst())) {
 
 				std::cout << "There is no friendly rook in position or can't take the move" << std::endl;
 				return false;
 			}
 			//collision #3 king not in position or not first movement
-			if (not (main[h][w_k].hasPiece() and
-				main[h][w_k].checkPieceType() == 'K' and
-				main[h][w_k].checkPlayer() == player and
+			if (not (hasFriendly('K', h, w_k, player) and
 				main[h][w_k].checkPiecePoint()->isFirst())) {
 
 				std::cout << "There is no friendly king in position or can't take the move" << std::endl;

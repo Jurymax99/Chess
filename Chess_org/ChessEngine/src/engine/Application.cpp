@@ -1,6 +1,7 @@
 #include "Application.h"
 #include "Utilities.h"
 #include "Board.h"
+#include <stack>
 
 namespace Chess {
 	namespace Engine {
@@ -14,6 +15,8 @@ namespace Chess {
 			std::cout << "Chess ended ... " << std::endl;
 		}
 
+		int Application::gameCount = 0;
+
 		void Application::start() {
 			if (ended) {
 				std::cout << "Do you want to (P)lay, (R)ead a game or (q)uit? P/R/q" << std::endl;
@@ -22,11 +25,13 @@ namespace Chess {
 					switch (ans) {
 						//Play a game
 					case 'P':
+						++gameCount;
 						ended = false;
 						play();
 						break;
 						//Read a game
 					case 'R':
+						++gameCount;
 						ended = false;
 						read_pgn();
 						break;
@@ -53,6 +58,7 @@ namespace Chess {
 			mainBoard.printBoard();
 			int currentPlayer;
 			std::string mov;
+			bool backed = false;
 			while (not ended) {
 				//Blue's turn
 				currentPlayer = BLUE;
@@ -64,7 +70,7 @@ namespace Chess {
 					break;
 				}
 				//Check if movement is valid
-				while (not ended and not mainBoard.move(mov, currentPlayer)) {
+				while (not ended and not backed and not mainBoard.move(mov, currentPlayer)) {
 					std::cout << "Blue's turn" << std::endl;
 					mainBoard.printBoard();
 					std::cout << "Cannot perform movement, please try again:" << std::endl;
@@ -105,13 +111,7 @@ namespace Chess {
 				}
 				std::cout << "Piece successfully moved" << std::endl;
 				mainBoard.printBoard();
-
-				//TODO: Checkmate detection
-				/*if (mainBoard.checkMate()) {
-					ended = true;
-				}*/
 			}
-			++gameCount;
 			std::cout << "Do you want to (P)lay, (R)ead a game or (q)uit? P/R/q" << std::endl;
 		}
 
@@ -182,13 +182,7 @@ namespace Chess {
 				}
 				std::cout << "Piece successfully moved" << std::endl;
 				mainBoard.printBoard();
-
-				//TODO: Checkmate detection
-				/*if (mainBoard.checkMate()) {
-					ended = true;
-				}*/
 			}
-			++gameCount;
 			std::cout << "Do you want to (P)lay, (R)ead a game or (q)uit? P/R/q" << std::endl;
 		}
 	}

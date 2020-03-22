@@ -26,8 +26,7 @@ namespace Chess {
 			}
 		}
 
-		void Tile::removePiece()
-		{
+		void Tile::removePiece(){
 			if (not empty) {
 				delete piece;
 				//std::cout << "Disallocating space for piece" << std::endl;
@@ -35,6 +34,20 @@ namespace Chess {
 			}
 			else {
 				std::cout << "Tile was already empty" << std::endl;
+			}
+		}
+
+		int Tile::killPiece(){
+			if (not empty) {
+				int points = piece->checkPoints();
+				delete piece;
+				//std::cout << "Disallocating space for piece" << std::endl;
+				empty = true;
+				return points;
+			}
+			else {
+				std::cout << "Tile was already empty" << std::endl;
+				return 0;
 			}
 		}
 
@@ -50,24 +63,35 @@ namespace Chess {
 			return piece -> checkColor();
 		}
 
-		Pieces::Piece* Tile::checkPiecePoint()
-		{
+		Pieces::Piece* Tile::checkPiecePoint() {
 			return piece;
 		}
 
-		Tile::Tile()
-		{
+		Tile& Tile::operator=(Tile obj) {
+			this->empty = obj.empty;
+			if (not obj.empty) {
+				std::cout << "Disallocating piece in " << this->piece << std::endl;
+				delete this->piece;
+				this->piece = new Pieces::Piece(*obj.piece);
+			}
+			else {
+				this->piece = nullptr;
+			}
+			return *this;
+		}
+
+		Tile::Tile() {
 			empty = true;
 			piece = nullptr;
 		}
 
-		Tile::~Tile(){
+		Tile::~Tile() {
 			//Memory leak
 			//Disallocating memory space
+			//std::cout << "Destroying " << piece << std::endl;
 			if (not empty) {
 				delete piece;
 				empty = true;
-				//std::cout << "Disallocating space for piece and destroying tile" << std::endl;
 			}
 			else {
 				//std::cout << "Tile was already empty" << std::endl;

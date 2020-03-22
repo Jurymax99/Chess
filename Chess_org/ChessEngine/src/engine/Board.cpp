@@ -2,15 +2,17 @@
 
 namespace Chess {
 	namespace Engine {
-		Board::Board()
-		{
+		Board::Board() {
 			height = 8;
 			width = 8;
 			pieces = 32;
 			main = Matrix(8, Row(8));
-			GreenDead = std::vector <char>();
-			BlueDead = std::vector <char>();
-			std::cout << "Standard 8x8 board created with 32 pieces" << std::endl;
+			GreenDead = std::vector <Pieces::Piece>();
+			BlueDead = std::vector <Pieces::Piece>();
+			blueScore = 0;
+			greenScore = 0;
+			target = { -1, -1, false };
+			std::cout << "Standard " << height << "x" << width << " board created with " << pieces << " pieces" << std::endl;
 
 			//Green pieces
 			main[0][0].addPiece('R', GREEN);
@@ -47,37 +49,10 @@ namespace Chess {
 			main[7][5].addPiece('B', BLUE);
 			main[7][6].addPiece('N', BLUE);
 			main[7][7].addPiece('R', BLUE);
-
-			//DEBUG
-
-			/*main[2][4].addPiece('Q', BLUE);
-			main[4][4].addPiece('Q', BLUE);
-			main[2][6].addPiece('Q', BLUE);
-			main[3][5].addPiece('P', GREEN);*/
-
-			//Blue pieces
-			/*main[6][0].addPiece('P', BLUE);
-			main[6][1].addPiece('P', BLUE);
-			main[6][2].addPiece('P', BLUE);
-			main[6][3].addPiece('P', BLUE);
-			main[6][4].addPiece('P', BLUE);
-			main[6][5].addPiece('P', BLUE);
-			main[6][6].addPiece('P', BLUE);
-			main[6][7].addPiece('P', BLUE);
-			main[7][5].addPiece('K', BLUE);
-			main[7][1].addPiece('N', BLUE);
-			main[7][2].addPiece('B', BLUE);
-			main[7][3].addPiece('Q', BLUE);
-			main[7][4].addPiece('K', BLUE);
-			main[7][5].addPiece('B', BLUE);
-			main[7][6].addPiece('N', GREEN);
-			main[6][5].addPiece('N', GREEN);
-			main[7][7].addPiece('K', BLUE);*/
-
 		}
 
 		Board::~Board() {
-			std::cout << "Board destroyed: " << std::endl;
+			std::cout << "Board destroyed" << std::endl;
 		}
 
 		void Board::printBoard() {
@@ -113,18 +88,26 @@ namespace Chess {
 			std::cout << "   A    B    C    D    E    F    G    H" << std::endl;
 		}
 
-		bool Board::inBound(int h, int w) const {
+		inline bool Board::inBound(int h, int w) const {
 			std::cout << "Checking [" << h << ", " << w << "]" << std::endl;
 			return w >= 0 and w <= 7 and h >= 0 and h <= 7;
 		}
 
-		bool Board::contains(char c, std::string word) const {
+		inline bool Board::contains(char c, std::string word) const {
 			for (int i = 0; i < word.size(); ++i) {
 				if (c == word[i]) {
 					return true;
 				}
 			}
 			return false;
+		}
+
+		bool Board::hasFriendly(char type, int h, int w, int player) const {
+			//std::cout << "Checking [" << h << ", " << w << "]" << std::endl;
+			return inBound(h, w) and
+				main[h][w].hasPiece() and
+				main[h][w].checkPieceType() == type and
+				main[h][w].checkPlayer() == player;
 		}
 
 		bool Board::rank(char a) const {
@@ -135,73 +118,89 @@ namespace Chess {
 			return a >= 'a' and a <= 'h';
 		}
 
-		void Board::addGreenDead(char piece)
+		void Board::addGreenDead(Pieces::Piece piece)
 		{
 			GreenDead.push_back(piece);
 			std::sort(GreenDead.begin(), GreenDead.end());
 		}
 
-		void Board::addBlueDead(char piece)
+		void Board::addBlueDead(Pieces::Piece piece)
 		{
 			BlueDead.push_back(piece);
 			std::sort(BlueDead.begin(), BlueDead.end());
 		}
 
 		void Board::checkGreenDead() const {
-			std::cout << "Dead green pieces: ";
+			std::cout << "Green: ";
+			Color::Modifier green(Color::FG_GREEN);
+			Color::Modifier def(Color::FG_DEFAULT);
 			for (int i = 0; i < GreenDead.size(); ++i) {
-				std::cout << GreenDead[i] << " ";
+				std::cout << green << GreenDead[i].checkType() << def << " ";
+			}
+			if (blueScore < greenScore) {
+				std::cout << "+" << greenScore - blueScore;
 			}
 			std::cout << std::endl;
 		}
 
 		void Board::checkBlueDead() const {
-			std::cout << "Dead blue pieces: ";
+			std::cout << "Blue: "; 
+			Color::Modifier blue(Color::FG_BLUE);
+			Color::Modifier def(Color::FG_DEFAULT);
 			for (int i = 0; i < BlueDead.size(); ++i) {
-				std::cout << BlueDead[i] << " ";
+				std::cout << blue << BlueDead[i].checkType() << def << " ";
+			}
+			if (greenScore < blueScore) {
+				std::cout << "+" << blueScore - greenScore;
 			}
 			std::cout << std::endl;
 		}
 
 		//TODO: 
-		//		-en passant?
 		//		-check detection
 		//		-checkmate detection
-		//		-go back funtionality
 		//		-flip board
 		//		-count pieces
 		//			-left
 		//			-per player
 		//			-warnings at start if dif than 32
+		//		-go back funtionality
 		//		-read instructions from file
 		//		-interactive GUI
 
 		//CHANGELOG:
-		//		-Added ambiguous moves:
-		//			-knight 
-		//			-rook 
-		//			-bishop 
-		//			-queen 
-		//			-king (possible?) 
-		//		-Added single ambiguous captures:
-		//			-knight 
-		//			-rook 
-		//			-bishop 
-		//			-queen 
-		//			-king (possible?) 
-		//		-Added double ambiguity moves and captures
-		//			-bishop
-		//			-queen
-		//		-Added pawn promotion:
-		//			-by moving e.g. b8=Q X
-		//			-by moving e.g. axb7=Q
-		//		-Added castling
-		//		-Added read mode, to directly read pgn formatted matches
+		//	-Added ambiguous moves :
+		//	-knight e.g.Nfg5
+		//		- rook
+		//		- bishop
+		//		- queen
+		//		- king(possible ? )
+		//		- Added single ambiguous captures :
+		//	-knight e.g.Nfxg5
+		//		- rook
+		//		- bishop
+		//		- queen
+		//		- king(possible ? )
+		//		- Added double ambiguity moves and captures
+		//		- bishop e.g.Bd5xe4
+		//		- queen e.g.Qd5xe4
+		//		- Added pawn promotion :
+		//			- by moving e.g.b8 = Q
+		//			- by moving e.g.axb7 = Q
+		//		- Added castling e.g. O-O or 0-0-0
+		//		- Added read mode, to directly read pgn formatted matches
+		//		- Added scoreboard
+		//		- Added en passant
 
 		bool Board::move(std::string movement, int player) {
 			int rank_d, file_d;
 			std::cout << "Your movement was " << movement << std::endl;
-			if (movement.length() == 0) {
+			bool temp = target.possible;
+			if (temp) {
+				target.possible = false;
+			}
+			
+			if (movement.length() < 2) {
 				return false;
 			}
 
@@ -253,7 +252,7 @@ namespace Chess {
 					if (islower(movement[0])) {
 						//p.e: exf5
 						int file_s = movement[0] - 97;
-						return pawnCapture(file_s, rank_d, file_d, player);
+						return pawnCapture(file_s, rank_d, file_d, player, temp);
 					}
 					//normal knight capture
 					if (movement[0] == 'N') {
