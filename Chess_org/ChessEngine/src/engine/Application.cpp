@@ -55,7 +55,7 @@ namespace Chess {
 			std::cout << "PLAY MODE" << std::endl;
 			std::cout << "Game #" << gameCount << " started" << std::endl;
 			Board* mainBoard = new Board;
-			mainBoard->updateThreats();
+			mainBoard->isChecked();
 			mainBoard -> printBoard();
 			int currentPlayer;
 			std::string mov;
@@ -86,7 +86,6 @@ namespace Chess {
 					break;
 				}
 				std::cout << "Piece successfully moved" << std::endl;
-				mainBoard->updateThreats();
 				mainBoard->isChecked();
 				mainBoard->printBoard();
 
@@ -115,7 +114,6 @@ namespace Chess {
 					break;
 				}
 				std::cout << "Piece successfully moved" << std::endl;
-				mainBoard->updateThreats();
 				mainBoard->isChecked();
 				mainBoard->printBoard();
 			}

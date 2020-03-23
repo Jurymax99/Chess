@@ -4,6 +4,115 @@
 namespace Chess {
 	namespace Engine {
 
+		bool Board::makeCapture(char type, int orig_h, int orig_w, int h, int w, int player) {			
+			char type_killed = main[h][w].checkPieceType();
+			int player_killed = main[h][w].checkPlayer();
+			bool first_mov_killed = main[h][w].isFirstMov();
+			bool first_mov_killer = main[orig_h][orig_w].isFirstMov();
+			Pieces::Piece tempPiece = main[h][w].checkPiece();
+			int tempScore = main[h][w].killPiece();
+			main[orig_h][orig_w].removePiece();
+			main[h][w].addPiece(type, player);
+			if (type == 'K') {
+				if (player == BLUE) {
+					blueKing = { h,w };
+				}
+				else if (player == GREEN) {
+					greenKing = { h,w };
+				}
+			}
+			int player_checked;
+			if (isChecked(player_checked) and player_checked == player) {
+				if (player == BLUE) {
+					if (type == 'K') {
+						blueKing = { orig_h,orig_w };
+					}
+					std::cout << "#10::The blue king is in check" << std::endl;
+				}
+				else if (player == GREEN) {
+					if (type == 'K') {
+						greenKing = { orig_h,orig_w };
+					}
+					std::cout << "#10::The green king is in check" << std::endl;
+				}
+				else {
+					std::cout << "#10::No known player" << std::endl;
+					return false;
+				}
+				main[h][w].removePiece();
+				main[orig_h][orig_w].addPiece(type, player);
+				main[h][w].addPiece(type_killed, player_killed);
+				if (not first_mov_killed) {
+					main[h][w].checkPiecePoint()->firstMove();
+				}
+				if (not first_mov_killer) {
+					main[orig_h][orig_w].checkPiecePoint()->firstMove();
+				}
+				return false;
+			}
+			if (player == BLUE) {
+				addGreenDead(tempPiece);
+				blueScore += tempScore;
+			}
+			else if (player == GREEN) {
+				addBlueDead(tempPiece);
+				greenScore += tempScore;
+			}
+			else {
+				std::cout << "No such known player " << player << std::endl;
+				return false;
+			}
+			main[h][w].checkPiecePoint()->firstMove();
+			return true;
+		}
+
+		bool Board::makeCapture(char type, char typepro, int orig_h, int orig_w, int h, int w, int player) {
+			char type_killed = main[h][w].checkPieceType();
+			int player_killed = main[h][w].checkPlayer();
+			bool first_mov_killed = main[h][w].isFirstMov();
+			bool first_mov_killer = main[orig_h][orig_w].isFirstMov();
+			int tempScore = main[h][w].killPiece();
+			Pieces::Piece tempPiece = main[h][w].checkPiece();
+			main[orig_h][orig_w].removePiece();
+			main[h][w].addPiece(typepro, player);
+			if (isChecked()) {
+				if (player == BLUE) {
+					std::cout << "#10::The blue king is in check" << std::endl;
+				}
+				else if (player == GREEN) {
+					std::cout << "#10::The green king is in check" << std::endl;
+				}
+				else {
+					std::cout << "#10::No known player" << std::endl;
+					return false;
+				}
+				main[h][w].removePiece();
+				main[orig_h][orig_w].addPiece(type, player);
+				main[h][w].addPiece(type_killed, player_killed);
+				if (not first_mov_killed) {
+					main[h][w].checkPiecePoint()->firstMove();
+				}
+				if (not first_mov_killer) {
+					main[orig_h][orig_w].checkPiecePoint()->firstMove();
+				}
+				return false;
+			}
+			if (player == BLUE) {
+				addGreenDead(tempPiece);
+				blueScore += tempScore;
+			}
+			else if (player == GREEN) {
+				addBlueDead(tempPiece);
+				greenScore += tempScore;
+			}
+			else {
+				std::cout << "No such known player " << player << std::endl;
+				return false;
+			}
+			main[h][w].checkPiecePoint()->firstMove();
+			return true;
+		}
+
 		bool Board::pawnCapture(int w_s, int h_d, int w_d, int player, bool enpassant) {
 			if (player == BLUE) {
 				return pawnBlueCapture(w_s, h_d, w_d, enpassant);
@@ -28,6 +137,7 @@ namespace Chess {
 				std::cout << "6#::The pawn can promote to another piece" << std::endl;
 				return false;
 			}
+			bool correct_enp = false;
 			if (not main[h_d][w_d].hasPiece()) {
 				if (not enpassant) {
 					std::cout << "#2::No piece can be killed in this tile" << std::endl;
@@ -42,6 +152,7 @@ namespace Chess {
 					std::cout << "#7::The pawn you want to kill is not the one that can be killed en passant" << std::endl;
 					return false;
 				}
+				correct_enp = true;
 			}
 			if (w_s == w_d) {
 				std::cout << "#3::Pawns can only capture in diagonal" << std::endl;
@@ -54,10 +165,53 @@ namespace Chess {
 			//look for pawn below the given position 
 			if (hasFriendly('P', h_d + 1, w_s, BLUE)) {
 				//Make the move
-				addGreenDead(main[h_s][w_d].checkPiece());
-				blueScore += main[h_s][w_d].killPiece();
-				main[h_d + 1][w_s].removePiece();
+				int killer_h, killer_w;
+				int killed_h, killed_w;
+				int tempScore;
+				char type;
+				Pieces::Piece tempPiece;
+				bool first_mov_killer;
+				bool first_mov_killed;
+				if (correct_enp) {
+					killer_h = h_d + 1;
+					killer_w = w_s;
+					killed_h = h_d + 1;
+					killed_w = w_d;
+				}
+				else {
+					killer_h = h_d + 1;
+					killer_w = w_s;
+					killed_h = h_d;
+					killed_w = w_d;
+				}
+				first_mov_killer = main[killer_h][killer_w].isFirstMov();
+				first_mov_killed = main[killed_h][killed_w].isFirstMov();
+				tempPiece = main[killed_h][killed_w].checkPiece();
+				tempScore = tempPiece.checkPoints();
+				type = tempPiece.checkType();
+				main[killer_h][killer_w].removePiece();
+				main[killed_h][killed_w].removePiece();
 				main[h_d][w_d].addPiece('P', BLUE);
+				int player_checked;
+				if (isChecked(player_checked) and player_checked == BLUE) {
+					std::cout << "#10::The blue king is in check" << std::endl;
+					//Rollback
+					main[h_d][w_d].removePiece();
+					//Killer
+					main[killer_h][killer_w].addPiece('P', BLUE);
+					//Killed
+					main[killed_h][killer_h].addPiece(type, GREEN);
+					if (not first_mov_killer) {
+						main[killer_h][killer_w].checkPiecePoint()->firstMove();
+					}
+					if (not first_mov_killed) {
+						main[killed_h][killed_w].checkPiecePoint()->firstMove();
+					}
+					return false;
+				}
+				//Commit
+				addGreenDead(tempPiece);
+				blueScore += tempScore;
 				main[h_d][w_d].checkPiecePoint()->firstMove();
 				return true;
 			}
@@ -78,6 +232,7 @@ namespace Chess {
 				std::cout << "6#::The pawn can promote to another piece" << std::endl;
 				return false;
 			}
+			bool correct_enp = false;
 			if (not main[h_d][w_d].hasPiece()) {
 				if (not enpassant) {
 					std::cout << "#2::No piece can be killed in this tile" << std::endl;
@@ -92,6 +247,7 @@ namespace Chess {
 					std::cout << "#7::The pawn you want to kill is not the one that can be killed en passant" << std::endl;
 					return false;
 				}
+				correct_enp = true;
 			}
 			if (w_s == w_d) {
 				std::cout << "#3::Pawns can only capture in diagonal" << std::endl;
@@ -104,10 +260,53 @@ namespace Chess {
 			//look for pawn below the given position 
 			if (hasFriendly('P', h_d - 1, w_s, GREEN)) {
 				//Make the move
-				addBlueDead(main[h_s][w_d].checkPiece());
-				greenScore += main[h_s][w_d].killPiece();
-				main[h_d - 1][w_s].removePiece();
+				int killer_h, killer_w;
+				int killed_h, killed_w;
+				int tempScore;
+				char type;
+				Pieces::Piece tempPiece;
+				bool first_mov_killer;
+				bool first_mov_killed;
+				if (correct_enp) {
+					killer_h = h_d - 1;
+					killer_w = w_s;
+					killed_h = h_d - 1;
+					killed_w = w_d;
+				}
+				else {
+					killer_h = h_d - 1;
+					killer_w = w_s;
+					killed_h = h_d;
+					killed_w = w_d;
+				}
+				first_mov_killer = main[killer_h][killer_w].isFirstMov();
+				first_mov_killed = main[killed_h][killed_w].isFirstMov();
+				tempPiece = main[killed_h][killed_w].checkPiece();
+				tempScore = tempPiece.checkPoints();
+				type = tempPiece.checkType();
+				main[killer_h][killer_w].removePiece();
+				main[killed_h][killed_w].removePiece();
 				main[h_d][w_d].addPiece('P', GREEN);
+				int player_checked;
+				if (isChecked(player_checked) and player_checked == GREEN) {
+					std::cout << "#10::The green king is in check" << std::endl;
+					//Rollback
+					main[h_d][w_d].removePiece();
+					//Killer
+					main[killer_h][killer_w].addPiece('P', GREEN);
+					//Killed
+					main[killed_h][killed_w].addPiece(type, BLUE);
+					if (not first_mov_killer) {
+						main[killer_h][killer_w].checkPiecePoint()->firstMove();
+					}
+					if (not first_mov_killed) {
+						main[killed_h][killed_w].checkPiecePoint()->firstMove();
+					}
+					return false;
+				}
+				//Commit
+				addBlueDead(tempPiece);
+				greenScore += tempScore;
 				main[h_d][w_d].checkPiecePoint()->firstMove();
 				return true;
 			}
@@ -162,12 +361,7 @@ namespace Chess {
 			if (hasFriendly('P', h_d + 1, w_s, BLUE)) {
 
 				//Make the move
-				addGreenDead(main[h_d][w_d].checkPiece());
-				blueScore += main[h_d][w_d].killPiece();
-				main[h_d + 1][w_s].removePiece();
-				main[h_d][w_d].addPiece(type, BLUE);
-				main[h_d][w_d].checkPiecePoint()->firstMove();
-				return true;
+				return makeCapture('P', type, h_d + 1, w_s, h_d, w_d, BLUE);
 			}
 			std::cout << "#4::No pawn available to make that move" << std::endl;
 			return false;
@@ -205,12 +399,7 @@ namespace Chess {
 			if (hasFriendly('P', h_d - 1, w_s, GREEN)) {
 
 				//Make the move
-				addBlueDead(main[h_d][w_d].checkPiece());
-				greenScore += main[h_d][w_d].killPiece();
-				main[h_d - 1][w_s].removePiece();
-				main[h_d][w_d].addPiece(type, GREEN);
-				main[h_d][w_d].checkPiecePoint()->firstMove();
-				return true;
+				return makeCapture('P', type, h_d - 1, w_s, h_d, w_d, GREEN);
 			}
 			std::cout << "#4::No pawn available to make that move" << std::endl;
 			return false;
@@ -317,22 +506,7 @@ namespace Chess {
 			}
 			std::cout << "Found a knight in [" << orig_h << ", " << orig_w << "]" << std::endl;
 			//Make the move
-			if (player == BLUE) {
-				addGreenDead(main[h][w].checkPiece());
-				blueScore += main[h][w].killPiece();
-			}
-			else if (player == GREEN) {
-				addBlueDead(main[h][w].checkPiece());
-				greenScore += main[h][w].killPiece();
-			}
-			else {
-				std::cout << "No such known player " << player << std::endl;
-				return false;
-			}
-			main[orig_h][orig_w].removePiece();
-			main[h][w].addPiece('N', player);
-			main[h][w].checkPiecePoint()->firstMove();
-			return true;
+			return makeCapture('N', orig_h, orig_w, h, w, player);
 		}
 
 		bool Board::rookCapture(int h, int w, int player) {
@@ -417,22 +591,7 @@ namespace Chess {
 			std::cout << "Found a rook in [" << orig_h << ", " << orig_w << "]" << std::endl;
 
 			//Make the move
-			if (player == BLUE) {
-				addGreenDead(main[h][w].checkPiece());
-				blueScore += main[h][w].killPiece();
-			}
-			else if (player == GREEN) {
-				addBlueDead(main[h][w].checkPiece());
-				greenScore += main[h][w].killPiece();
-			}
-			else {
-				std::cout << "No such known player " << player << std::endl;
-				return false;
-			}
-			main[orig_h][orig_w].removePiece();
-			main[h][w].addPiece('R', player);
-			main[h][w].checkPiecePoint()->firstMove();
-			return true;
+			return makeCapture('R', orig_h, orig_w, h, w, player);
 		}
 
 		bool Board::bishopCapture(int h, int w, int player) {
@@ -525,22 +684,7 @@ namespace Chess {
 			}
 			std::cout << "Found a bishop in [" << orig_h << ", " << orig_w << "]" << std::endl;
 			//Make the move
-			if (player == BLUE) {
-				addGreenDead(main[h][w].checkPiece());
-				blueScore += main[h][w].killPiece();
-			}
-			else if (player == GREEN) {
-				addBlueDead(main[h][w].checkPiece());
-				greenScore += main[h][w].killPiece();
-			}
-			else {
-				std::cout << "No such known player " << player << std::endl;
-				return false;
-			}
-			main[orig_h][orig_w].removePiece();
-			main[h][w].addPiece('B', player);
-			main[h][w].checkPiecePoint()->firstMove();
-			return true;
+			return makeCapture('B', orig_h, orig_w, h, w, player);
 		}
 
 		bool Board::queenCapture(int h, int w, int player) {
@@ -685,22 +829,7 @@ namespace Chess {
 			}
 			std::cout << "Found a queen in [" << orig_h << ", " << orig_w << "]" << std::endl;
 			//Make the move
-			if (player == BLUE) {
-				addGreenDead(main[h][w].checkPiece());
-				blueScore += main[h][w].killPiece();
-			}
-			else if (player == GREEN) {
-				addBlueDead(main[h][w].checkPiece());
-				greenScore += main[h][w].killPiece();
-			}
-			else {
-				std::cout << "No such known player " << player << std::endl;
-				return false;
-			}
-			main[orig_h][orig_w].removePiece();
-			main[h][w].addPiece('Q', player);
-			main[h][w].checkPiecePoint()->firstMove();
-			return true;
+			return makeCapture('Q', orig_h, orig_w, h, w, player);
 		}
 
 		bool Board::kingCapture(int h, int w, int player) {
@@ -743,24 +872,21 @@ namespace Chess {
 			}
 			std::cout << "Found a king in [" << orig_h << ", " << orig_w << "]" << std::endl;
 			//Make the move
-			if (player == BLUE) {
-				addGreenDead(main[h][w].checkPiece());
-				blueScore += main[h][w].killPiece();
-				blueKing = { h,w };
+			if (makeCapture('K', orig_h, orig_w, h, w, player)) {
+				if (player == BLUE) {
+					blueKing = { h,w };
+					return true;
+				}
+				else if (player == GREEN) {
+					greenKing = { h,w };
+					return true;
+				}
+				else {
+					std::cout << "No such known player " << player << std::endl;
+					return false;
+				}
 			}
-			else if (player == GREEN) {
-				addBlueDead(main[h][w].checkPiece());
-				greenScore += main[h][w].killPiece();
-				greenKing = { h,w };
-			}
-			else {
-				std::cout << "No such known player " << player << std::endl;
-				return false;
-			}
-			main[orig_h][orig_w].removePiece();
-			main[h][w].addPiece('K', player);
-			main[h][w].checkPiecePoint()->firstMove();
-			return true;
+			return false;
 		}
 	}
 }

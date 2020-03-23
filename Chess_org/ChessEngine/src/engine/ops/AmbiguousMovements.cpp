@@ -128,9 +128,7 @@ namespace Chess {
 			}
 			std::cout << "Found a knight in [" << orig_h << ", " << orig_w << "]" << std::endl;
 			//Make the move
-			main[orig_h][orig_w].removePiece();
-			main[h][w].addPiece('N', player);
-			return true;	
+			return makeMove('N', orig_h, orig_w, h, w, player);
 		}
 
 		bool Board::knightMoveFile(int file, int h, int w, int player) {
@@ -242,9 +240,7 @@ namespace Chess {
 			}
 			std::cout << "Found a knight in [" << orig_h << ", " << orig_w << "]" << std::endl;
 			//Make the move
-			main[orig_h][orig_w].removePiece();
-			main[h][w].addPiece('N', player);
-			return true;
+			return makeMove('N', orig_h, orig_w, h, w, player);
 		}
 
 		bool Board::rookAmbiguousMove(char dis, int h, int w, int player){
@@ -262,7 +258,6 @@ namespace Chess {
 		}
 
 		bool Board::rookMoveRank(int rank, int h, int w, int player) {
-			//Nf3 h6 e3 g6 Be2 f6 d3 e6 Kd2 d6 c3 c6 Qc2 b6 b3 a6 Bb2 a5 Na3 b5  h3 c5 Rh2 d5 h4 e5 Rah1 f5 Rh3 g5 R3h2
 			std::cout << "[" << h << ", " << w << "]" << std::endl;
 			//Out of board
 			if (not inBound(h, w)) {
@@ -312,14 +307,10 @@ namespace Chess {
 			}
 			std::cout << "Found a rook in [" << orig_h << ", " << orig_w << "]" << std::endl;
 			//Make the move
-			main[orig_h][orig_w].removePiece();
-			main[h][w].addPiece('R', player);
-			main[h][w].checkPiecePoint()->firstMove();
-			return true;
+			return makeMove('R', orig_h, orig_w, h, w, player);
 		}
 
 		bool Board::rookMoveFile(int file, int h, int w, int player) {
-			//Nf3 h6 e3 g6 Be2 f6 d3 e6 Kd2 d6 c3 c6 Qc2 b6 b3 a6 Bb2 a5 Na3 b5  h3 c5 Rh2 d5 h4 e5 Rah1 f5 Rh3 g5 R3h2
 			std::cout << "[" << h << ", " << w << "]" << std::endl;
 			//Out of board
 			if (not inBound(h, w)) {
@@ -373,10 +364,7 @@ namespace Chess {
 			}
 			std::cout << "Found a rook in [" << orig_h << ", " << orig_w << "]" << std::endl;
 			//Make the move
-			main[orig_h][orig_w].removePiece();
-			main[h][w].addPiece('R', player);
-			main[h][w].checkPiecePoint()->firstMove();
-			return true;
+			return makeMove('R', orig_h, orig_w, h, w, player);
 		}
 
 		bool Board::bishopAmbiguousMove(char dis, int h, int w, int player) {
@@ -483,9 +471,7 @@ namespace Chess {
 			}
 			std::cout << "Found a bishop in [" << orig_h << ", " << orig_w << "]" << std::endl;
 			//Make the move
-			main[orig_h][orig_w].removePiece();
-			main[h][w].addPiece('B', player);
-			return true;
+			return makeMove('B', orig_h, orig_w, h, w, player);
 		}
 
 		bool Board::bishopMoveFile(int file, int h, int w, int player) {
@@ -577,9 +563,7 @@ namespace Chess {
 			}
 			std::cout << "Found a bishop in [" << orig_h << ", " << orig_w << "]" << std::endl;
 			//Make the move
-			main[orig_h][orig_w].removePiece();
-			main[h][w].addPiece('B', player);
-			return true;
+			return makeMove('B', orig_h, orig_w, h, w, player);
 		}
 
 		bool Board::bishopDoubleAmbiguousMove(int h_s, int w_s, int h_d, int w_d, int player){
@@ -667,9 +651,7 @@ namespace Chess {
 			}
 			std::cout << "Found the bishop in [" << h_s << ", " << h_s << "]" << std::endl;
 			//Make the move
-			main[h_s][w_s].removePiece();
-			main[h_d][w_d].addPiece('B', player);
-			return true;
+			return makeMove('B', h_s, w_s, h_d, w_d, player);
 		}
 
 		bool Board::queenAmbiguousMove(char dis, int h, int w, int player) {
@@ -832,9 +814,7 @@ namespace Chess {
 			}
 			std::cout << "Found a queen in [" << orig_h << ", " << orig_w << "]" << std::endl;
 			//Make the move
-			main[orig_h][orig_w].removePiece();
-			main[h][w].addPiece('Q', player);
-			return true;
+			return makeMove('Q', orig_h, orig_w, h, w, player);
 		}
 
 		bool Board::queenMoveFile(int file, int h, int w, int player) {
@@ -982,9 +962,7 @@ namespace Chess {
 			}
 			std::cout << "Found a queen in [" << orig_h << ", " << orig_w << "]" << std::endl;
 			//Make the move
-			main[orig_h][orig_w].removePiece();
-			main[h][w].addPiece('Q', player);
-			return true;
+			return makeMove('Q', orig_h, orig_w, h, w, player);
 		}
 
 		bool Board::queenDoubleAmbiguousMove(int h_s, int w_s, int h_d, int w_d, int player) {
@@ -1113,9 +1091,7 @@ namespace Chess {
 			std::cout << "Found a queen in [" << h_d << ", " << w_d << "]" << std::endl;
 
 			//Make the move
-			main[h_s][w_s].removePiece();
-			main[h_d][w_d].addPiece('Q', player);
-			return true;
+			return makeMove('Q', h_s, w_s, h_d, w_d, player);
 		}
 	}
 }

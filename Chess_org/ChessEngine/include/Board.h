@@ -40,9 +40,13 @@ namespace Chess {
 			bool hasEnemy					(char type, int h, int w, int player) const;
 			bool rank						(char a) const;
 			bool file						(char a) const;
+			bool isChecked					(int& player);
+
+			bool makeMove					(char type, int orig_h, int orig_w, int h, int w, int player);
+			bool makeCapture				(char type, int orig_h, int orig_w, int h, int w, int player);
+			bool makeCapture				(char type, char typepro, int orig_h, int orig_w, int h, int w, int player);
 
 			//Pawn
-			
 			bool pawnMove					(int h, int w, int player);
 			bool pawnBlueMove				(int h, int w);
 			bool pawnGreenMove				(int h, int w);
@@ -128,7 +132,7 @@ namespace Chess {
 
 			void printBoard();
 			bool move(std::string movement, int player);
-			bool isChecked					() const;
+			bool isChecked					();
 			void updateThreats();
 		};
 	}

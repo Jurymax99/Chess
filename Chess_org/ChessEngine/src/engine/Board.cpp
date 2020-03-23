@@ -53,6 +53,16 @@ namespace Chess {
 			main[7][5].addPiece('B', BLUE);
 			main[7][6].addPiece('N', BLUE);
 			main[7][7].addPiece('R', BLUE);
+
+			/*main[7][5].addPiece('Q', GREEN);
+			main[4][5].addPiece('Q', GREEN);
+			main[0][3].addPiece('K', GREEN);
+			main[7][4].addPiece('K', BLUE);
+			main[6][4].addPiece('N', BLUE);
+			main[6][3].addPiece('P', BLUE);*/
+
+
+
 		}
 
 		Board::~Board() {
@@ -216,16 +226,15 @@ namespace Chess {
 			std::cout << std::endl;
 		}
 
-		void Board::checkBlueKing() const {
+		inline void Board::checkBlueKing() const {
 			std::cout << "Blue king is at [" << char(blueKing.w + 97) << char(8 - char(blueKing.h - 48)) << "]" << std::endl;
 		}
 
-		void Board::checkGreenKing() const {
+		inline void Board::checkGreenKing() const {
 			std::cout << "Green king is at [" << char(greenKing.w + 97) << char(8 - char(greenKing.h - 48)) << "]" << std::endl;
 		}
 
 		//TODO: 
-		//		-don't allow movements that leave board in check
 		//		-checkmate detection
 		//		-flip board
 		//		-count pieces
@@ -261,6 +270,7 @@ namespace Chess {
 		//		- Added en passant
 		//		- Added a system to know threatened tiles by each player
 		//		- Added check detection
+		//		- Added move restriction when board is in check
 
 		bool Board::move(std::string movement, int player) {
 			int rank_d, file_d;

@@ -4,6 +4,43 @@
 namespace Chess {
 	namespace Engine {
 
+		bool Board::makeMove(char type, int orig_h, int orig_w, int h, int w, int player) {
+			main[orig_h][orig_w].removePiece();
+			main[h][w].addPiece(type, player);
+			if (type == 'K') {
+				if (player == BLUE) {
+					blueKing = { h,w };
+				}
+				else if (player == GREEN) {
+					greenKing = { h,w };
+				}
+			}
+			int player_checked;
+			if (isChecked(player_checked) and player_checked == player) {
+				if (player == BLUE) {
+					if (type == 'K') {
+						blueKing = { orig_h,orig_w };
+					}
+					std::cout << "#10::The blue king is in check" << std::endl;
+				}
+				else if (player == GREEN) {
+					if (type == 'K') {
+						greenKing = { orig_h,orig_w };
+					}
+					std::cout << "#10::The green king is in check" << std::endl;
+				}
+				else {
+					std::cout << "#10::No known player" << std::endl;
+					return false;
+				}
+				main[h][w].removePiece();
+				main[orig_h][orig_w].addPiece(type, player);
+				return false;
+			}
+			main[h][w].checkPiecePoint()->firstMove();
+			return true;
+		}
+
 		bool Board::pawnMove(int h, int w, int player) {
 			if (player == BLUE) {
 				return pawnBlueMove(h, w);
@@ -45,10 +82,7 @@ namespace Chess {
 					return false;
 				}
 				//remove and add the piece to new position
-				main[h + 1][w].removePiece();
-				main[h][w].addPiece('P', BLUE);
-				main[h][w].checkPiecePoint()->firstMove();
-				return true;
+				return makeMove('P', h + 1, w, h, w, BLUE);
 			}
 			else if (main[h + 2][w].hasPiece()) {
 				//collision #1 pawn has another piece in between
@@ -71,12 +105,12 @@ namespace Chess {
 					std::cout << "#8::No available blue pawns to make the move" << std::endl;
 					return false;
 				}
-				main[h + 2][w].removePiece();
-				main[h][w].addPiece('P', BLUE);
-				main[h][w].checkPiecePoint()->firstMove();
-				target = { h, w, true };
-				std::cout << "Pawn at [" << h << ", " << w << "] is enpassantable" << std::endl;
-				return true;
+				if (makeMove('P', h + 2, w, h, w, BLUE)) {
+					target = { h, w, true };
+					std::cout << "Pawn at [" << h << ", " << w << "] is enpassantable" << std::endl;
+					return true;
+				}
+				return false;
 			}
 			else {
 				std::cout << "#9::No pawn available to make that move" << std::endl;
@@ -112,10 +146,7 @@ namespace Chess {
 					return false;
 				}
 				//remove and add the piece to new position
-				main[h - 1][w].removePiece();
-				main[h][w].addPiece('P', GREEN);
-				main[h][w].checkPiecePoint()->firstMove();
-				return true;
+				return makeMove('P', h - 1, w, h, w, GREEN);
 			}
 			else if (main[h - 2][w].hasPiece()) {
 				//collision #1 pawn has another piece in between
@@ -138,12 +169,12 @@ namespace Chess {
 					std::cout << "#8::No available green pawns to make the move" << std::endl;
 					return false;
 				}
-				main[h - 2][w].removePiece();
-				main[h][w].addPiece('P', GREEN);
-				main[h][w].checkPiecePoint()->firstMove(); 
-				target = { h, w, true };
-				std::cout << "Pawn at [" << h << ", " << w << "] is enpassantable" << std::endl;
-				return true;
+				if (makeMove('P', h - 2, w, h, w, GREEN)) {
+					target = { h, w, true };
+					std::cout << "Pawn at [" << h << ", " << w << "] is enpassantable" << std::endl;
+					return true;
+				}
+				return false;
 			}
 			else {
 				std::cout << "#8::No pawn available to make that move" << std::endl;
@@ -188,6 +219,13 @@ namespace Chess {
 				//Make the move
 				main[h + 1][w].removePiece();
 				main[h][w].addPiece(type, BLUE);
+				int player_checked;
+				if (isChecked(player_checked) and player_checked == BLUE) {
+					std::cout << "#10::The blue king is in check" << std::endl;
+					main[h][w].removePiece();
+					main[h + 1][w].addPiece('P', BLUE);
+					return false;
+				}
 				main[h][w].checkPiecePoint()->firstMove();
 				return true;
 			}
@@ -219,6 +257,13 @@ namespace Chess {
 				//Make the move
 				main[h - 1][w].removePiece();
 				main[h][w].addPiece(type, GREEN);
+				int player_checked;
+				if (isChecked(player_checked) and player_checked == GREEN) {
+					std::cout << "#10::The green king is in check" << std::endl;
+					main[h][w].removePiece();
+					main[h - 1][w].addPiece('P', GREEN);
+					return false;
+				}
 				main[h][w].checkPiecePoint()->firstMove();
 				return true;
 			}
@@ -243,7 +288,6 @@ namespace Chess {
 			int orig_h, orig_w;
 			//Check -2, -1
 			if (hasFriendly('N', h - 2, w - 1, player)) {
-
 				++knight_count;
 				orig_h = h - 2;
 				orig_w = w - 1;
@@ -324,9 +368,7 @@ namespace Chess {
 			}
 			std::cout << "Found a knight in [" << orig_h << ", " << orig_w << "]" << std::endl;
 			//Make the move
-			main[orig_h][orig_w].removePiece();
-			main[h][w].addPiece('N', player);
-			return true;
+			return makeMove('N', orig_h, orig_w, h, w, player);
 		}
 
 		bool Board::rookMove(int h, int w, int player) {
@@ -406,10 +448,7 @@ namespace Chess {
 			}
 			std::cout << "Found a rook in [" << orig_h << ", " << orig_w << "]" << std::endl;
 			//Make the move
-			main[orig_h][orig_w].removePiece();
-			main[h][w].addPiece('R', player);
-			main[h][w].checkPiecePoint()->firstMove();
-			return true;
+			return makeMove('R', orig_h, orig_w, h, w, player);
 		}
 
 		bool Board::bishopMove(int h, int w, int player) {
@@ -497,9 +536,7 @@ namespace Chess {
 			}
 			std::cout << "Found a bishop in [" << orig_h << ", " << orig_w << "]" << std::endl;
 			//Make the move
-			main[orig_h][orig_w].removePiece();
-			main[h][w].addPiece('B', player);
-			return true;
+			return makeMove('B', orig_h, orig_w, h, w, player);
 		}
 
 		bool Board::queenMove(int h, int w, int player) {
@@ -643,9 +680,7 @@ namespace Chess {
 			}
 			std::cout << "Found a queen in [" << orig_h << ", " << orig_w << "]" << std::endl;
 			//Make the move
-			main[orig_h][orig_w].removePiece();
-			main[h][w].addPiece('Q', player);
-			return true;
+			return makeMove('Q', orig_h, orig_w, h, w, player);
 		}
 
 		bool Board::kingMove(int h, int w, int player) {
@@ -687,20 +722,21 @@ namespace Chess {
 			}
 			std::cout << "Found a king in [" << orig_h << ", " << orig_w << "]" << std::endl;
 			//Make the move
-			if (player == BLUE) {
-				blueKing = { h,w };
+			if (makeMove('K', orig_h, orig_w, h, w, player)) {
+				if (player == BLUE) {
+					blueKing = { h,w };
+					return true;
+				}
+				else if (player == GREEN) {
+					greenKing = { h,w };
+					return true;
+				}
+				else {
+					std::cout << "No such known player " << player << std::endl;
+					return false;
+				}
 			}
-			else if (player == GREEN) {
-				greenKing = { h,w };
-			}
-			else {
-				std::cout << "No such known player " << player << std::endl;
-				return false;
-			}
-			main[orig_h][orig_w].removePiece();
-			main[h][w].addPiece('K', player);
-			main[h][w].checkPiecePoint()->firstMove();
-			return true;
+			return false;
 		}
 	}
 }

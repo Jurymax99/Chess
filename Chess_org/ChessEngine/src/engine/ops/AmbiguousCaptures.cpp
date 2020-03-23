@@ -132,22 +132,7 @@ namespace Chess {
 			}
 			std::cout << "Found a knight in [" << orig_h << ", " << orig_w << "]" << std::endl;
 			//Make the move
-			if (player == BLUE) {
-				addGreenDead(main[h][w].checkPiece());
-				blueScore += main[h][w].killPiece();
-			}
-			else if (player == GREEN) {
-				addBlueDead(main[h][w].checkPiece());
-				greenScore += main[h][w].killPiece();
-			}
-			else {
-				std::cout << "No such known player " << player << std::endl;
-				return false;
-			}
-			main[orig_h][orig_w].removePiece();
-			main[h][w].addPiece('N', player);
-			main[h][w].checkPiecePoint()->firstMove();
-			return true;
+			return makeCapture('N', orig_h, orig_w, h, w, player);
 		}
 
 		bool Board::knightCaptureFile(int file, int h, int w, int player) {
@@ -263,22 +248,7 @@ namespace Chess {
 			}
 			std::cout << "Found a knight in [" << orig_h << ", " << orig_w << "]" << std::endl;
 			//Make the move
-			if (player == BLUE) {
-				addGreenDead(main[h][w].checkPiece());
-				blueScore += main[h][w].killPiece();
-			}
-			else if (player == GREEN) {
-				addBlueDead(main[h][w].checkPiece());
-				greenScore += main[h][w].killPiece();
-			}
-			else {
-				std::cout << "No such known player " << player << std::endl;
-				return false;
-			}
-			main[orig_h][orig_w].removePiece();
-			main[h][w].addPiece('N', player);
-			main[h][w].checkPiecePoint()->firstMove();
-			return true;
+			return makeCapture('N', orig_h, orig_w, h, w, player);
 		}
 
 		bool Board::rookAmbiguousCapture(char dis, int h, int w, int player) {
@@ -349,22 +319,7 @@ namespace Chess {
 			}
 			std::cout << "Found a rook in [" << orig_h << ", " << orig_w << "]" << std::endl;
 			//Make the move
-			if (player == BLUE) {
-				addGreenDead(main[h][w].checkPiece());
-				blueScore += main[h][w].killPiece();
-			}
-			else if (player == GREEN) {
-				addBlueDead(main[h][w].checkPiece());
-				greenScore += main[h][w].killPiece();
-			}
-			else {
-				std::cout << "No such known player " << player << std::endl;
-				return false;
-			}
-			main[orig_h][orig_w].removePiece();
-			main[h][w].addPiece('R', player);
-			main[h][w].checkPiecePoint()->firstMove();
-			return true;
+			return makeCapture('R', orig_h, orig_w, h, w, player);
 		}
 
 		bool Board::rookCaptureFile(int file, int h, int w, int player) {
@@ -425,22 +380,7 @@ namespace Chess {
 			}
 			std::cout << "Found a rook in [" << orig_h << ", " << orig_w << "]" << std::endl;
 			//Make the move
-			if (player == BLUE) {
-				addGreenDead(main[h][w].checkPiece());
-				blueScore += main[h][w].killPiece();
-			}
-			else if (player == GREEN) {
-				addBlueDead(main[h][w].checkPiece());
-				greenScore += main[h][w].killPiece();
-			}
-			else {
-				std::cout << "No such known player " << player << std::endl;
-				return false;
-			}
-			main[orig_h][orig_w].removePiece();
-			main[h][w].addPiece('R', player);
-			main[h][w].checkPiecePoint()->firstMove();
-			return true;
+			return makeCapture('R', orig_h, orig_w, h, w, player);
 		}
 
 		bool Board::bishopAmbiguousCapture(char dis, int h, int w, int player) {
@@ -551,22 +491,7 @@ namespace Chess {
 			}
 			std::cout << "Found a bishop in [" << orig_h << ", " << orig_w << "]" << std::endl;
 			//Make the move
-			if (player == BLUE) {
-				addGreenDead(main[h][w].checkPiece());
-				blueScore += main[h][w].killPiece();
-			}
-			else if (player == GREEN) {
-				addBlueDead(main[h][w].checkPiece());
-				greenScore += main[h][w].killPiece();
-			}
-			else {
-				std::cout << "No such known player " << player << std::endl;
-				return false;
-			}
-			main[orig_h][orig_w].removePiece();
-			main[h][w].addPiece('B', player);
-			main[h][w].checkPiecePoint()->firstMove();
-			return true;
+			return makeCapture('B', orig_h, orig_w, h, w, player);
 		}
 
 		bool Board::bishopCaptureFile(int file, int h, int w, int player) {
@@ -664,22 +589,7 @@ namespace Chess {
 			std::cout << "Found a bishop in [" << orig_h << ", " << orig_w << "]" << std::endl;
 
 			//Make the move
-			if (player == BLUE) {
-				addGreenDead(main[h][w].checkPiece());
-				blueScore += main[h][w].killPiece();
-			}
-			else if (player == GREEN) {
-				addBlueDead(main[h][w].checkPiece());
-				greenScore += main[h][w].killPiece();
-			}
-			else {
-				std::cout << "No such known player " << player << std::endl;
-				return false;
-			}
-			main[orig_h][orig_w].removePiece();
-			main[h][w].addPiece('B', player);
-			main[h][w].checkPiecePoint()->firstMove();
-			return true;
+			return makeCapture('B', orig_h, orig_w, h, w, player);
 		}
 
 		bool Board::bishopDoubleAmbiguousCapture(int h_s, int w_s, int h_d, int w_d, int player) {
@@ -765,22 +675,7 @@ namespace Chess {
 			}
 			std::cout << "Found the bishop in [" << h_s << ", " << h_s << "]" << std::endl;
 			//Make move
-			if (player == BLUE) {
-				addGreenDead(main[h_d][w_d].checkPiece());
-				blueScore += main[h_d][w_d].killPiece();
-			}
-			else if (player == GREEN) {
-				addBlueDead(main[h_d][w_d].checkPiece());
-				greenScore += main[h_d][w_d].killPiece();
-			}
-			else {
-				std::cout << "No such known player " << player << std::endl;
-				return false;
-			}
-			main[h_s][w_s].removePiece();
-			main[h_d][w_d].addPiece('B', player);
-			main[h_d][w_d].checkPiecePoint()->firstMove();
-			return true;
+			return makeCapture('B', h_s, w_s, h_d, w_d, player);
 		}
 
 		bool Board::queenAmbiguousCapture(char dis, int h, int w, int player) {
@@ -946,22 +841,7 @@ namespace Chess {
 			}
 			std::cout << "Found a queen in [" << orig_h << ", " << orig_w << "]" << std::endl;
 			//Make the move
-			if (player == BLUE) {
-				addGreenDead(main[h][w].checkPiece());
-				blueScore += main[h][w].killPiece();
-			}
-			else if (player == GREEN) {
-				addBlueDead(main[h][w].checkPiece());
-				greenScore += main[h][w].killPiece();
-			}
-			else {
-				std::cout << "No such known player " << player << std::endl;
-				return false;
-			}
-			main[orig_h][orig_w].removePiece();
-			main[h][w].addPiece('Q', player);
-			main[h][w].checkPiecePoint()->firstMove();
-			return true;
+			return makeCapture('Q', orig_h, orig_w, h, w, player);
 		}
 
 		bool Board::queenCaptureFile(int file, int h, int w, int player) {
@@ -1114,22 +994,7 @@ namespace Chess {
 			}
 			std::cout << "Found a queen in [" << orig_h << ", " << orig_w << "]" << std::endl;
 			//Make the move
-			if (player == BLUE) {
-				addGreenDead(main[h][w].checkPiece());
-				blueScore += main[h][w].killPiece();
-			}
-			else if (player == GREEN) {
-				addBlueDead(main[h][w].checkPiece());
-				greenScore += main[h][w].killPiece();
-			}
-			else {
-				std::cout << "No such known player " << player << std::endl;
-				return false;
-			}
-			main[orig_h][orig_w].removePiece();
-			main[h][w].addPiece('Q', player);
-			main[h][w].checkPiecePoint()->firstMove();
-			return true;
+			return makeCapture('Q', orig_h, orig_w, h, w, player);
 		}
 
 		bool Board::queenDoubleAmbiguousCapture(int h_s, int w_s, int h_d, int w_d, int player)
@@ -1257,22 +1122,7 @@ namespace Chess {
 			std::cout << "Found a queen in [" << h_d << ", " << w_d << "]" << std::endl;
 
 			//Make move
-			if (player == BLUE) {
-				addGreenDead(main[h_d][w_d].checkPiece());
-				blueScore += main[h_d][w_d].killPiece();
-			}
-			else if (player == GREEN) {
-				addBlueDead(main[h_d][w_d].checkPiece());
-				greenScore += main[h_d][w_d].killPiece();
-			}
-			else {
-				std::cout << "No such known player " << player << std::endl;
-				return false;
-			}
-			main[h_s][w_s].removePiece();
-			main[h_d][w_d].addPiece('Q', player);
-			main[h_d][w_d].checkPiecePoint()->firstMove();
-			return true;
+			return makeCapture('Q', h_s, w_s, h_d, w_d, player);
 		}
 	}
 }

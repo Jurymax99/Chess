@@ -48,9 +48,51 @@ namespace Chess {
 			w_k = 6;	//king destination file
 			main[h][w_r].addPiece('R', player);
 			main[h][w_k].addPiece('K', player);
+			if (player == BLUE) {
+				blueKing = { h,w_k };
+			}
+			else if (player == GREEN) {
+				greenKing = { h,w_k };
+			}
+			else {
+				std::cout << "No such known player " << player << std::endl;
+				return false;
+			}
+			if (isChecked()) {
+				if (player == BLUE) {
+					std::cout << "#10::The blue king is in check" << std::endl; 
+					blueKing = { h,w_k };
+				}
+				else if (player == GREEN) {
+					std::cout << "#10::The green king is in check" << std::endl;
+					greenKing = { h,w_k };
+				}
+				else {
+					std::cout << "#10::No known player" << std::endl;
+					return false;
+				}
+				main[h][w_k].removePiece();
+				main[h][w_r].removePiece();
+				w_r = 7;
+				w_k = 4;
+				main[h][w_k].addPiece('K', player);
+				main[h][w_r].addPiece('R', player);
+				return false;
+			}
 			main[h][w_r].checkPiecePoint()->firstMove();
 			main[h][w_k].checkPiecePoint()->firstMove();
-			return true;
+			if (player == BLUE) {
+				blueKing = { h,w_k };
+				return true;
+			}
+			else if (player == GREEN) {
+				greenKing = { h,w_k };
+				return true;
+			}
+			else {
+				std::cout << "No such known player " << player << std::endl;
+				return false;
+			}
 		}
 
 		bool Board::castleQueenside(int player) {
@@ -97,13 +139,55 @@ namespace Chess {
 			w_k = 2;	//king destination file
 			main[h][w_r].addPiece('R', player);
 			main[h][w_k].addPiece('K', player);
+			if (player == BLUE) {
+				blueKing = { h,w_k };
+			}
+			else if (player == GREEN) {
+				greenKing = { h,w_k };
+			}
+			else {
+				std::cout << "No such known player " << player << std::endl;
+				return false;
+			}
+			if (isChecked()) {
+				if (player == BLUE) {
+					std::cout << "#10::The blue king is in check" << std::endl;
+					blueKing = { h,w_k };
+				}
+				else if (player == GREEN) {
+					std::cout << "#10::The green king is in check" << std::endl;
+					greenKing = { h,w_k };
+				}
+				else {
+					std::cout << "#10::No known player" << std::endl;
+					return false;
+				}
+				main[h][w_k].removePiece();
+				main[h][w_r].removePiece();
+				w_r = 0;
+				w_k = 4;
+				main[h][w_k].addPiece('K', player);
+				main[h][w_r].addPiece('R', player);
+				return false;
+			}
 			main[h][w_r].checkPiecePoint()->firstMove();
 			main[h][w_k].checkPiecePoint()->firstMove();
-			return true;
+			if (player == BLUE) {
+				blueKing = { h,w_k };
+				return true;
+			}
+			else if (player == GREEN) {
+				greenKing = { h,w_k };
+				return true;
+			}
+			std::cout << "No such known player " << player << std::endl;
+			return false;
 		}
 
-		bool Board::isChecked() const {
+		bool Board::isChecked() {
 			//See if any king is in the positions threatened by other player
+			updateBlueThreats();
+			updateGreenThreats();
 			auto it_b = GreenThreat.find({ blueKing.h, blueKing.w, true });
 			if (it_b != GreenThreat.end()) {
 				std::cout << "Blue king is in check" << std::endl;
@@ -114,6 +198,26 @@ namespace Chess {
 				std::cout << "Green king is in check" << std::endl;
 				return true;
 			}
+			return false;
+		}
+
+		bool Board::isChecked(int& player) {
+			//See if any king is in the positions threatened by other player
+			updateBlueThreats();
+			updateGreenThreats();
+			auto it_b = GreenThreat.find({ blueKing.h, blueKing.w, true });
+			if (it_b != GreenThreat.end()) {
+				std::cout << "Blue king is in check" << std::endl;
+				player = BLUE;
+				return true;
+			}
+			auto it_g = BlueThreat.find({ greenKing.h, greenKing.w, true });
+			if (it_g != BlueThreat.end()) {
+				std::cout << "Green king is in check" << std::endl;
+				player = GREEN;
+				return true;
+			}
+			player = 0;
 			return false;
 		}
 
