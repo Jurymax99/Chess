@@ -54,15 +54,16 @@ namespace Chess {
 		void Application::play() {
 			std::cout << "PLAY MODE" << std::endl;
 			std::cout << "Game #" << gameCount << " started" << std::endl;
-			Board mainBoard;
-			mainBoard.printBoard();
+			Board* mainBoard = new Board;
+			mainBoard->updateThreats();
+			mainBoard -> printBoard();
 			int currentPlayer;
 			std::string mov;
-			bool backed = false;
 			while (not ended) {
 				//Blue's turn
 				currentPlayer = BLUE;
 				std::cout << "Blue's turn" << std::endl;
+				mainBoard->isChecked();
 				std::cout << "Insert your movement: " << std::endl;
 				std::cin >> mov;
 				if (mov == "quit") {
@@ -70,9 +71,10 @@ namespace Chess {
 					break;
 				}
 				//Check if movement is valid
-				while (not ended and not backed and not mainBoard.move(mov, currentPlayer)) {
+				while (not ended and not mainBoard -> move(mov, currentPlayer)) {
 					std::cout << "Blue's turn" << std::endl;
-					mainBoard.printBoard();
+					mainBoard->isChecked();
+					mainBoard->printBoard();
 					std::cout << "Cannot perform movement, please try again:" << std::endl;
 					std::cin >> mov;
 					if (mov == "quit") {
@@ -84,7 +86,9 @@ namespace Chess {
 					break;
 				}
 				std::cout << "Piece successfully moved" << std::endl;
-				mainBoard.printBoard();
+				mainBoard->updateThreats();
+				mainBoard->isChecked();
+				mainBoard->printBoard();
 
 				//Green's turn
 				currentPlayer = GREEN;
@@ -96,9 +100,10 @@ namespace Chess {
 					break;
 				}
 				//Check if movement is valid
-				while (not ended and not mainBoard.move(mov, currentPlayer)) {
+				while (not ended and not mainBoard->move(mov, currentPlayer)) {
 					std::cout << "Green's turn" << std::endl;
-					mainBoard.printBoard();
+					mainBoard->isChecked();
+					mainBoard->printBoard();
 					std::cout << "Cannot perform movement, please try again:" << std::endl;
 					std::cin >> mov;
 					if (mov == "quit") {
@@ -110,22 +115,27 @@ namespace Chess {
 					break;
 				}
 				std::cout << "Piece successfully moved" << std::endl;
-				mainBoard.printBoard();
+				mainBoard->updateThreats();
+				mainBoard->isChecked();
+				mainBoard->printBoard();
 			}
+			delete mainBoard;
 			std::cout << "Do you want to (P)lay, (R)ead a game or (q)uit? P/R/q" << std::endl;
 		}
 
 		void Application::read_pgn() {
 			std::cout << "READ MODE" << std::endl;
 			std::cout << "Game #" << gameCount << " started" << std::endl;
-			Board mainBoard;
-			mainBoard.printBoard();
+			Board* mainBoard = new Board;
+			mainBoard->updateThreats();
+			mainBoard->printBoard();
 			int currentPlayer;
 			std::string mov;
 			while (not ended) {
 				//Blue's turn
 				currentPlayer = BLUE;
 				std::cout << "Blue's turn" << std::endl;
+				mainBoard->isChecked();
 				std::cout << "Insert your movement: " << std::endl;
 				char ppp;
 				while (std::cin >> ppp and ppp != '.');
@@ -138,9 +148,10 @@ namespace Chess {
 					mov = mov.substr(0, mov.length() - 1);
 				}
 				//Check if movement is valid
-				while (not ended and not mainBoard.move(mov, currentPlayer)) {
+				while (not ended and not mainBoard->move(mov, currentPlayer)) {
 					std::cout << "Blue's turn" << std::endl;
-					mainBoard.printBoard();
+					mainBoard->isChecked();
+					mainBoard->printBoard();
 					std::cout << "Cannot perform movement, please try again:" << std::endl;
 					std::cin >> mov;
 					if (mov == "quit") {
@@ -152,11 +163,14 @@ namespace Chess {
 					break;
 				}
 				std::cout << "Piece successfully moved" << std::endl;
-				mainBoard.printBoard();
+				mainBoard->updateThreats();
+				mainBoard->isChecked();
+				mainBoard->printBoard();
 
 				//Green's turn
 				currentPlayer = GREEN;
 				std::cout << "Green's turn" << std::endl;
+				mainBoard->isChecked();
 				std::cout << "Insert your movement: " << std::endl;
 				std::cin >> mov;
 				if (mov == "quit") {
@@ -167,9 +181,11 @@ namespace Chess {
 					mov = mov.substr(0, mov.length() - 1);
 				}
 				//Check if movement is valid
-				while (not ended and not mainBoard.move(mov, currentPlayer)) {
+				while (not ended and not mainBoard->move(mov, currentPlayer)) {
 					std::cout << "Green's turn" << std::endl;
-					mainBoard.printBoard();
+					mainBoard->updateThreats();
+					mainBoard->isChecked();
+					mainBoard->printBoard();
 					std::cout << "Cannot perform movement, please try again:" << std::endl;
 					std::cin >> mov;
 					if (mov == "quit") {
@@ -181,8 +197,11 @@ namespace Chess {
 					break;
 				}
 				std::cout << "Piece successfully moved" << std::endl;
-				mainBoard.printBoard();
+				mainBoard->updateThreats();
+				mainBoard->isChecked();
+				mainBoard->printBoard();
 			}
+			delete mainBoard;
 			std::cout << "Do you want to (P)lay, (R)ead a game or (q)uit? P/R/q" << std::endl;
 		}
 	}

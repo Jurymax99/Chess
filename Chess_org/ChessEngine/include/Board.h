@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <set>
 #include "Tile.h"
 
 
@@ -15,7 +16,18 @@ namespace Chess {
 			Matrix main;
 			std::vector <Pieces::Piece> GreenDead;
 			std::vector <Pieces::Piece> BlueDead;
+			struct PositionState {
+				int h, w;
+				bool empty = true;
+
+				bool operator <(const PositionState& rhs) const;
+			};
+			std::set <PositionState, std::less<PositionState>> BlueThreat;
+			std::set <PositionState, std::less<PositionState>> GreenThreat;
 			int blueScore, greenScore;
+			struct Position {
+				int h, w;
+			} blueKing, greenKing;
 
 			struct EnPassant {
 				int h, w;
@@ -25,9 +37,9 @@ namespace Chess {
 			bool inBound					(int h, int w)	const;
 			bool contains					(char c, std::string word) const;
 			bool hasFriendly				(char type, int h, int w, int player) const;
+			bool hasEnemy					(char type, int h, int w, int player) const;
 			bool rank						(char a) const;
 			bool file						(char a) const;
-			bool comp						(Pieces::Piece& a, Pieces::Piece& b) ;
 
 			//Pawn
 			
@@ -90,13 +102,7 @@ namespace Chess {
 
 			//King
 			bool kingMove					(int h, int w, int player);
-			bool kingAmbiguousMove			(char dis, int h, int w, int player);
-			bool kingMoveRank				(int rank, int h, int w, int player);
-			bool kingMoveFile				(int file, int h, int w, int player);
 			bool kingCapture				(int h, int w, int player);
-			bool kingAmbiguousCapture		(char dis, int h, int w, int player);
-			bool kingCaptureRank			(int rank, int h, int w, int player);
-			bool kingCaptureFile			(int file, int h, int w, int player);
 
 			//Castling
 			bool castleKingside				(int player);
@@ -108,12 +114,22 @@ namespace Chess {
 			void checkGreenDead() const;
 			void checkBlueDead() const;
 
+			void checkBlueThreats() const;
+			void checkGreenThreats() const;
+
+			void checkBlueKing() const;
+			void checkGreenKing() const;
+
+			void updateBlueThreats();
+			void updateGreenThreats();
 		public:
 			Board();
 			~Board();
 
 			void printBoard();
 			bool move(std::string movement, int player);
+			bool isChecked					() const;
+			void updateThreats();
 		};
 	}
 }

@@ -9,8 +9,12 @@ namespace Chess {
 			main = Matrix(8, Row(8));
 			GreenDead = std::vector <Pieces::Piece>();
 			BlueDead = std::vector <Pieces::Piece>();
+			BlueThreat = std::set <PositionState>();
+			GreenThreat = std::set <PositionState>();
 			blueScore = 0;
 			greenScore = 0;
+			blueKing = { 7, 4 };
+			greenKing = { 0, 4 };
 			target = { -1, -1, false };
 			std::cout << "Standard " << height << "x" << width << " board created with " << pieces << " pieces" << std::endl;
 
@@ -55,14 +59,31 @@ namespace Chess {
 			std::cout << "Board destroyed" << std::endl;
 		}
 
+		bool Board::PositionState::operator<(const PositionState& rhs) const {
+			if (h == rhs.h) {
+				return w < rhs.w;
+			}
+			return h < rhs.h;
+		}
+
 		void Board::printBoard() {
 			std::cout << "__________________________________________" << std::endl;
 			checkBlueDead();
 			checkGreenDead();
 			std::cout << "__________________________________________" << std::endl;
+			std::cout << "__________________________________________" << std::endl;
+			checkBlueThreats();
+			checkGreenThreats();
+			std::cout << "__________________________________________" << std::endl;
+			std::cout << "__________________________________________" << std::endl;
+			checkBlueKing();
+			checkGreenKing();
+			std::cout << "__________________________________________" << std::endl;
 			std::cout << "   A    B    C    D    E    F    G    H" << std::endl;
 			Color::Modifier blue(Color::FG_BLUE);
 			Color::Modifier green(Color::FG_GREEN);
+			Color::Modifier red(Color::FG_RED);
+			Color::Modifier yellow(Color::FG_YELLOW);
 			Color::Modifier def(Color::FG_DEFAULT);
 			for (int i = 0; i < 8; ++i) {
 				std::cout << -i + 8 << "  ";
@@ -80,7 +101,17 @@ namespace Chess {
 						}
 					}
 					else {
-						std::cout << ".    ";
+						auto it_b = BlueThreat.find({ i,j, false });
+						auto it_g = GreenThreat.find({ i,j, false });
+						if (it_b != BlueThreat.end()) {
+							std::cout << red << ".    " << def;
+						}
+						else if (it_g != GreenThreat.end()) {
+							std::cout << yellow << ".    " << def;
+						}
+						else {
+							std::cout << ".    ";
+						}
 					}
 				}
 				std::cout << '\b' << -i + 8 << std::endl << std::endl;
@@ -89,7 +120,7 @@ namespace Chess {
 		}
 
 		inline bool Board::inBound(int h, int w) const {
-			std::cout << "Checking [" << h << ", " << w << "]" << std::endl;
+			//std::cout << "Checking [" << h << ", " << w << "]" << std::endl;
 			return w >= 0 and w <= 7 and h >= 0 and h <= 7;
 		}
 
@@ -108,6 +139,17 @@ namespace Chess {
 				main[h][w].hasPiece() and
 				main[h][w].checkPieceType() == type and
 				main[h][w].checkPlayer() == player;
+		}
+
+		bool Board::hasEnemy(char type, int h, int w, int player) const {
+			if (player == BLUE) {
+				return hasFriendly(type, h, w, GREEN);
+			}
+			else if(player == GREEN){
+				return hasFriendly(type, h, w, BLUE);
+			}
+			std::cout << "No known player" << std::endl;
+			return false;
 		}
 
 		bool Board::rank(char a) const {
@@ -156,8 +198,34 @@ namespace Chess {
 			std::cout << std::endl;
 		}
 
+		void Board::checkBlueThreats() const {
+			std::cout << "Blue threatening positions: ";
+			auto it = BlueThreat.begin();
+			for (; it != BlueThreat.end(); ++it) {
+				std::cout << "[" << char((*it).w + 97) << char(8 - char((*it).h - 48)) << ", " << (*it).empty << "] ";
+			}
+			std::cout << std::endl;
+		}
+
+		void Board::checkGreenThreats() const {
+			std::cout << "Green threatening positions: ";
+			auto it = GreenThreat.begin();
+			for (; it != GreenThreat.end(); ++it) {
+				std::cout << "[" << char((*it).w + 97) << char(8 - char((*it).h -48)) << ", " << (*it).empty << "] ";
+			}
+			std::cout << std::endl;
+		}
+
+		void Board::checkBlueKing() const {
+			std::cout << "Blue king is at [" << char(blueKing.w + 97) << char(8 - char(blueKing.h - 48)) << "]" << std::endl;
+		}
+
+		void Board::checkGreenKing() const {
+			std::cout << "Green king is at [" << char(greenKing.w + 97) << char(8 - char(greenKing.h - 48)) << "]" << std::endl;
+		}
+
 		//TODO: 
-		//		-check detection
+		//		-don't allow movements that leave board in check
 		//		-checkmate detection
 		//		-flip board
 		//		-count pieces
@@ -191,6 +259,8 @@ namespace Chess {
 		//		- Added read mode, to directly read pgn formatted matches
 		//		- Added scoreboard
 		//		- Added en passant
+		//		- Added a system to know threatened tiles by each player
+		//		- Added check detection
 
 		bool Board::move(std::string movement, int player) {
 			int rank_d, file_d;
@@ -303,10 +373,6 @@ namespace Chess {
 					if (movement[0] == 'Q') {
 						return queenAmbiguousMove(dis, rank_d, file_d, player);
 					}
-					//king?
-					if (movement[0] == 'K') {
-						return kingAmbiguousMove(dis, rank_d, file_d, player);
-					}
 				}
 			}
 			//ambiguous captures
@@ -331,10 +397,6 @@ namespace Chess {
 					//queen
 					if (movement[0] == 'Q') {
 						return queenAmbiguousCapture(dis, rank_d, file_d, player);
-					}
-					//king?
-					if (movement[0] == 'K') {
-						return kingAmbiguousCapture(dis, rank_d, file_d, player);
 					}
 				}
 				if (movement == "O-O-O" or movement == "0-0-0") {

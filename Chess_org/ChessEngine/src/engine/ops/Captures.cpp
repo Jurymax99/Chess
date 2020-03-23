@@ -746,10 +746,12 @@ namespace Chess {
 			if (player == BLUE) {
 				addGreenDead(main[h][w].checkPiece());
 				blueScore += main[h][w].killPiece();
+				blueKing = { h,w };
 			}
 			else if (player == GREEN) {
 				addBlueDead(main[h][w].checkPiece());
 				greenScore += main[h][w].killPiece();
+				greenKing = { h,w };
 			}
 			else {
 				std::cout << "No such known player " << player << std::endl;

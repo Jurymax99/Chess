@@ -687,11 +687,20 @@ namespace Chess {
 			}
 			std::cout << "Found a king in [" << orig_h << ", " << orig_w << "]" << std::endl;
 			//Make the move
+			if (player == BLUE) {
+				blueKing = { h,w };
+			}
+			else if (player == GREEN) {
+				greenKing = { h,w };
+			}
+			else {
+				std::cout << "No such known player " << player << std::endl;
+				return false;
+			}
 			main[orig_h][orig_w].removePiece();
 			main[h][w].addPiece('K', player);
 			main[h][w].checkPiecePoint()->firstMove();
 			return true;
 		}
-
 	}
 }
