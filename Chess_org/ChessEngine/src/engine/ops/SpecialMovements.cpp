@@ -9,7 +9,7 @@ namespace Chess {
 			int w_r = 7;	//rook file
 			int w_k = 4;	//king file
 
-			if (player == BLUE) {
+			if (player == RED) {
 				h = 7;
 			}
 			else if (player == GREEN) {
@@ -48,8 +48,8 @@ namespace Chess {
 			w_k = 6;	//king destination file
 			main[h][w_r].addPiece('R', player);
 			main[h][w_k].addPiece('K', player);
-			if (player == BLUE) {
-				blueKing = { h,w_k };
+			if (player == RED) {
+				redKing = { h,w_k };
 			}
 			else if (player == GREEN) {
 				greenKing = { h,w_k };
@@ -59,9 +59,9 @@ namespace Chess {
 				return false;
 			}
 			if (isChecked()) {
-				if (player == BLUE) {
-					std::cout << "#10::The blue king is in check" << std::endl; 
-					blueKing = { h,w_k };
+				if (player == RED) {
+					std::cout << "#10::The red king is in check" << std::endl; 
+					redKing = { h,w_k };
 				}
 				else if (player == GREEN) {
 					std::cout << "#10::The green king is in check" << std::endl;
@@ -81,8 +81,8 @@ namespace Chess {
 			}
 			main[h][w_r].checkPiecePoint()->firstMove();
 			main[h][w_k].checkPiecePoint()->firstMove();
-			if (player == BLUE) {
-				blueKing = { h,w_k };
+			if (player == RED) {
+				redKing = { h,w_k };
 				return true;
 			}
 			else if (player == GREEN) {
@@ -100,7 +100,7 @@ namespace Chess {
 			int w_r = 0;	//rook file
 			int w_k = 4;	//king file
 
-			if (player == BLUE) {
+			if (player == RED) {
 				h = 7;
 			}
 			else if (player == GREEN) {
@@ -139,8 +139,8 @@ namespace Chess {
 			w_k = 2;	//king destination file
 			main[h][w_r].addPiece('R', player);
 			main[h][w_k].addPiece('K', player);
-			if (player == BLUE) {
-				blueKing = { h,w_k };
+			if (player == RED) {
+				redKing = { h,w_k };
 			}
 			else if (player == GREEN) {
 				greenKing = { h,w_k };
@@ -150,9 +150,9 @@ namespace Chess {
 				return false;
 			}
 			if (isChecked()) {
-				if (player == BLUE) {
-					std::cout << "#10::The blue king is in check" << std::endl;
-					blueKing = { h,w_k };
+				if (player == RED) {
+					std::cout << "#10::The red king is in check" << std::endl;
+					redKing = { h,w_k };
 				}
 				else if (player == GREEN) {
 					std::cout << "#10::The green king is in check" << std::endl;
@@ -172,8 +172,8 @@ namespace Chess {
 			}
 			main[h][w_r].checkPiecePoint()->firstMove();
 			main[h][w_k].checkPiecePoint()->firstMove();
-			if (player == BLUE) {
-				blueKing = { h,w_k };
+			if (player == RED) {
+				redKing = { h,w_k };
 				return true;
 			}
 			else if (player == GREEN) {
@@ -186,15 +186,15 @@ namespace Chess {
 
 		bool Board::isChecked() {
 			//See if any king is in the positions threatened by other player
-			updateBlueThreats();
+			updateRedThreats();
 			updateGreenThreats();
-			auto it_b = GreenThreat.find({ blueKing.h, blueKing.w, true });
+			auto it_b = GreenThreat.find({ redKing.h, redKing.w, true });
 			if (it_b != GreenThreat.end()) {
-				std::cout << "Blue king is in check" << std::endl;
+				std::cout << "Red king is in check" << std::endl;
 				return true;
 			}
-			auto it_g = BlueThreat.find({ greenKing.h, greenKing.w, true });
-			if (it_g != BlueThreat.end()) {
+			auto it_g = RedThreat.find({ greenKing.h, greenKing.w, true });
+			if (it_g != RedThreat.end()) {
 				std::cout << "Green king is in check" << std::endl;
 				return true;
 			}
@@ -203,16 +203,16 @@ namespace Chess {
 
 		bool Board::isChecked(int& player) {
 			//See if any king is in the positions threatened by other player
-			updateBlueThreats();
+			updateRedThreats();
 			updateGreenThreats();
-			auto it_b = GreenThreat.find({ blueKing.h, blueKing.w, true });
+			auto it_b = GreenThreat.find({ redKing.h, redKing.w, true });
 			if (it_b != GreenThreat.end()) {
-				std::cout << "Blue king is in check" << std::endl;
-				player = BLUE;
+				std::cout << "Red king is in check" << std::endl;
+				player = RED;
 				return true;
 			}
-			auto it_g = BlueThreat.find({ greenKing.h, greenKing.w, true });
-			if (it_g != BlueThreat.end()) {
+			auto it_g = RedThreat.find({ greenKing.h, greenKing.w, true });
+			if (it_g != RedThreat.end()) {
 				std::cout << "Green king is in check" << std::endl;
 				player = GREEN;
 				return true;
@@ -222,288 +222,288 @@ namespace Chess {
 		}
 
 		void Board::updateThreats() {
-			updateBlueThreats();
+			updateRedThreats();
 			updateGreenThreats();
 		}
 
-		void Board::updateBlueThreats() {
-			BlueThreat.clear();
+		void Board::updateRedThreats() {
+			RedThreat.clear();
 			for (int i = 0; i < height; ++i) {
 				for (int j = 0; j < width; ++j) {
 					//Pawn
-					if (hasFriendly('P', i, j, BLUE)) {
+					if (hasFriendly('P', i, j, RED)) {
 						if (inBound(i - 1, j + 1)) {
 							if (not main[i - 1][j + 1].hasPiece()) {
-								BlueThreat.insert({ i - 1, j + 1, true });
+								RedThreat.insert({ i - 1, j + 1, true });
 							}
 							else if(main[i - 1][j + 1].checkPlayer() == GREEN){
-								BlueThreat.insert({ i - 1, j + 1, false });
+								RedThreat.insert({ i - 1, j + 1, false });
 							}
 						}
 						if (inBound(i - 1, j - 1)) {
 							if (not main[i - 1][j - 1].hasPiece()) {
-								BlueThreat.insert({ i - 1, j - 1, true });
+								RedThreat.insert({ i - 1, j - 1, true });
 							}
 							else if (main[i - 1][j - 1].checkPlayer() == GREEN) {
-								BlueThreat.insert({ i - 1, j - 1, false });
+								RedThreat.insert({ i - 1, j - 1, false });
 							}
 						}
 					}
 						
 					//Knight
-					else if (hasFriendly('N', i, j, BLUE)) {
+					else if (hasFriendly('N', i, j, RED)) {
 						//Check -2, -1
 						if (inBound(i - 2, j - 1)) {
 							if (not main[i - 2][j - 1].hasPiece()) {
-								BlueThreat.insert({ i - 2, j - 1, true });
+								RedThreat.insert({ i - 2, j - 1, true });
 							}
 							else if (main[i - 2][j - 1].checkPlayer() == GREEN) {
-								BlueThreat.insert({ i - 2, j - 1, false });
+								RedThreat.insert({ i - 2, j - 1, false });
 							}
 						}
 						//Check -2, 1
 						if (inBound(i - 2, j + 1)) {
 							if (not main[i - 2][j + 1].hasPiece()) {
-								BlueThreat.insert({ i - 2, j + 1, true });
+								RedThreat.insert({ i - 2, j + 1, true });
 							}
 							else if (main[i - 2][j + 1].checkPlayer() == GREEN) {
-								BlueThreat.insert({ i - 2, j + 1, false });
+								RedThreat.insert({ i - 2, j + 1, false });
 							}
 						}
 						//Check -1, 2
 						if (inBound(i - 1, j + 2)) {
 							if (not main[i - 1][j + 2].hasPiece()) {
-								BlueThreat.insert({ i - 1, j + 2, true });
+								RedThreat.insert({ i - 1, j + 2, true });
 							}
 							else if (main[i - 1][j + 2].checkPlayer() == GREEN) {
-								BlueThreat.insert({ i - 1, j + 2, false });
+								RedThreat.insert({ i - 1, j + 2, false });
 							}
 						}
 						//Check 1, 2
 						if (inBound(i + 1, j + 2)) {
 							if (not main[i + 1][j + 2].hasPiece()) {
-								BlueThreat.insert({ i + 1, j + 2, true });
+								RedThreat.insert({ i + 1, j + 2, true });
 							}
 							else if (main[i + 1][j + 2].checkPlayer() == GREEN) {
-								BlueThreat.insert({ i + 1, j + 2, false });
+								RedThreat.insert({ i + 1, j + 2, false });
 							}
 						}
 						//Check 2, 1
 						if (inBound(i + 2, j + 1)) {
 							if (not main[i + 2][j + 1].hasPiece()) {
-								BlueThreat.insert({ i + 2, j + 1, true });
+								RedThreat.insert({ i + 2, j + 1, true });
 							}
 							else if (main[i + 2][j + 1].checkPlayer() == GREEN) {
-								BlueThreat.insert({ i + 2, j + 1, false });
+								RedThreat.insert({ i + 2, j + 1, false });
 							}
 						}
 						//Check 2, -1
 						if (inBound(i + 2, j - 1)) {
 							if (not main[i + 2][j - 1].hasPiece()) {
-								BlueThreat.insert({ i + 2, j - 1, true });
+								RedThreat.insert({ i + 2, j - 1, true });
 							}
 							else if (main[i + 2][j - 1].checkPlayer() == GREEN) {
-								BlueThreat.insert({ i + 2, j - 1, false });
+								RedThreat.insert({ i + 2, j - 1, false });
 							}
 						}
 						//Check 1,-2
 						if (inBound(i + 1, j - 2)) {
 							if (not main[i + 1][j - 2].hasPiece()) {
-								BlueThreat.insert({ i + 1, j - 2, true });
+								RedThreat.insert({ i + 1, j - 2, true });
 							}
 							else if (main[i + 1][j - 2].checkPlayer() == GREEN) {
-								BlueThreat.insert({ i + 1, j - 2, false });
+								RedThreat.insert({ i + 1, j - 2, false });
 							}
 						}
 						//Check -1, -2
 						if (inBound(i - 1, j - 2)) {
 							if (not main[i - 1][j - 2].hasPiece()) {
-								BlueThreat.insert({ i - 1, j - 2, true });
+								RedThreat.insert({ i - 1, j - 2, true });
 							}
 							else if (main[i - 1][j - 2].checkPlayer() == GREEN) {
-								BlueThreat.insert({ i - 1, j - 2, false });
+								RedThreat.insert({ i - 1, j - 2, false });
 							}
 						}
 					}
 					//Rook
-					else if (hasFriendly('R', i, j, BLUE)) {
+					else if (hasFriendly('R', i, j, RED)) {
 						//Search above
 						int it = i + 1;
 						while (it <= 7 and not main[it][j].hasPiece()) {
-							BlueThreat.insert({ it, j, true });
+							RedThreat.insert({ it, j, true });
 							++it;
 						}
 						if (it <= 7 and main[it][j].checkPlayer() == GREEN) {
-							BlueThreat.insert({ it, j, false });
+							RedThreat.insert({ it, j, false });
 						}
 						//Search below
 						it = i - 1;
 						while (it >= 0 and not main[it][j].hasPiece()) {
-							BlueThreat.insert({ it, j, true });
+							RedThreat.insert({ it, j, true });
 							--it;
 						}
 						if (it >= 0 and main[it][j].checkPlayer() == GREEN) {
-							BlueThreat.insert({ it, j, false });
+							RedThreat.insert({ it, j, false });
 						}
 						//Search to the right
 						it = j + 1;
 						while (it <= 7 and not main[i][it].hasPiece()) {
-							BlueThreat.insert({ i, it, true });
+							RedThreat.insert({ i, it, true });
 							++it;
 						}
 						if (it <= 7 and main[i][it].checkPlayer() == GREEN) {
-							BlueThreat.insert({ i, it, false });
+							RedThreat.insert({ i, it, false });
 						}
 						//Search to the left
 						it = j - 1;
 						while (it >= 0 and not main[i][it].hasPiece()) {
-							BlueThreat.insert({ i, it });
+							RedThreat.insert({ i, it });
 							--it;
 						}
 						if (it >= 0 and main[i][it].checkPlayer() == GREEN) {
-							BlueThreat.insert({ i, it, false });
+							RedThreat.insert({ i, it, false });
 						}
 					}
 					//Bishop
-					else if (hasFriendly('B', i, j, BLUE)) {
+					else if (hasFriendly('B', i, j, RED)) {
 						//Search diagonal left-up
 						int it_h = i + 1;
 						int it_w = j - 1;
 						while (it_h <= 7 and it_w >= 0 and not main[it_h][it_w].hasPiece()) {
-							BlueThreat.insert({ it_h, it_w, true });
+							RedThreat.insert({ it_h, it_w, true });
 							++it_h;
 							--it_w;
 						}
 						if (it_h <= 7 and it_w >= 0 and main[it_h][it_w].checkPlayer() == GREEN) {
-							BlueThreat.insert({ it_h, it_w, false });
+							RedThreat.insert({ it_h, it_w, false });
 						}
 						//Search diagonal left-down
 						it_h = i - 1;
 						it_w = j - 1;
 						while (it_h >= 0 and it_w >= 0 and not main[it_h][it_w].hasPiece()) {
-							BlueThreat.insert({ it_h, it_w, true });
+							RedThreat.insert({ it_h, it_w, true });
 							--it_h;
 							--it_w;
 						}
 						if (it_h >= 0 and it_w >= 0 and main[it_h][it_w].checkPlayer() == GREEN) {
-							BlueThreat.insert({ it_h, it_w, false });
+							RedThreat.insert({ it_h, it_w, false });
 						}
 						//Search diagonal right-up
 						it_h = i + 1;
 						it_w = j + 1;
 						while (it_h <= 7 and it_w <= 7 and not main[it_h][it_w].hasPiece()) {
-							BlueThreat.insert({ it_h, it_w, true });
+							RedThreat.insert({ it_h, it_w, true });
 							++it_h;
 							++it_w;
 						}
 						if (it_h <= 7 and it_w <= 7 and main[it_h][it_w].checkPlayer() == GREEN) {
-							BlueThreat.insert({ it_h, it_w, false });
+							RedThreat.insert({ it_h, it_w, false });
 						}
 						//Search diagonal right-down
 						it_h = i - 1;
 						it_w = j + 1;
 						while (it_h >= 0 and it_w <= 7 and not main[it_h][it_w].hasPiece()) {
-							BlueThreat.insert({ it_h, it_w, true });
+							RedThreat.insert({ it_h, it_w, true });
 							--it_h;
 							++it_w;
 						}
 						if (it_h >= 0 and it_w <= 7 and main[it_h][it_w].checkPlayer() == GREEN) {
-							BlueThreat.insert({ it_h, it_w, false });
+							RedThreat.insert({ it_h, it_w, false });
 						}
 					}
 					//Queen
-					else if (hasFriendly('Q', i, j, BLUE)) {
+					else if (hasFriendly('Q', i, j, RED)) {
 						//Search above
 						int it = i + 1;
 						while (it <= 7 and not main[it][j].hasPiece()) {
-							BlueThreat.insert({ it, j, true });
+							RedThreat.insert({ it, j, true });
 							++it;
 						}
 						if (it <= 7 and main[it][j].checkPlayer() == GREEN) {
-							BlueThreat.insert({ it, j, false });
+							RedThreat.insert({ it, j, false });
 						}
 						//Search below
 						it = i - 1;
 						while (it >= 0 and not main[it][j].hasPiece()) {
-							BlueThreat.insert({ it, j, true });
+							RedThreat.insert({ it, j, true });
 							--it;
 						}
 						if (it >= 0 and main[it][j].checkPlayer() == GREEN) {
-							BlueThreat.insert({ it, j, false });
+							RedThreat.insert({ it, j, false });
 						}
 						//Search to the right
 						it = j + 1;
 						while (it <= 7 and not main[i][it].hasPiece()) {
-							BlueThreat.insert({ i, it, true });
+							RedThreat.insert({ i, it, true });
 							++it;
 						}
 						if (it <= 7 and main[i][it].checkPlayer() == GREEN) {
-							BlueThreat.insert({ i, it, false });
+							RedThreat.insert({ i, it, false });
 						}
 						//Search to the left
 						it = j - 1;
 						while (it >= 0 and not main[i][it].hasPiece()) {
-							BlueThreat.insert({ i, it, false });
+							RedThreat.insert({ i, it, false });
 							--it;
 						}
 						if (it >= 0 and main[i][it].checkPlayer() == GREEN) {
-							BlueThreat.insert({ i, it, false });
+							RedThreat.insert({ i, it, false });
 						}
 						//Search diagonal left-up
 						int it_h = i + 1;
 						int it_w = j - 1;
 						while (it_h <= 7 and it_w >= 0 and not main[it_h][it_w].hasPiece()) {
-							BlueThreat.insert({ it_h, it_w, true });
+							RedThreat.insert({ it_h, it_w, true });
 							++it_h;
 							--it_w;
 						}
 						if (it_h <= 7 and it_w >= 0 and main[it_h][it_w].checkPlayer() == GREEN) {
-							BlueThreat.insert({ it_h, it_w, false });
+							RedThreat.insert({ it_h, it_w, false });
 						}
 						//Search diagonal left-down
 						it_h = i - 1;
 						it_w = j - 1;
 						while (it_h >= 0 and it_w >= 0 and not main[it_h][it_w].hasPiece()) {
-							BlueThreat.insert({ it_h, it_w, true });
+							RedThreat.insert({ it_h, it_w, true });
 							--it_h;
 							--it_w;
 						}
 						if (it_h >= 0 and it_w >= 0 and main[it_h][it_w].checkPlayer() == GREEN) {
-							BlueThreat.insert({ it_h, it_w, false });
+							RedThreat.insert({ it_h, it_w, false });
 						}
 						//Search diagonal right-up
 						it_h = i + 1;
 						it_w = j + 1;
 						while (it_h <= 7 and it_w <= 7 and not main[it_h][it_w].hasPiece()) {
-							BlueThreat.insert({ it_h, it_w, true });
+							RedThreat.insert({ it_h, it_w, true });
 							++it_h;
 							++it_w;
 						}
 						if (it_h <= 7 and it_w <= 7 and main[it_h][it_w].checkPlayer() == GREEN) {
-							BlueThreat.insert({ it_h, it_w, false });
+							RedThreat.insert({ it_h, it_w, false });
 						}
 						//Search diagonal right-down
 						it_h = i - 1;
 						it_w = j + 1;
 						while (it_h >= 0 and it_w <= 7 and not main[it_h][it_w].hasPiece()) {
-							BlueThreat.insert({ it_h, it_w, true });
+							RedThreat.insert({ it_h, it_w, true });
 							--it_h;
 							++it_w;
 						}
 						if (it_h >= 0 and it_w <= 7 and main[it_h][it_w].checkPlayer() == GREEN) {
-							BlueThreat.insert({ it_h, it_w, false });
+							RedThreat.insert({ it_h, it_w, false });
 						}
 					}
 					//King
-					else if (hasFriendly('K', i, j, BLUE)) {
+					else if (hasFriendly('K', i, j, RED)) {
 						for (int ii = -1; ii < 2; ++ii) {
 							for (int jj = -1; jj < 2; ++jj) {
 								if (inBound(i + ii, j + jj)) {
 									if (not main[i + ii][j + jj].hasPiece()) {
-										BlueThreat.insert({ i + ii, j + jj, true });
+										RedThreat.insert({ i + ii, j + jj, true });
 									}
 									else if (main[i + ii][j + jj].checkPlayer() == GREEN) {
-										BlueThreat.insert({ i + ii, j + jj, false });
+										RedThreat.insert({ i + ii, j + jj, false });
 									}
 								}
 							}
@@ -523,7 +523,7 @@ namespace Chess {
 							if (not main[i + 1][j + 1].hasPiece()) {
 								GreenThreat.insert({ i + 1, j + 1, true });
 							}
-							else if (main[i + 1][j + 1].checkPlayer() == BLUE) {
+							else if (main[i + 1][j + 1].checkPlayer() == RED) {
 								GreenThreat.insert({ i + 1, j + 1, false });
 							}
 						}
@@ -531,7 +531,7 @@ namespace Chess {
 							if (not main[i + 1][j - 1].hasPiece()) {
 								GreenThreat.insert({ i + 1, j - 1, true });
 							}
-							else if (main[i + 1][j - 1].checkPlayer() == BLUE) {
+							else if (main[i + 1][j - 1].checkPlayer() == RED) {
 								GreenThreat.insert({ i + 1, j - 1, false });
 							}
 						}
@@ -544,7 +544,7 @@ namespace Chess {
 							if (not main[i - 2][j - 1].hasPiece()) {
 								GreenThreat.insert({ i - 2, j - 1, true });
 							}
-							else if (main[i - 2][j - 1].checkPlayer() == BLUE) {
+							else if (main[i - 2][j - 1].checkPlayer() == RED) {
 								GreenThreat.insert({ i - 2, j - 1, false });
 							}
 						}
@@ -553,7 +553,7 @@ namespace Chess {
 							if (not main[i - 2][j + 1].hasPiece()) {
 								GreenThreat.insert({ i - 2, j + 1, true });
 							}
-							else if (main[i - 2][j + 1].checkPlayer() == BLUE) {
+							else if (main[i - 2][j + 1].checkPlayer() == RED) {
 								GreenThreat.insert({ i - 2, j + 1, false });
 							}
 						}
@@ -562,7 +562,7 @@ namespace Chess {
 							if (not main[i - 1][j + 2].hasPiece()) {
 								GreenThreat.insert({ i - 1, j + 2, true });
 							}
-							else if (main[i - 1][j + 2].checkPlayer() == BLUE) {
+							else if (main[i - 1][j + 2].checkPlayer() == RED) {
 								GreenThreat.insert({ i - 1, j + 2, false });
 							}
 						}
@@ -571,7 +571,7 @@ namespace Chess {
 							if (not main[i + 1][j + 2].hasPiece()) {
 								GreenThreat.insert({ i + 1, j + 2, true });
 							}
-							else if (main[i + 1][j + 2].checkPlayer() == BLUE) {
+							else if (main[i + 1][j + 2].checkPlayer() == RED) {
 								GreenThreat.insert({ i + 1, j + 2, false });
 							}
 						}
@@ -580,7 +580,7 @@ namespace Chess {
 							if (not main[i + 2][j + 1].hasPiece()) {
 								GreenThreat.insert({ i + 2, j + 1, true });
 							}
-							else if (main[i + 2][j + 1].checkPlayer() == BLUE) {
+							else if (main[i + 2][j + 1].checkPlayer() == RED) {
 								GreenThreat.insert({ i + 2, j + 1, false });
 							}
 						}
@@ -589,7 +589,7 @@ namespace Chess {
 							if (not main[i + 2][j - 1].hasPiece()) {
 								GreenThreat.insert({ i + 2, j - 1, true });
 							}
-							else if (main[i + 2][j - 1].checkPlayer() == BLUE) {
+							else if (main[i + 2][j - 1].checkPlayer() == RED) {
 								GreenThreat.insert({ i + 2, j - 1, false });
 							}
 						}
@@ -598,7 +598,7 @@ namespace Chess {
 							if (not main[i + 1][j - 2].hasPiece()) {
 								GreenThreat.insert({ i + 1, j - 2, true });
 							}
-							else if (main[i + 1][j - 2].checkPlayer() == BLUE) {
+							else if (main[i + 1][j - 2].checkPlayer() == RED) {
 								GreenThreat.insert({ i + 1, j - 2, false });
 							}
 						}
@@ -607,7 +607,7 @@ namespace Chess {
 							if (not main[i - 1][j - 2].hasPiece()) {
 								GreenThreat.insert({ i - 1, j - 2, true });
 							}
-							else if (main[i - 1][j - 2].checkPlayer() == BLUE) {
+							else if (main[i - 1][j - 2].checkPlayer() == RED) {
 								GreenThreat.insert({ i - 1, j - 2, false });
 							}
 						}
@@ -620,7 +620,7 @@ namespace Chess {
 							GreenThreat.insert({ it, j, true });
 							++it;
 						}
-						if (it <= 7 and main[it][j].checkPlayer() == BLUE) {
+						if (it <= 7 and main[it][j].checkPlayer() == RED) {
 							GreenThreat.insert({ it, j, false });
 						}
 						//Search below
@@ -629,7 +629,7 @@ namespace Chess {
 							GreenThreat.insert({ it, j, true });
 							--it;
 						}
-						if (it >= 0 and main[it][j].checkPlayer() == BLUE) {
+						if (it >= 0 and main[it][j].checkPlayer() == RED) {
 							GreenThreat.insert({ it, j, false });
 						}
 						//Search to the right
@@ -638,7 +638,7 @@ namespace Chess {
 							GreenThreat.insert({ i, it, true });
 							++it;
 						}
-						if (it <= 7 and main[i][it].checkPlayer() == BLUE) {
+						if (it <= 7 and main[i][it].checkPlayer() == RED) {
 							GreenThreat.insert({ i, it, false });
 						}
 						//Search to the left
@@ -647,7 +647,7 @@ namespace Chess {
 							GreenThreat.insert({ i, it });
 							--it;
 						}
-						if (it >= 0 and main[i][it].checkPlayer() == BLUE) {
+						if (it >= 0 and main[i][it].checkPlayer() == RED) {
 							GreenThreat.insert({ i, it, false });
 						}
 					}
@@ -661,7 +661,7 @@ namespace Chess {
 							++it_h;
 							--it_w;
 						}
-						if (it_h <= 7 and it_w >= 0 and main[it_h][it_w].checkPlayer() == BLUE) {
+						if (it_h <= 7 and it_w >= 0 and main[it_h][it_w].checkPlayer() == RED) {
 							GreenThreat.insert({ it_h, it_w, false });
 						}
 						//Search diagonal left-down
@@ -672,7 +672,7 @@ namespace Chess {
 							--it_h;
 							--it_w;
 						}
-						if (it_h >= 0 and it_w >= 0 and main[it_h][it_w].checkPlayer() == BLUE) {
+						if (it_h >= 0 and it_w >= 0 and main[it_h][it_w].checkPlayer() == RED) {
 							GreenThreat.insert({ it_h, it_w, false });
 						}
 						//Search diagonal right-up
@@ -683,7 +683,7 @@ namespace Chess {
 							++it_h;
 							++it_w;
 						}
-						if (it_h <= 7 and it_w <= 7 and main[it_h][it_w].checkPlayer() == BLUE) {
+						if (it_h <= 7 and it_w <= 7 and main[it_h][it_w].checkPlayer() == RED) {
 							GreenThreat.insert({ it_h, it_w, false });
 						}
 						//Search diagonal right-down
@@ -694,7 +694,7 @@ namespace Chess {
 							--it_h;
 							++it_w;
 						}
-						if (it_h >= 0 and it_w <= 7 and main[it_h][it_w].checkPlayer() == BLUE) {
+						if (it_h >= 0 and it_w <= 7 and main[it_h][it_w].checkPlayer() == RED) {
 							GreenThreat.insert({ it_h, it_w, false });
 						}
 					}
@@ -706,7 +706,7 @@ namespace Chess {
 							GreenThreat.insert({ it, j, true });
 							++it;
 						}
-						if (it <= 7 and main[it][j].checkPlayer() == BLUE) {
+						if (it <= 7 and main[it][j].checkPlayer() == RED) {
 							GreenThreat.insert({ it, j, false });
 						}
 						//Search below
@@ -715,7 +715,7 @@ namespace Chess {
 							GreenThreat.insert({ it, j, true });
 							--it;
 						}
-						if (it >= 0 and main[it][j].checkPlayer() == BLUE) {
+						if (it >= 0 and main[it][j].checkPlayer() == RED) {
 							GreenThreat.insert({ it, j, false });
 						}
 						//Search to the right
@@ -724,7 +724,7 @@ namespace Chess {
 							GreenThreat.insert({ i, it, true });
 							++it;
 						}
-						if (it <= 7 and main[i][it].checkPlayer() == BLUE) {
+						if (it <= 7 and main[i][it].checkPlayer() == RED) {
 							GreenThreat.insert({ i, it, false });
 						}
 						//Search to the left
@@ -733,7 +733,7 @@ namespace Chess {
 							GreenThreat.insert({ i, it, true });
 							--it;
 						}
-						if (it >= 0 and main[i][it].checkPlayer() == BLUE) {
+						if (it >= 0 and main[i][it].checkPlayer() == RED) {
 							GreenThreat.insert({ i, it, false });
 						}
 						//Search diagonal left-up
@@ -744,7 +744,7 @@ namespace Chess {
 							++it_h;
 							--it_w;
 						}
-						if (it_h <= 7 and it_w >= 0 and main[it_h][it_w].checkPlayer() == BLUE) {
+						if (it_h <= 7 and it_w >= 0 and main[it_h][it_w].checkPlayer() == RED) {
 							GreenThreat.insert({ it_h, it_w, false });
 						}
 						//Search diagonal left-down
@@ -755,7 +755,7 @@ namespace Chess {
 							--it_h;
 							--it_w;
 						}
-						if (it_h >= 0 and it_w >= 0 and main[it_h][it_w].checkPlayer() == BLUE) {
+						if (it_h >= 0 and it_w >= 0 and main[it_h][it_w].checkPlayer() == RED) {
 							GreenThreat.insert({ it_h, it_w, false });
 						}
 						//Search diagonal right-up
@@ -766,7 +766,7 @@ namespace Chess {
 							++it_h;
 							++it_w;
 						}
-						if (it_h <= 7 and it_w <= 7 and main[it_h][it_w].checkPlayer() == BLUE) {
+						if (it_h <= 7 and it_w <= 7 and main[it_h][it_w].checkPlayer() == RED) {
 							GreenThreat.insert({ it_h, it_w, false });
 						}
 						//Search diagonal right-down
@@ -777,7 +777,7 @@ namespace Chess {
 							--it_h;
 							++it_w;
 						}
-						if (it_h >= 0 and it_w <= 7 and main[it_h][it_w].checkPlayer() == BLUE) {
+						if (it_h >= 0 and it_w <= 7 and main[it_h][it_w].checkPlayer() == RED) {
 							GreenThreat.insert({ it_h, it_w, false });
 						}
 					}
@@ -789,7 +789,7 @@ namespace Chess {
 									if (not main[i + ii][j + jj].hasPiece()) {
 										GreenThreat.insert({ i + ii, j + jj, true });
 									}
-									else if (main[i + ii][j + jj].checkPlayer() == BLUE) {
+									else if (main[i + ii][j + jj].checkPlayer() == RED) {
 										GreenThreat.insert({ i + ii, j + jj, false });
 									}
 								}

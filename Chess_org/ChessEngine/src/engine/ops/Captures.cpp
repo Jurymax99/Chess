@@ -14,8 +14,8 @@ namespace Chess {
 			main[orig_h][orig_w].removePiece();
 			main[h][w].addPiece(type, player);
 			if (type == 'K') {
-				if (player == BLUE) {
-					blueKing = { h,w };
+				if (player == RED) {
+					redKing = { h,w };
 				}
 				else if (player == GREEN) {
 					greenKing = { h,w };
@@ -23,11 +23,11 @@ namespace Chess {
 			}
 			int player_checked;
 			if (isChecked(player_checked) and player_checked == player) {
-				if (player == BLUE) {
+				if (player == RED) {
 					if (type == 'K') {
-						blueKing = { orig_h,orig_w };
+						redKing = { orig_h,orig_w };
 					}
-					std::cout << "#10::The blue king is in check" << std::endl;
+					std::cout << "#10::The red king is in check" << std::endl;
 				}
 				else if (player == GREEN) {
 					if (type == 'K') {
@@ -50,12 +50,12 @@ namespace Chess {
 				}
 				return false;
 			}
-			if (player == BLUE) {
+			if (player == RED) {
 				addGreenDead(tempPiece);
-				blueScore += tempScore;
+				redScore += tempScore;
 			}
 			else if (player == GREEN) {
-				addBlueDead(tempPiece);
+				addRedDead(tempPiece);
 				greenScore += tempScore;
 			}
 			else {
@@ -67,17 +67,19 @@ namespace Chess {
 		}
 
 		bool Board::makeCapture(char type, char typepro, int orig_h, int orig_w, int h, int w, int player) {
+			//e4 f5 exf5 e5 fxe6 d5 e7 Qd6 exf8=Q
 			char type_killed = main[h][w].checkPieceType();
 			int player_killed = main[h][w].checkPlayer();
 			bool first_mov_killed = main[h][w].isFirstMov();
 			bool first_mov_killer = main[orig_h][orig_w].isFirstMov();
-			int tempScore = main[h][w].killPiece();
 			Pieces::Piece tempPiece = main[h][w].checkPiece();
+			int tempScore = main[h][w].killPiece();
 			main[orig_h][orig_w].removePiece();
 			main[h][w].addPiece(typepro, player);
-			if (isChecked()) {
-				if (player == BLUE) {
-					std::cout << "#10::The blue king is in check" << std::endl;
+			int player_checked;
+			if (isChecked(player_checked) and player_checked == player) {
+				if (player == RED) {
+					std::cout << "#10::The red king is in check" << std::endl;
 				}
 				else if (player == GREEN) {
 					std::cout << "#10::The green king is in check" << std::endl;
@@ -97,12 +99,12 @@ namespace Chess {
 				}
 				return false;
 			}
-			if (player == BLUE) {
+			if (player == RED) {
 				addGreenDead(tempPiece);
-				blueScore += tempScore;
+				redScore += tempScore;
 			}
 			else if (player == GREEN) {
-				addBlueDead(tempPiece);
+				addRedDead(tempPiece);
 				greenScore += tempScore;
 			}
 			else {
@@ -114,8 +116,8 @@ namespace Chess {
 		}
 
 		bool Board::pawnCapture(int w_s, int h_d, int w_d, int player, bool enpassant) {
-			if (player == BLUE) {
-				return pawnBlueCapture(w_s, h_d, w_d, enpassant);
+			if (player == RED) {
+				return pawnRedCapture(w_s, h_d, w_d, enpassant);
 			}
 			else if (player == GREEN) {
 				return pawnGreenCapture(w_s, h_d, w_d, enpassant);
@@ -126,7 +128,7 @@ namespace Chess {
 			}
 		}
 
-		bool Board::pawnBlueCapture(int w_s, int h_d, int w_d, bool enpassant) {
+		bool Board::pawnRedCapture(int w_s, int h_d, int w_d, bool enpassant) {
 			int h_s = h_d;
 			std::cout << "From rank " << w_s << " to [" << h_d << ", " << w_d << "]" << std::endl;
 			if (not inBound(h_d, w_d)) {
@@ -163,7 +165,7 @@ namespace Chess {
 				return false;
 			}
 			//look for pawn below the given position 
-			if (hasFriendly('P', h_d + 1, w_s, BLUE)) {
+			if (hasFriendly('P', h_d + 1, w_s, RED)) {
 				//Make the move
 				int killer_h, killer_w;
 				int killed_h, killed_w;
@@ -191,14 +193,14 @@ namespace Chess {
 				type = tempPiece.checkType();
 				main[killer_h][killer_w].removePiece();
 				main[killed_h][killed_w].removePiece();
-				main[h_d][w_d].addPiece('P', BLUE);
+				main[h_d][w_d].addPiece('P', RED);
 				int player_checked;
-				if (isChecked(player_checked) and player_checked == BLUE) {
-					std::cout << "#10::The blue king is in check" << std::endl;
+				if (isChecked(player_checked) and player_checked == RED) {
+					std::cout << "#10::The red king is in check" << std::endl;
 					//Rollback
 					main[h_d][w_d].removePiece();
 					//Killer
-					main[killer_h][killer_w].addPiece('P', BLUE);
+					main[killer_h][killer_w].addPiece('P', RED);
 					//Killed
 					main[killed_h][killer_h].addPiece(type, GREEN);
 					if (not first_mov_killer) {
@@ -211,7 +213,7 @@ namespace Chess {
 				}
 				//Commit
 				addGreenDead(tempPiece);
-				blueScore += tempScore;
+				redScore += tempScore;
 				main[h_d][w_d].checkPiecePoint()->firstMove();
 				return true;
 			}
@@ -295,7 +297,7 @@ namespace Chess {
 					//Killer
 					main[killer_h][killer_w].addPiece('P', GREEN);
 					//Killed
-					main[killed_h][killed_w].addPiece(type, BLUE);
+					main[killed_h][killed_w].addPiece(type, RED);
 					if (not first_mov_killer) {
 						main[killer_h][killer_w].checkPiecePoint()->firstMove();
 					}
@@ -305,7 +307,7 @@ namespace Chess {
 					return false;
 				}
 				//Commit
-				addBlueDead(tempPiece);
+				addRedDead(tempPiece);
 				greenScore += tempScore;
 				main[h_d][w_d].checkPiecePoint()->firstMove();
 				return true;
@@ -317,8 +319,8 @@ namespace Chess {
 		}
 
 		bool Board::pawnPromoteCapture(int w_s, int h_d, int w_d, char type, int player) {
-			if (player == BLUE) {
-				return pawnBluePromoteCapture(w_s, h_d, w_d, type);
+			if (player == RED) {
+				return pawnRedPromoteCapture(w_s, h_d, w_d, type);
 			}
 			else if (player == GREEN) {
 				return pawnGreenPromoteCapture(w_s, h_d, w_d, type);
@@ -329,7 +331,7 @@ namespace Chess {
 			}
 		}
 
-		bool Board::pawnBluePromoteCapture(int w_s, int h_d, int w_d, char type) {
+		bool Board::pawnRedPromoteCapture(int w_s, int h_d, int w_d, char type) {
 			std::cout << "From rank " << w_s << " to [" << h_d << ", " << w_d << "]" << std::endl;
 			//Out of board
 			if (w_d > 7 or w_d < 0 or h_d != 0) {
@@ -358,10 +360,10 @@ namespace Chess {
 			}
 
 			//Look for the pawn
-			if (hasFriendly('P', h_d + 1, w_s, BLUE)) {
+			if (hasFriendly('P', h_d + 1, w_s, RED)) {
 
 				//Make the move
-				return makeCapture('P', type, h_d + 1, w_s, h_d, w_d, BLUE);
+				return makeCapture('P', type, h_d + 1, w_s, h_d, w_d, RED);
 			}
 			std::cout << "#4::No pawn available to make that move" << std::endl;
 			return false;
@@ -873,8 +875,8 @@ namespace Chess {
 			std::cout << "Found a king in [" << orig_h << ", " << orig_w << "]" << std::endl;
 			//Make the move
 			if (makeCapture('K', orig_h, orig_w, h, w, player)) {
-				if (player == BLUE) {
-					blueKing = { h,w };
+				if (player == RED) {
+					redKing = { h,w };
 					return true;
 				}
 				else if (player == GREEN) {

@@ -3,6 +3,10 @@
 #include <algorithm>
 #include <iostream>
 
-#define BLUE 1
+#define RED 1
 #define GREEN 2
+
+#define RELEASE 0
+#define DEBUG 1
+#define MODE RELEASE
 

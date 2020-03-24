@@ -1,4 +1,5 @@
-#include "Board.h"
+﻿#include "Board.h"
+#include <windows.h>
 
 namespace Chess {
 	namespace Engine {
@@ -8,12 +9,12 @@ namespace Chess {
 			pieces = 32;
 			main = Matrix(8, Row(8));
 			GreenDead = std::vector <Pieces::Piece>();
-			BlueDead = std::vector <Pieces::Piece>();
-			BlueThreat = std::set <PositionState>();
+			RedDead = std::vector <Pieces::Piece>();
+			RedThreat = std::set <PositionState>();
 			GreenThreat = std::set <PositionState>();
-			blueScore = 0;
+			redScore = 0;
 			greenScore = 0;
-			blueKing = { 7, 4 };
+			redKing = { 7, 4 };
 			greenKing = { 0, 4 };
 			target = { -1, -1, false };
 			std::cout << "Standard " << height << "x" << width << " board created with " << pieces << " pieces" << std::endl;
@@ -36,33 +37,23 @@ namespace Chess {
 			main[1][6].addPiece('P', GREEN);
 			main[1][7].addPiece('P', GREEN);
 
-			//Blue pieces
-			main[6][0].addPiece('P', BLUE);
-			main[6][1].addPiece('P', BLUE);
-			main[6][2].addPiece('P', BLUE);
-			main[6][3].addPiece('P', BLUE);
-			main[6][4].addPiece('P', BLUE);
-			main[6][5].addPiece('P', BLUE);
-			main[6][6].addPiece('P', BLUE);
-			main[6][7].addPiece('P', BLUE);
-			main[7][0].addPiece('R', BLUE);
-			main[7][1].addPiece('N', BLUE);
-			main[7][2].addPiece('B', BLUE);
-			main[7][3].addPiece('Q', BLUE);
-			main[7][4].addPiece('K', BLUE);
-			main[7][5].addPiece('B', BLUE);
-			main[7][6].addPiece('N', BLUE);
-			main[7][7].addPiece('R', BLUE);
-
-			/*main[7][5].addPiece('Q', GREEN);
-			main[4][5].addPiece('Q', GREEN);
-			main[0][3].addPiece('K', GREEN);
-			main[7][4].addPiece('K', BLUE);
-			main[6][4].addPiece('N', BLUE);
-			main[6][3].addPiece('P', BLUE);*/
-
-
-
+			//Red pieces
+			main[6][0].addPiece('P', RED);
+			main[6][1].addPiece('P', RED);
+			main[6][2].addPiece('P', RED);
+			main[6][3].addPiece('P', RED);
+			main[6][4].addPiece('P', RED);
+			main[6][5].addPiece('P', RED);
+			main[6][6].addPiece('P', RED);
+			main[6][7].addPiece('P', RED);
+			main[7][0].addPiece('R', RED);
+			main[7][1].addPiece('N', RED);
+			main[7][2].addPiece('B', RED);
+			main[7][3].addPiece('Q', RED);
+			main[7][4].addPiece('K', RED);
+			main[7][5].addPiece('B', RED);
+			main[7][6].addPiece('N', RED);
+			main[7][7].addPiece('R', RED);
 		}
 
 		Board::~Board() {
@@ -76,23 +67,120 @@ namespace Chess {
 			return h < rhs.h;
 		}
 
-		void Board::printBoard() {
+		void Board::printBoard(int mode){
+			if (mode == RELEASE) {
+				printBoardRelease();
+			}
+			else if (mode == DEBUG) {
+				printBoardDebug();
+			}
+			else {
+				std::cout << "No known app mode" << std::endl;
+			}
+		}
+
+		void Board::print_blank(int par) {
+			HANDLE  hConsole;
+			hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+			std::cout << "   ";
+			for (int it = 0; it < 8; ++it) {
+				if (it % 2 == par) {
+					SetConsoleTextAttribute(hConsole, 255);
+				}
+				else {
+					SetConsoleTextAttribute(hConsole, 0);
+				}
+				std::cout << "_______";
+			}
+			SetConsoleTextAttribute(hConsole, 0);
+			std::cout << "_" << std::endl;
+		}
+
+		void Board::printBoardRelease() {
+			std::cout << "_______________________________________________________________" << std::endl;
+			checkRedDeadRelease();
+			checkGreenDeadRelease();
+			std::cout << "_______________________________________________________________" << std::endl;
+			std::cout << "_______________________________________________________________" << std::endl;
+			checkRedThreats();
+			checkGreenThreats();
+			std::cout << "_______________________________________________________________" << std::endl; 
+			std::cout << "_______________________________________________________________" << std::endl; 
+			checkRedKing();
+			checkGreenKing();
+			std::cout << "_______________________________________________________________" << std::endl;
+			std::cout << "      A      B      C      D      E      F      G      H" << std::endl;
+			HANDLE  hConsole;
+			hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+			for (int i = 0; i < 8; ++i) {
+				print_blank(i % 2);
+				SetConsoleTextAttribute(hConsole, 7);
+				std::cout << -i + 8 << "  ";
+				for (int j = 0; j < 8; ++j) {
+					//Print piece name if it has piece
+					if (main[i][j].hasPiece()) {
+						if (abs(i - j) % 2 == 0) {
+							if (main[i][j].checkPlayer() == RED) {
+								SetConsoleTextAttribute(hConsole, 252);
+							}
+							else if (main[i][j].checkPlayer() == GREEN) {
+								SetConsoleTextAttribute(hConsole, 242);
+							}
+							else {
+								std::cout << std::endl << "ERROR::Pieces created with no player" << std::endl;
+							}
+							std::cout << "   " << main[i][j].checkPieceType() << "   ";
+						}
+						else {
+							if (main[i][j].checkPlayer() == RED) {
+								SetConsoleTextAttribute(hConsole, 12);
+							}
+							else if (main[i][j].checkPlayer() == GREEN) {
+								SetConsoleTextAttribute(hConsole, 10);
+							}
+							else {
+								std::cout << std::endl << "ERROR::Pieces created with no player" << std::endl;
+							}
+							std::cout << "   " << main[i][j].checkPieceType() << "   ";
+						}
+						SetConsoleTextAttribute(hConsole, 7);
+					}
+					else {
+						if (abs(i - j) % 2 == 0) {
+							SetConsoleTextAttribute(hConsole, 240);
+						}
+						else {
+							SetConsoleTextAttribute(hConsole, 7);
+						}
+						std::cout << "       ";
+						SetConsoleTextAttribute(hConsole, 7);
+					}
+				}
+				SetConsoleTextAttribute(hConsole, 7);
+				std::cout << "  " << -i + 8 << std::endl;
+				print_blank(i % 2);
+				SetConsoleTextAttribute(hConsole, 7);
+			}
+			std::cout << "      A      B      C      D      E      F      G      H" << std::endl;
+		}
+
+		void Board::printBoardDebug() {
 			std::cout << "__________________________________________" << std::endl;
-			checkBlueDead();
-			checkGreenDead();
+			checkRedDeadDebug();
+			checkGreenDeadDebug();
 			std::cout << "__________________________________________" << std::endl;
 			std::cout << "__________________________________________" << std::endl;
-			checkBlueThreats();
+			checkRedThreats();
 			checkGreenThreats();
 			std::cout << "__________________________________________" << std::endl;
 			std::cout << "__________________________________________" << std::endl;
-			checkBlueKing();
+			checkRedKing();
 			checkGreenKing();
 			std::cout << "__________________________________________" << std::endl;
 			std::cout << "   A    B    C    D    E    F    G    H" << std::endl;
-			Color::Modifier blue(Color::FG_BLUE);
-			Color::Modifier green(Color::FG_GREEN);
 			Color::Modifier red(Color::FG_RED);
+			Color::Modifier green(Color::FG_GREEN);
+			Color::Modifier blue(Color::FG_BLUE);
 			Color::Modifier yellow(Color::FG_YELLOW);
 			Color::Modifier def(Color::FG_DEFAULT);
 			for (int i = 0; i < 8; ++i) {
@@ -100,8 +188,8 @@ namespace Chess {
 				for (int j = 0; j < 8; ++j) {
 					//Print piece name if it has piece
 					if (main[i][j].hasPiece()) {
-						if (main[i][j].checkPlayer() == BLUE) {
-							std::cout << blue << main[i][j].checkPieceType() << def << "    ";
+						if (main[i][j].checkPlayer() == RED) {
+							std::cout << red << main[i][j].checkPieceType() << def << "    ";
 						}
 						else if (main[i][j].checkPlayer() == GREEN) {
 							std::cout << green << main[i][j].checkPieceType() << def << "    ";
@@ -111,10 +199,10 @@ namespace Chess {
 						}
 					}
 					else {
-						auto it_b = BlueThreat.find({ i,j, false });
+						auto it_b = RedThreat.find({ i,j, false });
 						auto it_g = GreenThreat.find({ i,j, false });
-						if (it_b != BlueThreat.end()) {
-							std::cout << red << ".    " << def;
+						if (it_b != RedThreat.end()) {
+							std::cout << blue << ".    " << def;
 						}
 						else if (it_g != GreenThreat.end()) {
 							std::cout << yellow << ".    " << def;
@@ -152,11 +240,11 @@ namespace Chess {
 		}
 
 		bool Board::hasEnemy(char type, int h, int w, int player) const {
-			if (player == BLUE) {
+			if (player == RED) {
 				return hasFriendly(type, h, w, GREEN);
 			}
 			else if(player == GREEN){
-				return hasFriendly(type, h, w, BLUE);
+				return hasFriendly(type, h, w, RED);
 			}
 			std::cout << "No known player" << std::endl;
 			return false;
@@ -176,42 +264,72 @@ namespace Chess {
 			std::sort(GreenDead.begin(), GreenDead.end());
 		}
 
-		void Board::addBlueDead(Pieces::Piece piece)
+		void Board::addRedDead(Pieces::Piece piece)
 		{
-			BlueDead.push_back(piece);
-			std::sort(BlueDead.begin(), BlueDead.end());
+			RedDead.push_back(piece);
+			std::sort(RedDead.begin(), RedDead.end());
 		}
 
-		void Board::checkGreenDead() const {
+		void Board::checkGreenDeadDebug() const {
 			std::cout << "Green: ";
 			Color::Modifier green(Color::FG_GREEN);
 			Color::Modifier def(Color::FG_DEFAULT);
 			for (int i = 0; i < GreenDead.size(); ++i) {
 				std::cout << green << GreenDead[i].checkType() << def << " ";
 			}
-			if (blueScore < greenScore) {
-				std::cout << "+" << greenScore - blueScore;
+			if (redScore < greenScore) {
+				std::cout << "+" << greenScore - redScore;
 			}
 			std::cout << std::endl;
 		}
 
-		void Board::checkBlueDead() const {
-			std::cout << "Blue: "; 
-			Color::Modifier blue(Color::FG_BLUE);
+		void Board::checkRedDeadDebug() const {
+			std::cout << "Red: "; 
+			Color::Modifier red(Color::FG_RED);
 			Color::Modifier def(Color::FG_DEFAULT);
-			for (int i = 0; i < BlueDead.size(); ++i) {
-				std::cout << blue << BlueDead[i].checkType() << def << " ";
+			for (int i = 0; i < RedDead.size(); ++i) {
+				std::cout << red << RedDead[i].checkType() << def << " ";
 			}
-			if (greenScore < blueScore) {
-				std::cout << "+" << blueScore - greenScore;
+			if (greenScore < redScore) {
+				std::cout << "+" << redScore - greenScore;
 			}
 			std::cout << std::endl;
 		}
 
-		void Board::checkBlueThreats() const {
-			std::cout << "Blue threatening positions: ";
-			auto it = BlueThreat.begin();
-			for (; it != BlueThreat.end(); ++it) {
+		void Board::checkGreenDeadRelease() const {
+			std::cout << "Green: ";
+			HANDLE hConsole;
+			hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+			SetConsoleTextAttribute(hConsole, 10);
+			for (int i = 0; i < GreenDead.size(); ++i) {
+				std::cout << GreenDead[i].checkType() << " ";
+			}
+			SetConsoleTextAttribute(hConsole, 7);
+			if (redScore < greenScore) {
+				std::cout << "+" << greenScore - redScore;
+			}
+			std::cout << std::endl;
+		}
+
+		void Board::checkRedDeadRelease() const {
+			std::cout << "Red: ";
+			HANDLE hConsole;
+			hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+			SetConsoleTextAttribute(hConsole, 12);
+			for (int i = 0; i < RedDead.size(); ++i) {
+				std::cout << RedDead[i].checkType() << " ";
+			}
+			SetConsoleTextAttribute(hConsole, 7);
+			if (greenScore < redScore) {
+				std::cout << "+" << redScore - greenScore;
+			}
+			std::cout << std::endl;
+		}
+
+		void Board::checkRedThreats() const {
+			std::cout << "Red threatening positions: ";
+			auto it = RedThreat.begin();
+			for (; it != RedThreat.end(); ++it) {
 				std::cout << "[" << char((*it).w + 97) << char(8 - char((*it).h - 48)) << ", " << (*it).empty << "] ";
 			}
 			std::cout << std::endl;
@@ -226,8 +344,8 @@ namespace Chess {
 			std::cout << std::endl;
 		}
 
-		inline void Board::checkBlueKing() const {
-			std::cout << "Blue king is at [" << char(blueKing.w + 97) << char(8 - char(blueKing.h - 48)) << "]" << std::endl;
+		inline void Board::checkRedKing() const {
+			std::cout << "Red king is at [" << char(redKing.w + 97) << char(8 - char(redKing.h - 48)) << "]" << std::endl;
 		}
 
 		inline void Board::checkGreenKing() const {
@@ -247,13 +365,14 @@ namespace Chess {
 
 		//CHANGELOG:
 		//	-Added ambiguous moves :
-		//	-knight e.g.Nfg5
+		//		-knight e.g.Nfg5
 		//		- rook
 		//		- bishop
 		//		- queen
 		//		- king(possible ? )
-		//		- Added single ambiguous captures :
-		//	-knight e.g.Nfxg5
+		//_____________________________________________________________________________________
+		//	- Added single ambiguous captures :
+		//		-knight e.g.Nfxg5
 		//		- rook
 		//		- bishop
 		//		- queen
@@ -261,25 +380,39 @@ namespace Chess {
 		//		- Added double ambiguity moves and captures
 		//		- bishop e.g.Bd5xe4
 		//		- queen e.g.Qd5xe4
+		//_____________________________________________________________________________________
 		//		- Added pawn promotion :
 		//			- by moving e.g.b8 = Q
 		//			- by moving e.g.axb7 = Q
+		//_____________________________________________________________________________________
 		//		- Added castling e.g. O-O or 0-0-0
 		//		- Added read mode, to directly read pgn formatted matches
+		//_____________________________________________________________________________________
 		//		- Added scoreboard
+		//_____________________________________________________________________________________
 		//		- Added en passant
+		//_____________________________________________________________________________________
 		//		- Added a system to know threatened tiles by each player
 		//		- Added check detection
+		//_____________________________________________________________________________________
 		//		- Added move restriction when board is in check
+		//_____________________________________________________________________________________
+		//		- Fixed en passant minor bug:
+		//			- If a move fails, you couldn't capture en passant even if it was valid
+		//		- Fixed ambiguous rook moves and captures
+		//		- Added RELEASE and DEBUG modes
+		//		- Added new colorisation method (Windows API)
+		//_____________________________________________________________________________________
 
-		bool Board::move(std::string movement, int player) {
+		bool Board::move(std::string movement, int player, bool &enp) {
 			int rank_d, file_d;
 			std::cout << "Your movement was " << movement << std::endl;
-			bool temp = target.possible;
+			bool temp = target.possible or enp;
 			if (temp) {
 				target.possible = false;
+				enp = true;
 			}
-			
+						
 			if (movement.length() < 2) {
 				return false;
 			}

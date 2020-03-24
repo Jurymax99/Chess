@@ -8,8 +8,8 @@ namespace Chess {
 			main[orig_h][orig_w].removePiece();
 			main[h][w].addPiece(type, player);
 			if (type == 'K') {
-				if (player == BLUE) {
-					blueKing = { h,w };
+				if (player == RED) {
+					redKing = { h,w };
 				}
 				else if (player == GREEN) {
 					greenKing = { h,w };
@@ -17,11 +17,11 @@ namespace Chess {
 			}
 			int player_checked;
 			if (isChecked(player_checked) and player_checked == player) {
-				if (player == BLUE) {
+				if (player == RED) {
 					if (type == 'K') {
-						blueKing = { orig_h,orig_w };
+						redKing = { orig_h,orig_w };
 					}
-					std::cout << "#10::The blue king is in check" << std::endl;
+					std::cout << "#10::The red king is in check" << std::endl;
 				}
 				else if (player == GREEN) {
 					if (type == 'K') {
@@ -42,8 +42,8 @@ namespace Chess {
 		}
 
 		bool Board::pawnMove(int h, int w, int player) {
-			if (player == BLUE) {
-				return pawnBlueMove(h, w);
+			if (player == RED) {
+				return pawnRedMove(h, w);
 			}
 			else if (player == GREEN) {
 				return pawnGreenMove(h, w);
@@ -54,7 +54,7 @@ namespace Chess {
 			}
 		}
 
-		bool Board::pawnBlueMove(int h, int w) {
+		bool Board::pawnRedMove(int h, int w) {
 			std::cout << "[" << h << ", " << w << "]" << std::endl;
 			//Out of board
 			if (w > 7 or w < 0 or h > 5 or h < 0) {
@@ -77,12 +77,12 @@ namespace Chess {
 					return false;
 				}
 				//collision #3 pawn is from another player
-				else if (main[h + 1][w].checkPlayer() != BLUE) {
-					std::cout << "#4::No available blue pawns to make the move" << std::endl;
+				else if (main[h + 1][w].checkPlayer() != RED) {
+					std::cout << "#4::No available red pawns to make the move" << std::endl;
 					return false;
 				}
 				//remove and add the piece to new position
-				return makeMove('P', h + 1, w, h, w, BLUE);
+				return makeMove('P', h + 1, w, h, w, RED);
 			}
 			else if (main[h + 2][w].hasPiece()) {
 				//collision #1 pawn has another piece in between
@@ -101,11 +101,11 @@ namespace Chess {
 					return false;
 				}
 				//collision #3 pawn is from another player
-				else if (main[h + 2][w].checkPlayer() != BLUE) {
-					std::cout << "#8::No available blue pawns to make the move" << std::endl;
+				else if (main[h + 2][w].checkPlayer() != RED) {
+					std::cout << "#8::No available red pawns to make the move" << std::endl;
 					return false;
 				}
-				if (makeMove('P', h + 2, w, h, w, BLUE)) {
+				if (makeMove('P', h + 2, w, h, w, RED)) {
 					target = { h, w, true };
 					std::cout << "Pawn at [" << h << ", " << w << "] is enpassantable" << std::endl;
 					return true;
@@ -183,8 +183,8 @@ namespace Chess {
 		}
 
 		bool Board::pawnPromote(int h, int w, char type, int player) {
-			if (player == BLUE) {
-				return pawnBluePromote(h, w, type);
+			if (player == RED) {
+				return pawnRedPromote(h, w, type);
 			}
 			else if (player == GREEN) {
 				return pawnGreenPromote(h, w, type);
@@ -195,7 +195,7 @@ namespace Chess {
 			}
 		}
 
-		bool Board::pawnBluePromote(int h, int w, char type) {
+		bool Board::pawnRedPromote(int h, int w, char type) {
 			std::cout << "[" << h << ", " << w << "]" << std::endl;
 			//Out of board
 			if (w > 7 or w < 0 or h != 0) {
@@ -214,16 +214,16 @@ namespace Chess {
 				std::cout << "#3::The pawn can only promote to Queen (Q), Rook (R), Bishop (B) and Knight (N)" << std::endl;
 				return false;
 			}
-			if (hasFriendly('P', h + 1, w, BLUE)) {
+			if (hasFriendly('P', h + 1, w, RED)) {
 
 				//Make the move
 				main[h + 1][w].removePiece();
-				main[h][w].addPiece(type, BLUE);
+				main[h][w].addPiece(type, RED);
 				int player_checked;
-				if (isChecked(player_checked) and player_checked == BLUE) {
-					std::cout << "#10::The blue king is in check" << std::endl;
+				if (isChecked(player_checked) and player_checked == RED) {
+					std::cout << "#10::The red king is in check" << std::endl;
 					main[h][w].removePiece();
-					main[h + 1][w].addPiece('P', BLUE);
+					main[h + 1][w].addPiece('P', RED);
 					return false;
 				}
 				main[h][w].checkPiecePoint()->firstMove();
@@ -723,8 +723,8 @@ namespace Chess {
 			std::cout << "Found a king in [" << orig_h << ", " << orig_w << "]" << std::endl;
 			//Make the move
 			if (makeMove('K', orig_h, orig_w, h, w, player)) {
-				if (player == BLUE) {
-					blueKing = { h,w };
+				if (player == RED) {
+					redKing = { h,w };
 					return true;
 				}
 				else if (player == GREEN) {

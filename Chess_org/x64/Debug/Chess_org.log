@@ -1,2 +1,12 @@
 ﻿  Application.cpp
+  Board.cpp
+  AmbiguousCaptures.cpp
+  AmbiguousMovements.cpp
+  Captures.cpp
+  Movements.cpp
+  SpecialMovements.cpp
+  Tile.cpp
+  Piece.cpp
+  Main.cpp
+  Generating Code...
   Chess_org.vcxproj -> C:\Users\David\source\repos\Chess_org\x64\Debug\Chess.exe

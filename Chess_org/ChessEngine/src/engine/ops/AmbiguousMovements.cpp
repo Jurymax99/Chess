@@ -272,9 +272,34 @@ namespace Chess {
 			//Search for player's rook 4 directions
 			int rook_count = 0;
 			int orig_h, orig_w;
-			//No need to search left and right
+			//Search to the right
+			int it = w + 1;
+			while (it <= 7 and not main[rank][it].hasPiece()) {
+				++it;
+			}
+			std::cout << "Found piece at [" << rank << ", " << it << "]" << std::endl;
+			if (hasFriendly('R', h, it, player)) {
+				++rook_count;
+				orig_h = rank;
+				orig_w = it;
+			}
+			//Search to the left
+			it = w - 1;
+			while (it >= 0 and not main[rank][it].hasPiece()) {
+				--it;
+			}
+			std::cout << "Found piece at [" << rank << ", " << it << "]" << std::endl;
+			if (hasFriendly('R', rank, it, player)) {
+				++rook_count;
+				orig_h = rank;
+				orig_w = it;
+			}
+			if (rook_count > 1) {
+				std::cout << "#3::More than two rooks than can make this move" << std::endl;
+				return false;
+			}
 			//Search above
-			int it = h + 1;
+			it = h + 1;
 			while (it <= 7 and not main[it][w].hasPiece()) {
 				++it;
 			}
@@ -284,6 +309,10 @@ namespace Chess {
 				++rook_count;
 				orig_h = it;
 				orig_w = w;
+			}
+			if (rook_count > 1) {
+				std::cout << "#3::More than two rook than can make this move" << std::endl;
+				return false;
 			}
 			//Search below
 			it = h - 1;
@@ -325,9 +354,34 @@ namespace Chess {
 			//Search for player's rook 4 directions
 			int rook_count = 0;
 			int orig_h, orig_w;
-			//No need to search up and down
+			//Search above
+			int it = h + 1;
+			while (it <= 7 and not main[it][file].hasPiece()) {
+				++it;
+			}
+			std::cout << "Found piece at [" << it << ", " << file << "]" << std::endl;
+			if (hasFriendly('R', it, file, player)) {
+				++rook_count;
+				orig_h = it;
+				orig_w = file;
+			}
+			//Search below
+			it = h - 1;
+			while (it >= 0 and not main[it][file].hasPiece()) {
+				--it;
+			}
+			std::cout << "Found piece at [" << it << ", " << w << "]" << std::endl;
+			if (hasFriendly('R', it, file, player)) {
+				++rook_count;
+				orig_h = it;
+				orig_w = file;
+			}
+			if (rook_count > 1) {
+				std::cout << "#3::More than two rook than can make this move" << std::endl;
+				return false;
+			}
 			//Search to the right
-			int it = w + 1;
+			it = w + 1;
 			while (it <= 7 and not main[h][it].hasPiece()) {
 				++it;
 			}

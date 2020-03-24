@@ -15,19 +15,19 @@ namespace Chess {
 			int height, width, pieces;
 			Matrix main;
 			std::vector <Pieces::Piece> GreenDead;
-			std::vector <Pieces::Piece> BlueDead;
+			std::vector <Pieces::Piece> RedDead;
 			struct PositionState {
 				int h, w;
 				bool empty = true;
 
 				bool operator <(const PositionState& rhs) const;
 			};
-			std::set <PositionState, std::less<PositionState>> BlueThreat;
+			std::set <PositionState, std::less<PositionState>> RedThreat;
 			std::set <PositionState, std::less<PositionState>> GreenThreat;
-			int blueScore, greenScore;
+			int redScore, greenScore;
 			struct Position {
 				int h, w;
-			} blueKing, greenKing;
+			} redKing, greenKing;
 
 			struct EnPassant {
 				int h, w;
@@ -48,16 +48,16 @@ namespace Chess {
 
 			//Pawn
 			bool pawnMove					(int h, int w, int player);
-			bool pawnBlueMove				(int h, int w);
+			bool pawnRedMove				(int h, int w);
 			bool pawnGreenMove				(int h, int w);
 			bool pawnPromote				(int h, int w, char type, int player);
-			bool pawnBluePromote			(int h, int w, char type);
+			bool pawnRedPromote				(int h, int w, char type);
 			bool pawnGreenPromote			(int h, int w, char type);
 			bool pawnCapture				(int w_s, int h_d, int w_d, int player, bool enpassant);
-			bool pawnBlueCapture			(int w_s, int h_d, int w_d, bool enpassant);
+			bool pawnRedCapture				(int w_s, int h_d, int w_d, bool enpassant);
 			bool pawnGreenCapture			(int w_s, int h_d, int w_d, bool enpassant);
 			bool pawnPromoteCapture			(int w_s, int h_d, int w_d, char type, int player);
-			bool pawnBluePromoteCapture		(int w_s, int h_d, int w_d, char type);
+			bool pawnRedPromoteCapture		(int w_s, int h_d, int w_d, char type);
 			bool pawnGreenPromoteCapture	(int w_s, int h_d, int w_d, char type);
 			
 			//Knight
@@ -113,25 +113,31 @@ namespace Chess {
 			bool castleQueenside			(int player);
 
 			void addGreenDead				(Pieces::Piece);
-			void addBlueDead				(Pieces::Piece);
+			void addRedDead					(Pieces::Piece);
 
-			void checkGreenDead() const;
-			void checkBlueDead() const;
+			void checkGreenDeadDebug() const;
+			void checkRedDeadDebug() const;
+			void checkGreenDeadRelease() const;
+			void checkRedDeadRelease() const;
 
-			void checkBlueThreats() const;
+			void checkRedThreats() const;
 			void checkGreenThreats() const;
 
-			void checkBlueKing() const;
+			void checkRedKing() const;
 			void checkGreenKing() const;
 
-			void updateBlueThreats();
+			void updateRedThreats();
 			void updateGreenThreats();
+
+			void print_blank(int par);
+			void printBoardRelease();
+			void printBoardDebug();
 		public:
 			Board();
 			~Board();
 
-			void printBoard();
-			bool move(std::string movement, int player);
+			void printBoard(int mode);
+			bool move(std::string movement, int player, bool& enp);
 			bool isChecked					();
 			void updateThreats();
 		};

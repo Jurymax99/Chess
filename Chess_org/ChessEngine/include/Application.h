@@ -1,4 +1,5 @@
 #pragma once
+#include "Utilities.h"
 
 namespace Chess {
 	namespace Engine {
@@ -8,11 +9,11 @@ namespace Chess {
 		public:
 			Application();
 			~Application();
-			void start();
+			void start(int mode);
 
 		private:
-			void play();
-			void read_pgn();
+			void play(int mode);
+			void read_pgn(int mode);
 		};
 	}
 }
