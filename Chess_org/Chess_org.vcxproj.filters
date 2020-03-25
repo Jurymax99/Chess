@@ -45,6 +45,9 @@
     <ClCompile Include="ChessEngine\src\engine\ops\SpecialMovements.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ChessEngine\src\engine\Player.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ChessEngine\include\Utilities.h">
@@ -63,6 +66,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ChessEngine\include\Piece.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ChessEngine\include\Player.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

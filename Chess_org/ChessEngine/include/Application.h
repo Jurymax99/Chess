@@ -9,11 +9,16 @@ namespace Chess {
 		public:
 			Application();
 			~Application();
-			void start(int mode);
+			void start();
 
 		private:
-			void play(int mode);
-			void read_pgn(int mode);
+			void play();
+			void manRead_pgn();
+			void fileRead_pgn();
+			void credits();
+			void printHelpDebug();
+			void printHelp();
+			bool open_browser(const char* URL);
 		};
 	}
 }

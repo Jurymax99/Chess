@@ -15,6 +15,7 @@ namespace Color {
     class Modifier {
         Code code;
     public:
+        Modifier() : code(FG_RED) {}
         Modifier(Code pCode) : code(pCode) {}
         friend std::ostream&
             operator<<(std::ostream& os, const Modifier& mod) {

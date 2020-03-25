@@ -1,0 +1,23 @@
+[Event "Teplitz-Schönau"]
+[Site "Teplice-Sanov CSR"]
+[Date "1922.10.05"]
+[EventDate "1922.10.02"]
+[Round "4"]
+[Result "0-1"]
+[White "Geza Maroczy"]
+[Black "Savielly Tartakower"]
+[ECO "A84"]
+[WhiteElo "?"]
+[BlackElo "?"]
+[PlyCount "70"]
+
+1. d4 e6 2. c4 f5 3. Nc3 Nf6 4. a3 Be7 5. e3 O-O 6. Bd3 d5
+7. Nf3 c6 8. O-O Ne4 9. Qc2 Bd6 10. b3 Nd7 11. Bb2 Rf6
+12. Rfe1 Rh6 13. g3 Qf6 14. Bf1 g5 15. Rad1 g4 16. Nxe4 fxe4
+17. Nd2 Rxh2 18. Kxh2 Qxf2+ 19. Kh1 Nf6 20. Re2 Qxg3 21. Nb1
+Nh5 22. Qd2 Bd7 23. Rf2 Qh4+ 24. Kg1 Bg3 25. Bc3 Bxf2+
+26. Qxf2 g3 27. Qg2 Rf8 28. Be1 Rxf1+ 29. Kxf1 e5 30. Kg1 Bg4
+31. Bxg3 Nxg3 32. Re1 Nf5 33. Qf2 Qg5 34. dxe5 Bf3+ 35. Kf1
+Ng3+ 0-1
+
+https://www.chessgames.com/perl/chessgame?gid=1003826

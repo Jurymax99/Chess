@@ -40,7 +40,9 @@ namespace Chess {
 				std::cout << "There is no friendly king in position or can't take the move" << std::endl;
 				return false;
 			}
-			std::cout << "Kingside castling can be done" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Kingside castling can be done" << std::endl;
+			}
 			//Make the move
 			main[h][w_r].removePiece();
 			main[h][w_k].removePiece();
@@ -49,10 +51,10 @@ namespace Chess {
 			main[h][w_r].addPiece('R', player);
 			main[h][w_k].addPiece('K', player);
 			if (player == RED) {
-				redKing = { h,w_k };
+				Red.setKing(h, w_k);
 			}
 			else if (player == GREEN) {
-				greenKing = { h,w_k };
+				Green.setKing(h, w_k);
 			}
 			else {
 				std::cout << "No such known player " << player << std::endl;
@@ -60,12 +62,16 @@ namespace Chess {
 			}
 			if (isChecked()) {
 				if (player == RED) {
-					std::cout << "#10::The red king is in check" << std::endl; 
-					redKing = { h,w_k };
+					if (MODE == DEBUG) {
+						std::cout << "#10::The red king is in check" << std::endl;
+					}
+					Red.setKing(h, w_k);
 				}
 				else if (player == GREEN) {
-					std::cout << "#10::The green king is in check" << std::endl;
-					greenKing = { h,w_k };
+					if (MODE == DEBUG) {
+						std::cout << "#10::The green king is in check" << std::endl;
+					}
+					Green.setKing(h, w_k);
 				}
 				else {
 					std::cout << "#10::No known player" << std::endl;
@@ -82,11 +88,11 @@ namespace Chess {
 			main[h][w_r].checkPiecePoint()->firstMove();
 			main[h][w_k].checkPiecePoint()->firstMove();
 			if (player == RED) {
-				redKing = { h,w_k };
+				Red.setKing(h, w_k);
 				return true;
 			}
 			else if (player == GREEN) {
-				greenKing = { h,w_k };
+				Green.setKing(h, w_k);
 				return true;
 			}
 			else {
@@ -131,7 +137,9 @@ namespace Chess {
 				std::cout << "There is no friendly king in position or can't take the move" << std::endl;
 				return false;
 			}
-			std::cout << "Queenside castling can be done" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Queenside castling can be done" << std::endl;
+			}
 			//Make the move
 			main[h][w_r].removePiece();
 			main[h][w_k].removePiece();
@@ -140,10 +148,10 @@ namespace Chess {
 			main[h][w_r].addPiece('R', player);
 			main[h][w_k].addPiece('K', player);
 			if (player == RED) {
-				redKing = { h,w_k };
+				Red.setKing(h, w_k);
 			}
 			else if (player == GREEN) {
-				greenKing = { h,w_k };
+				Green.setKing(h, w_k);
 			}
 			else {
 				std::cout << "No such known player " << player << std::endl;
@@ -151,12 +159,16 @@ namespace Chess {
 			}
 			if (isChecked()) {
 				if (player == RED) {
-					std::cout << "#10::The red king is in check" << std::endl;
-					redKing = { h,w_k };
+					if (MODE == DEBUG) {
+						std::cout << "#10::The red king is in check" << std::endl;
+					}
+					Red.setKing(h, w_k);
 				}
 				else if (player == GREEN) {
-					std::cout << "#10::The green king is in check" << std::endl;
-					greenKing = { h,w_k };
+					if (MODE == DEBUG) {
+						std::cout << "#10::The green king is in check" << std::endl;
+					}
+					Green.setKing(h, w_k);
 				}
 				else {
 					std::cout << "#10::No known player" << std::endl;
@@ -173,11 +185,11 @@ namespace Chess {
 			main[h][w_r].checkPiecePoint()->firstMove();
 			main[h][w_k].checkPiecePoint()->firstMove();
 			if (player == RED) {
-				redKing = { h,w_k };
+				Red.setKing(h, w_k);
 				return true;
 			}
 			else if (player == GREEN) {
-				greenKing = { h,w_k };
+				Green.setKing(h, w_k);
 				return true;
 			}
 			std::cout << "No such known player " << player << std::endl;
@@ -186,16 +198,18 @@ namespace Chess {
 
 		bool Board::isChecked() {
 			//See if any king is in the positions threatened by other player
-			updateRedThreats();
-			updateGreenThreats();
-			auto it_b = GreenThreat.find({ redKing.h, redKing.w, true });
-			if (it_b != GreenThreat.end()) {
-				std::cout << "Red king is in check" << std::endl;
+			updateThreats(Red, *this);
+			updateThreats(Green, *this);
+			if (Green.findThreat(Red.checkKingPosition(), true)) {
+				if (MODE == DEBUG) {
+					std::cout << "Red king is in check" << std::endl;
+				}
 				return true;
 			}
-			auto it_g = RedThreat.find({ greenKing.h, greenKing.w, true });
-			if (it_g != RedThreat.end()) {
-				std::cout << "Green king is in check" << std::endl;
+			if (Red.findThreat(Green.checkKingPosition(), true)) {
+				if (MODE == DEBUG) {
+					std::cout << "Green king is in check" << std::endl;
+				}
 				return true;
 			}
 			return false;
@@ -203,17 +217,19 @@ namespace Chess {
 
 		bool Board::isChecked(int& player) {
 			//See if any king is in the positions threatened by other player
-			updateRedThreats();
-			updateGreenThreats();
-			auto it_b = GreenThreat.find({ redKing.h, redKing.w, true });
-			if (it_b != GreenThreat.end()) {
-				std::cout << "Red king is in check" << std::endl;
+			updateThreats(Red, *this);
+			updateThreats(Green, *this);
+			if (Green.findThreat(Red.checkKingPosition(), true)) {
+				if (MODE == DEBUG) {
+					std::cout << "Red king is in check" << std::endl;
+				}
 				player = RED;
 				return true;
 			}
-			auto it_g = RedThreat.find({ greenKing.h, greenKing.w, true });
-			if (it_g != RedThreat.end()) {
-				std::cout << "Green king is in check" << std::endl;
+			if (Red.findThreat(Green.checkKingPosition(), true)) {
+				if (MODE == DEBUG) {
+					std::cout << "Green king is in check" << std::endl;
+				}
 				player = GREEN;
 				return true;
 			}
@@ -221,7 +237,7 @@ namespace Chess {
 			return false;
 		}
 
-		void Board::updateThreats() {
+		/*void Board::updateThreats() {
 			updateRedThreats();
 			updateGreenThreats();
 		}
@@ -798,6 +814,6 @@ namespace Chess {
 					}
 				}
 			}
-		}
+		}*/
 	}
 }

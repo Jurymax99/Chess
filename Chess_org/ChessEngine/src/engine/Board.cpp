@@ -8,14 +8,8 @@ namespace Chess {
 			width = 8;
 			pieces = 32;
 			main = Matrix(8, Row(8));
-			GreenDead = std::vector <Pieces::Piece>();
-			RedDead = std::vector <Pieces::Piece>();
-			RedThreat = std::set <PositionState>();
-			GreenThreat = std::set <PositionState>();
-			redScore = 0;
-			greenScore = 0;
-			redKing = { 7, 4 };
-			greenKing = { 0, 4 };
+			Red = Player(RED);
+			Green = Player(GREEN);
 			target = { -1, -1, false };
 			std::cout << "Standard " << height << "x" << width << " board created with " << pieces << " pieces" << std::endl;
 
@@ -60,18 +54,11 @@ namespace Chess {
 			std::cout << "Board destroyed" << std::endl;
 		}
 
-		bool Board::PositionState::operator<(const PositionState& rhs) const {
-			if (h == rhs.h) {
-				return w < rhs.w;
-			}
-			return h < rhs.h;
-		}
-
-		void Board::printBoard(int mode){
-			if (mode == RELEASE) {
+		void Board::printBoard(){
+			if (MODE == RELEASE) {
 				printBoardRelease();
 			}
-			else if (mode == DEBUG) {
+			else if (MODE == DEBUG) {
 				printBoardDebug();
 			}
 			else {
@@ -98,16 +85,16 @@ namespace Chess {
 
 		void Board::printBoardRelease() {
 			std::cout << "_______________________________________________________________" << std::endl;
-			checkRedDeadRelease();
-			checkGreenDeadRelease();
-			std::cout << "_______________________________________________________________" << std::endl;
-			std::cout << "_______________________________________________________________" << std::endl;
-			checkRedThreats();
-			checkGreenThreats();
-			std::cout << "_______________________________________________________________" << std::endl; 
-			std::cout << "_______________________________________________________________" << std::endl; 
-			checkRedKing();
-			checkGreenKing();
+			Red.checkDeadRelease();
+			if (Red.checkScore() < Green.checkScore()) {
+				std::cout << "+" << Green.checkScore() - Red.checkScore();
+			}
+			std::cout << std::endl;
+			Green.checkDeadRelease();
+			if (Green.checkScore() < Red.checkScore()) {
+				std::cout << "+" << Red.checkScore() - Green.checkScore();
+			}
+			std::cout << std::endl;
 			std::cout << "_______________________________________________________________" << std::endl;
 			std::cout << "      A      B      C      D      E      F      G      H" << std::endl;
 			HANDLE  hConsole;
@@ -166,16 +153,24 @@ namespace Chess {
 
 		void Board::printBoardDebug() {
 			std::cout << "__________________________________________" << std::endl;
-			checkRedDeadDebug();
-			checkGreenDeadDebug();
+			Red.checkDeadDebug();
+			if (Red.checkScore() < Green.checkScore()) {
+				std::cout << "+" << Green.checkScore() - Red.checkScore();
+			}
+			std::cout << std::endl;
+			Green.checkDeadDebug();
+			if (Green.checkScore() < Red.checkScore()) {
+				std::cout << "+" << Red.checkScore() - Green.checkScore();
+			}
+			std::cout << std::endl;
 			std::cout << "__________________________________________" << std::endl;
 			std::cout << "__________________________________________" << std::endl;
-			checkRedThreats();
-			checkGreenThreats();
+			Red.checkThreats();
+			Green.checkThreats();
 			std::cout << "__________________________________________" << std::endl;
 			std::cout << "__________________________________________" << std::endl;
-			checkRedKing();
-			checkGreenKing();
+			Red.checkKing();
+			Green.checkKing();
 			std::cout << "__________________________________________" << std::endl;
 			std::cout << "   A    B    C    D    E    F    G    H" << std::endl;
 			Color::Modifier red(Color::FG_RED);
@@ -199,12 +194,12 @@ namespace Chess {
 						}
 					}
 					else {
-						auto it_b = RedThreat.find({ i,j, false });
-						auto it_g = GreenThreat.find({ i,j, false });
-						if (it_b != RedThreat.end()) {
+						bool it_b = Red.findDead(i, j); 
+						bool it_g = Green.findDead(i, j);
+						if (it_b) {
 							std::cout << blue << ".    " << def;
 						}
-						else if (it_g != GreenThreat.end()) {
+						else if (it_g) {
 							std::cout << yellow << ".    " << def;
 						}
 						else {
@@ -258,100 +253,6 @@ namespace Chess {
 			return a >= 'a' and a <= 'h';
 		}
 
-		void Board::addGreenDead(Pieces::Piece piece)
-		{
-			GreenDead.push_back(piece);
-			std::sort(GreenDead.begin(), GreenDead.end());
-		}
-
-		void Board::addRedDead(Pieces::Piece piece)
-		{
-			RedDead.push_back(piece);
-			std::sort(RedDead.begin(), RedDead.end());
-		}
-
-		void Board::checkGreenDeadDebug() const {
-			std::cout << "Green: ";
-			Color::Modifier green(Color::FG_GREEN);
-			Color::Modifier def(Color::FG_DEFAULT);
-			for (int i = 0; i < GreenDead.size(); ++i) {
-				std::cout << green << GreenDead[i].checkType() << def << " ";
-			}
-			if (redScore < greenScore) {
-				std::cout << "+" << greenScore - redScore;
-			}
-			std::cout << std::endl;
-		}
-
-		void Board::checkRedDeadDebug() const {
-			std::cout << "Red: "; 
-			Color::Modifier red(Color::FG_RED);
-			Color::Modifier def(Color::FG_DEFAULT);
-			for (int i = 0; i < RedDead.size(); ++i) {
-				std::cout << red << RedDead[i].checkType() << def << " ";
-			}
-			if (greenScore < redScore) {
-				std::cout << "+" << redScore - greenScore;
-			}
-			std::cout << std::endl;
-		}
-
-		void Board::checkGreenDeadRelease() const {
-			std::cout << "Green: ";
-			HANDLE hConsole;
-			hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-			SetConsoleTextAttribute(hConsole, 10);
-			for (int i = 0; i < GreenDead.size(); ++i) {
-				std::cout << GreenDead[i].checkType() << " ";
-			}
-			SetConsoleTextAttribute(hConsole, 7);
-			if (redScore < greenScore) {
-				std::cout << "+" << greenScore - redScore;
-			}
-			std::cout << std::endl;
-		}
-
-		void Board::checkRedDeadRelease() const {
-			std::cout << "Red: ";
-			HANDLE hConsole;
-			hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-			SetConsoleTextAttribute(hConsole, 12);
-			for (int i = 0; i < RedDead.size(); ++i) {
-				std::cout << RedDead[i].checkType() << " ";
-			}
-			SetConsoleTextAttribute(hConsole, 7);
-			if (greenScore < redScore) {
-				std::cout << "+" << redScore - greenScore;
-			}
-			std::cout << std::endl;
-		}
-
-		void Board::checkRedThreats() const {
-			std::cout << "Red threatening positions: ";
-			auto it = RedThreat.begin();
-			for (; it != RedThreat.end(); ++it) {
-				std::cout << "[" << char((*it).w + 97) << char(8 - char((*it).h - 48)) << ", " << (*it).empty << "] ";
-			}
-			std::cout << std::endl;
-		}
-
-		void Board::checkGreenThreats() const {
-			std::cout << "Green threatening positions: ";
-			auto it = GreenThreat.begin();
-			for (; it != GreenThreat.end(); ++it) {
-				std::cout << "[" << char((*it).w + 97) << char(8 - char((*it).h -48)) << ", " << (*it).empty << "] ";
-			}
-			std::cout << std::endl;
-		}
-
-		inline void Board::checkRedKing() const {
-			std::cout << "Red king is at [" << char(redKing.w + 97) << char(8 - char(redKing.h - 48)) << "]" << std::endl;
-		}
-
-		inline void Board::checkGreenKing() const {
-			std::cout << "Green king is at [" << char(greenKing.w + 97) << char(8 - char(greenKing.h - 48)) << "]" << std::endl;
-		}
-
 		//TODO: 
 		//		-checkmate detection
 		//		-flip board
@@ -360,7 +261,7 @@ namespace Chess {
 		//			-per player
 		//			-warnings at start if dif than 32
 		//		-go back funtionality
-		//		-read instructions from file
+		//		-FEN encoding
 		//		-interactive GUI
 
 		//CHANGELOG:
@@ -398,11 +299,18 @@ namespace Chess {
 		//		- Added move restriction when board is in check
 		//_____________________________________________________________________________________
 		//		- Fixed en passant minor bug:
-		//			- If a move fails, you couldn't capture en passant even if it was valid
+		//			- If a move failed, you couldn't capture en passant even if it was valid
 		//		- Fixed ambiguous rook moves and captures
 		//		- Added RELEASE and DEBUG modes
 		//		- Added new colorisation method (Windows API)
 		//_____________________________________________________________________________________
+		//		- RELEASE mode now just shows the board without control messages
+		//		- Rearranged some classes
+		//		- Added new functionality that allows you to read for a file
+		//		- Added functionality to browse online the match read in the file if URL is in 
+		//		  the bottom of file
+		//		- Improved performance
+		//		- Fixed minor bugs
 
 		bool Board::move(std::string movement, int player, bool &enp) {
 			int rank_d, file_d;
@@ -449,7 +357,9 @@ namespace Chess {
 					return kingMove(rank_d, file_d, player);
 				}
 				if (movement == "O-O" or movement == "0-0") {
-					std::cout << "Kingside castling detected!" << std::endl;
+					if (MODE == DEBUG) {
+						std::cout << "Kingside castling detected!" << std::endl;
+					}
 					return castleKingside(player);
 				}
 			}
@@ -458,7 +368,9 @@ namespace Chess {
 			else if (movement.length() == 4) {
 				//captures
 				if (contains('x', movement)) {
-					std::cout << "Capture detected!" << std::endl;
+					if (MODE == DEBUG) {
+						std::cout << "Capture detected!" << std::endl;
+					}
 					//if first letter is lowercase it is a pawn capture
 					rank_d = 8 - (movement[3] - 48);
 					file_d = movement[2] - 97;
@@ -489,7 +401,9 @@ namespace Chess {
 					}
 				}
 				else if (contains('=', movement)) {
-					std::cout << "Promotion detected!" << std::endl;
+					if (MODE == DEBUG) {
+						std::cout << "Promotion detected!" << std::endl;
+					}
 					rank_d = 8 - (movement[1] - 48);
 					file_d = movement[0] - 97;
 					char type = movement[3];
@@ -521,7 +435,9 @@ namespace Chess {
 			//ambiguous captures
 			else if (movement.length() == 5) {
 				if (contains('x', movement)) {
-					std::cout << "Capture detected!" << std::endl;
+					if (MODE == DEBUG) {
+						std::cout << "Capture detected!" << std::endl;
+					}
 					rank_d = 8 - (movement[4] - 48);
 					file_d = movement[3] - 97;
 					char dis = movement[1];
@@ -543,12 +459,16 @@ namespace Chess {
 					}
 				}
 				if (movement == "O-O-O" or movement == "0-0-0") {
-					std::cout << "Queenside castling detected!" << std::endl;
+					if (MODE == DEBUG) {
+						std::cout << "Queenside castling detected!" << std::endl;
+					}
 					return castleQueenside(player);
 				}
 				//double ambiguous move
 				else {
-					std::cout << "Double ambiguous detected!" << std::endl;
+					if (MODE == DEBUG) {
+						std::cout << "Double ambiguous detected!" << std::endl;
+					}
 					rank_d = 8 - (movement[4] - 48);
 					file_d = movement[3] - 97;
 					int rank_s = 8 - (movement[2] - 48);
@@ -569,7 +489,9 @@ namespace Chess {
 				if (contains('x', movement)) {
 					//pawn promotion capture
 					if (contains('=', movement)) {
-						std::cout << "Promotion detected!" << std::endl;
+						if (MODE == DEBUG) {
+							std::cout << "Promotion detected!" << std::endl;
+						}
 						rank_d = 8 - (movement[3] - 48);
 						file_d = movement[2] - 97;
 						char type = movement[5];
@@ -578,7 +500,9 @@ namespace Chess {
 					}
 					//double ambiguous capture
 					else {
-						std::cout << "Capture detected!" << std::endl;
+						if (MODE == DEBUG) {
+							std::cout << "Capture detected!" << std::endl;
+						}
 						rank_d = 8 - (movement[5] - 48);
 						file_d = movement[4] - 97;
 						int rank_s = 8 - (movement[2] - 48);

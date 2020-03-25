@@ -148,6 +148,7 @@
     <ClCompile Include="ChessEngine\src\engine\ops\Captures.cpp" />
     <ClCompile Include="ChessEngine\src\engine\ops\Movements.cpp" />
     <ClCompile Include="ChessEngine\src\engine\ops\SpecialMovements.cpp" />
+    <ClCompile Include="ChessEngine\src\engine\Player.cpp" />
     <ClCompile Include="ChessEngine\src\engine\Tile.cpp" />
     <ClCompile Include="ChessEngine\src\pieces\Piece.cpp" />
     <ClCompile Include="Main\Main.cpp">
@@ -159,6 +160,7 @@
     <ClInclude Include="ChessEngine\include\Board.h" />
     <ClInclude Include="ChessEngine\include\Color.h" />
     <ClInclude Include="ChessEngine\include\Piece.h" />
+    <ClInclude Include="ChessEngine\include\Player.h" />
     <ClInclude Include="ChessEngine\include\Tile.h" />
     <ClInclude Include="ChessEngine\include\Utilities.h" />
   </ItemGroup>

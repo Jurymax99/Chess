@@ -7,11 +7,15 @@ namespace Chess {
 		bool Board::knightAmbiguousCapture(char dis, int h, int w, int player) {
 			//check if disambiguation comes from rank or file
 			if (rank(dis)) {
-				std::cout << "The ambiguity is at the file" << std::endl;
+				if (MODE == DEBUG) {
+					std::cout << "The ambiguity is at the file" << std::endl;
+				}
 				return knightCaptureRank((8 - (dis - 48)), h, w, player);
 			}
 			else if (file(dis)) {
-				std::cout << "The ambiguity is at the rank" << std::endl;
+				if (MODE == DEBUG) {
+					std::cout << "The ambiguity is at the rank" << std::endl;
+				}
 				return knightCaptureFile((dis - 97), h, w, player);
 			}
 			std::cout << "Couldn't convert instruction to tile" << std::endl;
@@ -19,7 +23,9 @@ namespace Chess {
 		}
 
 		bool Board::knightCaptureRank(int rank, int h, int w, int player) {
-			std::cout << "[" << h << ", " << w << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "[" << h << ", " << w << "]" << std::endl;
+			}
 			//Out of board
 			if (not inBound(h, w)) {
 				std::cout << "#1::Your movement is out of bounds for a knight" << std::endl;
@@ -130,13 +136,17 @@ namespace Chess {
 				std::cout << "#4::No knight found to make the move" << std::endl;
 				return false;
 			}
-			std::cout << "Found a knight in [" << orig_h << ", " << orig_w << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found a knight in [" << orig_h << ", " << orig_w << "]" << std::endl;
+			}
 			//Make the move
 			return makeCapture('N', orig_h, orig_w, h, w, player);
 		}
 
 		bool Board::knightCaptureFile(int file, int h, int w, int player) {
-			std::cout << "[" << h << ", " << w << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "[" << h << ", " << w << "]" << std::endl;
+			}
 			//Out of board
 			if (not inBound(h, w)) {
 				std::cout << "#1::Your movement is out of bounds for a knight" << std::endl;
@@ -246,7 +256,9 @@ namespace Chess {
 				std::cout << "#4::No knight found to make the move" << std::endl;
 				return false;
 			}
-			std::cout << "Found a knight in [" << orig_h << ", " << orig_w << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found a knight in [" << orig_h << ", " << orig_w << "]" << std::endl;
+			}
 			//Make the move
 			return makeCapture('N', orig_h, orig_w, h, w, player);
 		}
@@ -254,11 +266,15 @@ namespace Chess {
 		bool Board::rookAmbiguousCapture(char dis, int h, int w, int player) {
 			//check if disambiguation comes from rank or file
 			if (rank(dis)) {
-				std::cout << "The ambiguity is at the file" << std::endl;
+				if (MODE == DEBUG) {
+					std::cout << "The ambiguity is at the file" << std::endl;
+				}
 				return rookCaptureRank((8 - (dis - 48)), h, w, player);
 			}
 			else if (file(dis)) {
-				std::cout << "The ambiguity is at the rank" << std::endl;
+				if (MODE == DEBUG) {
+					std::cout << "The ambiguity is at the rank" << std::endl;
+				}
 				return rookCaptureFile((dis - 97), h, w, player);
 			}
 			std::cout << "Couldn't convert instruction to tile" << std::endl;
@@ -266,7 +282,9 @@ namespace Chess {
 		}
 
 		bool Board::rookCaptureRank(int rank, int h, int w, int player) {
-			std::cout << "[" << h << ", " << w << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "[" << h << ", " << w << "]" << std::endl;
+			}
 			//Out of board
 			if (not inBound(h, w)) {
 				std::cout << "#1::Your movement is out of bounds for a rook" << std::endl;
@@ -289,7 +307,9 @@ namespace Chess {
 			while (it <= 7 and not main[rank][it].hasPiece()) {
 				++it;
 			}
-			std::cout << "Found piece at [" << rank << ", " << it << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found piece at [" << rank << ", " << it << "]" << std::endl;
+			}
 			if (hasFriendly('R', h, it, player)) {
 				++rook_count;
 				orig_h = rank;
@@ -300,7 +320,9 @@ namespace Chess {
 			while (it >= 0 and not main[rank][it].hasPiece()) {
 				--it;
 			}
-			std::cout << "Found piece at [" << rank << ", " << it << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found piece at [" << rank << ", " << it << "]" << std::endl;
+			}
 			if (hasFriendly('R', rank, it, player)) {
 				++rook_count;
 				orig_h = rank;
@@ -315,7 +337,9 @@ namespace Chess {
 			while (it <= 7 and not main[it][w].hasPiece()) {
 				++it;
 			}
-			std::cout << "Found piece at [" << it << ", " << w << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found piece at [" << it << ", " << w << "]" << std::endl;
+			}
 			if (hasFriendly('R', it, w, player) and
 				it == rank) {
 				++rook_count;
@@ -331,7 +355,9 @@ namespace Chess {
 			while (it >= 0 and not main[it][w].hasPiece()) {
 				--it;
 			}
-			std::cout << "Found piece at [" << it << ", " << w << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found piece at [" << it << ", " << w << "]" << std::endl;
+			}
 			if (hasFriendly('R', it, w, player) and
 				it == rank) {
 				++rook_count;
@@ -346,13 +372,17 @@ namespace Chess {
 				std::cout << "#4::No rook found to make the move" << std::endl;
 				return false;
 			}
-			std::cout << "Found a rook in [" << orig_h << ", " << orig_w << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found a rook in [" << orig_h << ", " << orig_w << "]" << std::endl;
+			}
 			//Make the move
 			return makeCapture('R', orig_h, orig_w, h, w, player);
 		}
 
 		bool Board::rookCaptureFile(int file, int h, int w, int player) {
-			std::cout << "[" << h << ", " << w << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "[" << h << ", " << w << "]" << std::endl;
+			}
 			//Out of board
 			if (not inBound(h, w)) {
 				std::cout << "#1::Your movement is out of bounds for a rook" << std::endl;
@@ -375,7 +405,9 @@ namespace Chess {
 			while (it <= 7 and not main[it][file].hasPiece()) {
 				++it;
 			}
-			std::cout << "Found piece at [" << it << ", " << file << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found piece at [" << it << ", " << file << "]" << std::endl;
+			}
 			if (hasFriendly('R', it, file, player)) {
 				++rook_count;
 				orig_h = it;
@@ -386,7 +418,9 @@ namespace Chess {
 			while (it >= 0 and not main[it][file].hasPiece()) {
 				--it;
 			}
-			std::cout << "Found piece at [" << it << ", " << w << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found piece at [" << it << ", " << w << "]" << std::endl;
+			}
 			if (hasFriendly('R', it, file, player)) {
 				++rook_count;
 				orig_h = it;
@@ -401,7 +435,9 @@ namespace Chess {
 			while (it <= 7 and not main[h][it].hasPiece()) {
 				++it;
 			}
-			std::cout << "Found piece at [" << h << ", " << it << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found piece at [" << h << ", " << it << "]" << std::endl;
+			}
 			if (hasFriendly('R', h, it, player) and
 				it == file) {
 				++rook_count;
@@ -417,7 +453,9 @@ namespace Chess {
 			while (it >= 0 and not main[h][it].hasPiece()) {
 				--it;
 			}
-			std::cout << "Found piece at [" << h << ", " << it << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found piece at [" << h << ", " << it << "]" << std::endl;
+			}
 			if (hasFriendly('R', h, it, player) and
 				it == file) {
 				++rook_count;
@@ -432,7 +470,9 @@ namespace Chess {
 				std::cout << "#4::No rook found to make the move" << std::endl;
 				return false;
 			}
-			std::cout << "Found a rook in [" << orig_h << ", " << orig_w << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found a rook in [" << orig_h << ", " << orig_w << "]" << std::endl;
+			}
 			//Make the move
 			return makeCapture('R', orig_h, orig_w, h, w, player);
 		}
@@ -440,12 +480,16 @@ namespace Chess {
 		bool Board::bishopAmbiguousCapture(char dis, int h, int w, int player) {
 			//check if disambiguation comes from rank or file
 			if (file(dis)) {
-				std::cout << "The ambiguity is at the rank" << std::endl;
+				if (MODE == DEBUG) {
+					std::cout << "The ambiguity is at the rank" << std::endl;
+				}
 				return bishopCaptureFile((dis - 97), h, w, player);
 			}
 			else if (rank(dis)) {
-				std::cout << "The ambiguity is at the file" << std::endl;
-				std::cout << "WARNING::It is better to express the disambiguation with the file" << std::endl;
+				if (MODE == DEBUG) {
+					std::cout << "The ambiguity is at the file" << std::endl;
+					std::cout << "WARNING::It is better to express the disambiguation with the file" << std::endl;
+				}
 				return bishopCaptureRank((8 - (dis - 48)), h, w, player);
 			}
 			std::cout << "Couldn't convert instruction to tile" << std::endl;
@@ -453,7 +497,9 @@ namespace Chess {
 		}
 
 		bool Board::bishopCaptureRank(int rank, int h, int w, int player) {
-			std::cout << "[" << h << ", " << w << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "[" << h << ", " << w << "]" << std::endl;
+			}
 			//Out of board
 			if (not inBound(h, w)) {
 				std::cout << "#1::Your movement is out of bounds for a bishop" << std::endl;
@@ -478,7 +524,9 @@ namespace Chess {
 				++it_h;
 				--it_w;
 			}
-			std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
+			}
 			if (hasFriendly('B', it_h, it_w, player) and
 				it_h == rank) {
 				++bishop_count;
@@ -492,7 +540,9 @@ namespace Chess {
 				--it_h;
 				--it_w;
 			}
-			std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
+			}
 			if (hasFriendly('B', it_h, it_w, player) and
 				it_h == rank) {
 				++bishop_count;
@@ -510,7 +560,9 @@ namespace Chess {
 				++it_h;
 				++it_w;
 			}
-			std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
+			}
 			if (hasFriendly('B', it_h, it_w, player) and
 				it_h == rank) {
 				++bishop_count;
@@ -528,7 +580,9 @@ namespace Chess {
 				--it_h;
 				++it_w;
 			}
-			std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
+			}
 			if (hasFriendly('B', it_h, it_w, player) and
 				it_h == rank) {
 				++bishop_count;
@@ -543,14 +597,18 @@ namespace Chess {
 				std::cout << "#4::No bishop found to make the move" << std::endl;
 				return false;
 			}
-			std::cout << "Found a bishop in [" << orig_h << ", " << orig_w << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found a bishop in [" << orig_h << ", " << orig_w << "]" << std::endl;
+			}
 			//Make the move
 			return makeCapture('B', orig_h, orig_w, h, w, player);
 		}
 
 		bool Board::bishopCaptureFile(int file, int h, int w, int player) {
 			std::cout << "[" << h << ", " << w << "]" << std::endl;
-			//Out of board
+			if (MODE == DEBUG) {
+				std::cout << "[" << h << ", " << w << "]" << std::endl;
+			}
 			if (not inBound(h, w)) {
 				std::cout << "#1::Your movement is out of bounds for a bishop" << std::endl;
 				return false;
@@ -575,7 +633,9 @@ namespace Chess {
 				++it_h;
 				--it_w;
 			}
-			std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
+			}
 			if (hasFriendly('B', it_h, it_w, player) and
 				it_w == file) {
 				++bishop_count;
@@ -589,7 +649,9 @@ namespace Chess {
 				--it_h;
 				--it_w;
 			}
-			std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
+			}
 			if (hasFriendly('B', it_h, it_w, player) and
 				it_w == file) {
 				++bishop_count;
@@ -607,7 +669,9 @@ namespace Chess {
 				++it_h;
 				++it_w;
 			}
-			std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
+			}
 			if (hasFriendly('B', it_h, it_w, player) and
 				it_w == file) {
 				++bishop_count;
@@ -625,7 +689,9 @@ namespace Chess {
 				--it_h;
 				++it_w;
 			}
-			std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
+			}
 			if (hasFriendly('B', it_h, it_w, player) and
 				it_w == file) {
 				++bishop_count;
@@ -640,8 +706,9 @@ namespace Chess {
 				std::cout << "#4::No bishop found to make the move" << std::endl;
 				return false;
 			}
-			std::cout << "Found a bishop in [" << orig_h << ", " << orig_w << "]" << std::endl;
-
+			if (MODE == DEBUG) {
+				std::cout << "Found a bishop in [" << orig_h << ", " << orig_w << "]" << std::endl;
+			}
 			//Make the move
 			return makeCapture('B', orig_h, orig_w, h, w, player);
 		}
@@ -674,7 +741,9 @@ namespace Chess {
 				++it_h;
 				--it_w;
 			}
-			std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
+			}
 			if (hasFriendly('B', it_h, it_w, player)) {
 				//found the specified bishop
 				if (it_h == h_s and it_w == w_s) {
@@ -688,7 +757,9 @@ namespace Chess {
 				--it_h;
 				--it_w;
 			}
-			std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
+			}
 			if (hasFriendly('B', it_h, it_w, player)) {
 				//found the specified bishop
 				if (it_h == h_s and it_w == w_s) {
@@ -702,7 +773,9 @@ namespace Chess {
 				++it_h;
 				++it_w;
 			}
-			std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
+			}
 			if (hasFriendly('B', it_h, it_w, player)) {
 				//found the specified bishop
 				if (it_h == h_s and it_w == w_s) {
@@ -716,7 +789,9 @@ namespace Chess {
 				--it_h;
 				++it_w;
 			}
-			std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
+			}
 			if (hasFriendly('B', it_h, it_w, player)) {
 				//found the specified bishop
 				if (it_h == h_s and it_w == w_s) {
@@ -735,11 +810,15 @@ namespace Chess {
 		bool Board::queenAmbiguousCapture(char dis, int h, int w, int player) {
 			//check if disambiguation comes from rank or file
 			if (rank(dis)) {
-				std::cout << "The ambiguity is at the file" << std::endl;
+				if (MODE == DEBUG) {
+					std::cout << "The ambiguity is at the file" << std::endl;
+				}
 				return queenCaptureRank((8 - (dis - 48)), h, w, player);
 			}
 			else if (file(dis)) {
-				std::cout << "The ambiguity is at the rank" << std::endl;
+				if (MODE == DEBUG) {
+					std::cout << "The ambiguity is at the rank" << std::endl;
+				}
 				return queenCaptureFile((dis - 97), h, w, player);
 			}
 			std::cout << "Couldn't convert instruction to tile" << std::endl;
@@ -747,7 +826,9 @@ namespace Chess {
 		}
 
 		bool Board::queenCaptureRank(int rank, int h, int w, int player) {
-			std::cout << "[" << h << ", " << w << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "[" << h << ", " << w << "]" << std::endl;
+			}
 			//Out of board
 			if (not inBound(h, w)) {
 				std::cout << "#1::Your movement is out of bounds for a queen" << std::endl;
@@ -772,7 +853,9 @@ namespace Chess {
 				++it_h;
 				--it_w;
 			}
-			std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
+			}
 			if (hasFriendly('Q', it_h, it_w, player) and
 				it_h == rank) {
 				++queen_count;
@@ -786,7 +869,9 @@ namespace Chess {
 				--it_h;
 				--it_w;
 			}
-			std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
+			}
 			if (hasFriendly('Q', it_h, it_w, player) and
 				it_h == rank) {
 				++queen_count;
@@ -804,7 +889,9 @@ namespace Chess {
 				++it_h;
 				++it_w;
 			}
-			std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
+			}
 			if (hasFriendly('Q', it_h, it_w, player) and
 				it_h == rank) {
 				++queen_count;
@@ -822,7 +909,9 @@ namespace Chess {
 				--it_h;
 				++it_w;
 			}
-			std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
+			}
 			if (hasFriendly('Q', it_h, it_w, player) and
 				it_h == rank) {
 				++queen_count;
@@ -838,7 +927,9 @@ namespace Chess {
 			while (it <= 7 and not main[it][w].hasPiece()) {
 				++it;
 			}
-			std::cout << "Found piece at [" << it << ", " << w << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found piece at [" << it << ", " << w << "]" << std::endl;
+			}
 			if (hasFriendly('Q', it, w, player) and
 				it == rank) {
 				++queen_count;
@@ -850,7 +941,9 @@ namespace Chess {
 			while (it >= 0 and not main[it][w].hasPiece()) {
 				--it;
 			}
-			std::cout << "Found piece at [" << it << ", " << w << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found piece at [" << it << ", " << w << "]" << std::endl;
+			}
 			if (hasFriendly('Q', it, w, player) and
 				it == rank) {
 				++queen_count;
@@ -862,7 +955,9 @@ namespace Chess {
 			while (it <= 7 and not main[h][it].hasPiece()) {
 				++it;
 			}
-			std::cout << "Found piece at [" << h << ", " << it << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found piece at [" << h << ", " << it << "]" << std::endl;
+			}
 			if (hasFriendly('Q', h, it, player) and
 				h == rank) {
 				++queen_count;
@@ -878,7 +973,9 @@ namespace Chess {
 			while (it >= 0 and not main[h][it].hasPiece()) {
 				--it;
 			}
-			std::cout << "Found piece at [" << h << ", " << it << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found piece at [" << h << ", " << it << "]" << std::endl;
+			}
 			if (hasFriendly('Q', h, it, player) and
 				h == rank) {
 				++queen_count;
@@ -893,13 +990,17 @@ namespace Chess {
 				std::cout << "#4::No queen found to make the move" << std::endl;
 				return false;
 			}
-			std::cout << "Found a queen in [" << orig_h << ", " << orig_w << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found a queen in [" << orig_h << ", " << orig_w << "]" << std::endl;
+			}
 			//Make the move
 			return makeCapture('Q', orig_h, orig_w, h, w, player);
 		}
 
 		bool Board::queenCaptureFile(int file, int h, int w, int player) {
-			std::cout << "[" << h << ", " << w << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "[" << h << ", " << w << "]" << std::endl;
+			}
 			//Out of board
 			if (not inBound(h, w)) {
 				std::cout << "#1::Your movement is out of bounds for a queen" << std::endl;
@@ -925,7 +1026,9 @@ namespace Chess {
 				++it_h;
 				--it_w;
 			}
-			std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
+			}
 			if (hasFriendly('Q', it_h, it_w, player) and
 				it_w == file) {
 				++queen_count;
@@ -939,7 +1042,9 @@ namespace Chess {
 				--it_h;
 				--it_w;
 			}
-			std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
+			}
 			if (hasFriendly('Q', it_h, it_w, player) and
 				it_w == file) {
 				++queen_count;
@@ -957,7 +1062,9 @@ namespace Chess {
 				++it_h;
 				++it_w;
 			}
-			std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
+			}
 			if (hasFriendly('Q', it_h, it_w, player) and
 				it_w == file) {
 				++queen_count;
@@ -975,7 +1082,9 @@ namespace Chess {
 				--it_h;
 				++it_w;
 			}
-			std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
+			}
 			if (hasFriendly('Q', it_h, it_w, player) and
 				it_w == file) {
 				++queen_count;
@@ -991,7 +1100,9 @@ namespace Chess {
 			while (it <= 7 and not main[it][w].hasPiece()) {
 				++it;
 			}
-			std::cout << "Found piece at [" << it << ", " << w << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found piece at [" << it << ", " << w << "]" << std::endl;
+			}
 			if (hasFriendly('Q', it, w, player) and
 				w == file) {
 				++queen_count;
@@ -1003,7 +1114,9 @@ namespace Chess {
 			while (it >= 0 and not main[it][w].hasPiece()) {
 				--it;
 			}
-			std::cout << "Found piece at [" << it << ", " << w << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found piece at [" << it << ", " << w << "]" << std::endl;
+			}
 			if (hasFriendly('Q', it, w, player) and
 				w == file) {
 				++queen_count;
@@ -1015,7 +1128,9 @@ namespace Chess {
 			while (it <= 7 and not main[h][it].hasPiece()) {
 				++it;
 			}
-			std::cout << "Found piece at [" << h << ", " << it << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found piece at [" << h << ", " << it << "]" << std::endl;
+			}
 			if (hasFriendly('Q', h, it, player) and
 				it == file) {
 				++queen_count;
@@ -1031,7 +1146,9 @@ namespace Chess {
 			while (it >= 0 and not main[h][it].hasPiece()) {
 				--it;
 			}
-			std::cout << "Found piece at [" << h << ", " << it << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found piece at [" << h << ", " << it << "]" << std::endl;
+			}
 			if (hasFriendly('Q', h, it, player) and
 				it == file) {
 				++queen_count;
@@ -1046,7 +1163,9 @@ namespace Chess {
 				std::cout << "#4::No queen found to make the move" << std::endl;
 				return false;
 			}
-			std::cout << "Found a queen in [" << orig_h << ", " << orig_w << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found a queen in [" << orig_h << ", " << orig_w << "]" << std::endl;
+			}
 			//Make the move
 			return makeCapture('Q', orig_h, orig_w, h, w, player);
 		}
@@ -1080,7 +1199,9 @@ namespace Chess {
 				++it_h;
 				--it_w;
 			}
-			std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
+			}
 			if (hasFriendly('Q', it_h, it_w, player)) {
 				if (it_h == h_s and it_w == w_s) {
 					found = true;
@@ -1093,7 +1214,9 @@ namespace Chess {
 				--it_h;
 				--it_w;
 			}
-			std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
+			}
 			if (hasFriendly('Q', it_h, it_w, player)) {
 				if (it_h == h_s and it_w == w_s) {
 					found = true;
@@ -1106,7 +1229,9 @@ namespace Chess {
 				++it_h;
 				++it_w;
 			}
-			std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
+			}
 			if (hasFriendly('Q', it_h, it_w, player)) {
 				if (it_h == h_s and it_w == w_s) {
 					found = true;
@@ -1119,7 +1244,9 @@ namespace Chess {
 				--it_h;
 				++it_w;
 			}
-			std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
+			}
 			if (hasFriendly('Q', it_h, it_w, player)) {
 				if (it_h == h_s and it_w == w_s) {
 					found = true;
@@ -1130,7 +1257,9 @@ namespace Chess {
 			while (it <= 7 and not main[it][w_d].hasPiece()) {
 				++it;
 			}
-			std::cout << "Found piece at [" << it << ", " << w_d << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found piece at [" << it << ", " << w_d << "]" << std::endl;
+			}
 			if (hasFriendly('Q', it, w_d, player)) {
 				if (it_h == h_s and it_w == w_s) {
 					found = true;
@@ -1141,7 +1270,9 @@ namespace Chess {
 			while (it >= 0 and not main[it][w_d].hasPiece()) {
 				--it;
 			}
-			std::cout << "Found piece at [" << it << ", " << w_d << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found piece at [" << it << ", " << w_d << "]" << std::endl;
+			}
 			if (hasFriendly('Q', it, w_d, player)) {
 				if (it_h == h_s and it_w == w_s) {
 					found = true;
@@ -1152,7 +1283,9 @@ namespace Chess {
 			while (it <= 7 and not main[h_d][it].hasPiece()) {
 				++it;
 			}
-			std::cout << "Found piece at [" << h_d << ", " << it << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found piece at [" << h_d << ", " << it << "]" << std::endl;
+			}
 			if (hasFriendly('Q', h_d, it, player)) {
 				if (it_h == h_s and it_w == w_s) {
 					found = true;
@@ -1163,7 +1296,9 @@ namespace Chess {
 			while (it >= 0 and not main[h_d][it].hasPiece()) {
 				--it;
 			}
-			std::cout << "Found piece at [" << h_d << ", " << it << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found piece at [" << h_d << ", " << it << "]" << std::endl;
+			}
 			if (hasFriendly('Q', h_d, it, player)) {
 				if (it_h == h_s and it_w == w_s) {
 					found = true;
@@ -1173,8 +1308,9 @@ namespace Chess {
 				std::cout << "#4::No queen found to make the move" << std::endl;
 				return false;
 			}
-			std::cout << "Found a queen in [" << h_d << ", " << w_d << "]" << std::endl;
-
+			if (MODE == DEBUG) {
+				std::cout << "Found a queen in [" << h_d << ", " << w_d << "]" << std::endl;
+			}
 			//Make move
 			return makeCapture('Q', h_s, w_s, h_d, w_d, player);
 		}

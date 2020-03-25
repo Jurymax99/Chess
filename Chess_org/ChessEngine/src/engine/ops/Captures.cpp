@@ -15,25 +15,29 @@ namespace Chess {
 			main[h][w].addPiece(type, player);
 			if (type == 'K') {
 				if (player == RED) {
-					redKing = { h,w };
+					Red.setKing(h, w);
 				}
 				else if (player == GREEN) {
-					greenKing = { h,w };
+					Green.setKing(h, w);
 				}
 			}
 			int player_checked;
 			if (isChecked(player_checked) and player_checked == player) {
 				if (player == RED) {
 					if (type == 'K') {
-						redKing = { orig_h,orig_w };
+						Red.setKing(orig_h, orig_w);
 					}
-					std::cout << "#10::The red king is in check" << std::endl;
+					if (MODE == DEBUG) {
+						std::cout << "#10::The red king is in check" << std::endl;
+					}
 				}
 				else if (player == GREEN) {
 					if (type == 'K') {
-						greenKing = { orig_h,orig_w };
+						Green.setKing(orig_h, orig_w);
 					}
-					std::cout << "#10::The green king is in check" << std::endl;
+					if (MODE == DEBUG) {
+						std::cout << "#10::The green king is in check" << std::endl;
+					}
 				}
 				else {
 					std::cout << "#10::No known player" << std::endl;
@@ -51,12 +55,12 @@ namespace Chess {
 				return false;
 			}
 			if (player == RED) {
-				addGreenDead(tempPiece);
-				redScore += tempScore;
+				Green.addDead(tempPiece);
+				Red.addScore(tempScore);
 			}
 			else if (player == GREEN) {
-				addRedDead(tempPiece);
-				greenScore += tempScore;
+				Red.addDead(tempPiece);
+				Green.addScore(tempScore);
 			}
 			else {
 				std::cout << "No such known player " << player << std::endl;
@@ -79,10 +83,14 @@ namespace Chess {
 			int player_checked;
 			if (isChecked(player_checked) and player_checked == player) {
 				if (player == RED) {
-					std::cout << "#10::The red king is in check" << std::endl;
+					if (MODE == DEBUG) {
+						std::cout << "#10::The red king is in check" << std::endl;
+					}
 				}
 				else if (player == GREEN) {
-					std::cout << "#10::The green king is in check" << std::endl;
+					if (MODE == DEBUG) {
+						std::cout << "#10::The green king is in check" << std::endl;
+					}
 				}
 				else {
 					std::cout << "#10::No known player" << std::endl;
@@ -100,12 +108,12 @@ namespace Chess {
 				return false;
 			}
 			if (player == RED) {
-				addGreenDead(tempPiece);
-				redScore += tempScore;
+				Green.addDead(tempPiece);
+				Red.addScore(tempScore);
 			}
 			else if (player == GREEN) {
-				addRedDead(tempPiece);
-				greenScore += tempScore;
+				Red.addDead(tempPiece);
+				Green.addScore(tempScore);
 			}
 			else {
 				std::cout << "No such known player " << player << std::endl;
@@ -130,7 +138,9 @@ namespace Chess {
 
 		bool Board::pawnRedCapture(int w_s, int h_d, int w_d, bool enpassant) {
 			int h_s = h_d;
-			std::cout << "From rank " << w_s << " to [" << h_d << ", " << w_d << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "From rank " << w_s << " to [" << h_d << ", " << w_d << "]" << std::endl;
+			}
 			if (not inBound(h_d, w_d)) {
 				std::cout << "#1::Your movement is out of bounds for a pawn" << std::endl;
 				return false;
@@ -196,7 +206,9 @@ namespace Chess {
 				main[h_d][w_d].addPiece('P', RED);
 				int player_checked;
 				if (isChecked(player_checked) and player_checked == RED) {
-					std::cout << "#10::The red king is in check" << std::endl;
+					if (MODE == DEBUG) {
+						std::cout << "#10::The red king is in check" << std::endl;
+					}
 					//Rollback
 					main[h_d][w_d].removePiece();
 					//Killer
@@ -212,8 +224,8 @@ namespace Chess {
 					return false;
 				}
 				//Commit
-				addGreenDead(tempPiece);
-				redScore += tempScore;
+				Red.addDead(tempPiece);
+				Red.addScore(tempScore);
 				main[h_d][w_d].checkPiecePoint()->firstMove();
 				return true;
 			}
@@ -224,7 +236,9 @@ namespace Chess {
 		}
 
 		bool Board::pawnGreenCapture(int w_s, int h_d, int w_d, bool enpassant) {
-			std::cout << "From rank " << w_s << " to [" << h_d << ", " << w_d << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "From rank " << w_s << " to [" << h_d << ", " << w_d << "]" << std::endl;
+			}
 			int h_s = h_d;
 			if (not inBound(h_d, w_d)) {
 				std::cout << "#1::Your movement is out of bounds for a pawn" << std::endl;
@@ -291,7 +305,9 @@ namespace Chess {
 				main[h_d][w_d].addPiece('P', GREEN);
 				int player_checked;
 				if (isChecked(player_checked) and player_checked == GREEN) {
-					std::cout << "#10::The green king is in check" << std::endl;
+					if (MODE == DEBUG) {
+						std::cout << "#10::The green king is in check" << std::endl;
+					}
 					//Rollback
 					main[h_d][w_d].removePiece();
 					//Killer
@@ -307,8 +323,8 @@ namespace Chess {
 					return false;
 				}
 				//Commit
-				addRedDead(tempPiece);
-				greenScore += tempScore;
+				Red.addDead(tempPiece);
+				Green.addScore(tempScore);
 				main[h_d][w_d].checkPiecePoint()->firstMove();
 				return true;
 			}
@@ -332,7 +348,9 @@ namespace Chess {
 		}
 
 		bool Board::pawnRedPromoteCapture(int w_s, int h_d, int w_d, char type) {
-			std::cout << "From rank " << w_s << " to [" << h_d << ", " << w_d << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "From rank " << w_s << " to [" << h_d << ", " << w_d << "]" << std::endl;
+			}
 			//Out of board
 			if (w_d > 7 or w_d < 0 or h_d != 0) {
 				std::cout << "#1::Invalid position for a promotion" << std::endl;
@@ -370,7 +388,9 @@ namespace Chess {
 		}
 
 		bool Board::pawnGreenPromoteCapture(int w_s, int h_d, int w_d, char type) {
-			std::cout << "From rank " << w_s << " to [" << h_d << ", " << w_d << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "From rank " << w_s << " to [" << h_d << ", " << w_d << "]" << std::endl;
+			}
 			//Out of board
 			if (w_d > 7 or w_d < 0 or h_d != 7) {
 				std::cout << "#1::Invalid position for a promotion" << std::endl;
@@ -408,7 +428,9 @@ namespace Chess {
 		}
 
 		bool Board::knightCapture(int h, int w, int player) {
-			std::cout << "[" << h << ", " << w << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "[" << h << ", " << w << "]" << std::endl;
+			}
 			//Out of board
 			if (not inBound(h, w)) {
 				std::cout << "#1::Your movement is out of bounds for a knight" << std::endl;
@@ -506,13 +528,17 @@ namespace Chess {
 				std::cout << "#4::No knight found to make the move" << std::endl;
 				return false;
 			}
-			std::cout << "Found a knight in [" << orig_h << ", " << orig_w << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found a knight in [" << orig_h << ", " << orig_w << "]" << std::endl;
+			}
 			//Make the move
 			return makeCapture('N', orig_h, orig_w, h, w, player);
 		}
 
 		bool Board::rookCapture(int h, int w, int player) {
-			std::cout << "[" << h << ", " << w << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "[" << h << ", " << w << "]" << std::endl;
+			}
 			//Out of board
 			if (not inBound(h, w)) {
 				std::cout << "#1::Your movement is out of bounds for a rook" << std::endl;
@@ -535,7 +561,9 @@ namespace Chess {
 			while (it <= 7 and not main[it][w].hasPiece()) {
 				++it;
 			}
-			std::cout << "Found piece at [" << it << ", " << w << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found piece at [" << it << ", " << w << "]" << std::endl;
+			}
 			if (hasFriendly('R', it, w, player)) {
 				++rook_count;
 				orig_h = it;
@@ -546,7 +574,9 @@ namespace Chess {
 			while (it >= 0 and not main[it][w].hasPiece()) {
 				--it;
 			}
-			std::cout << "Found piece at [" << it << ", " << w << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found piece at [" << it << ", " << w << "]" << std::endl;
+			}
 			if (hasFriendly('R', it, w, player)) {
 				++rook_count;
 				orig_h = it;
@@ -561,7 +591,9 @@ namespace Chess {
 			while (it <= 7 and not main[h][it].hasPiece()) {
 				++it;
 			}
-			std::cout << "Found piece at [" << h << ", " << it << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found piece at [" << h << ", " << it << "]" << std::endl;
+			}
 			if (hasFriendly('R', h, it, player)) {
 				++rook_count;
 				orig_h = h;
@@ -576,7 +608,9 @@ namespace Chess {
 			while (it >= 0 and not main[h][it].hasPiece()) {
 				--it;
 			}
-			std::cout << "Found piece at [" << h << ", " << it << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found piece at [" << h << ", " << it << "]" << std::endl;
+			}
 			if (hasFriendly('R', h, it, player)) {
 				++rook_count;
 				orig_h = h;
@@ -590,14 +624,17 @@ namespace Chess {
 				std::cout << "#4::No rook found to make the move" << std::endl;
 				return false;
 			}
-			std::cout << "Found a rook in [" << orig_h << ", " << orig_w << "]" << std::endl;
-
+			if (MODE == DEBUG) {
+				std::cout << "Found a rook in [" << orig_h << ", " << orig_w << "]" << std::endl;
+			}
 			//Make the move
 			return makeCapture('R', orig_h, orig_w, h, w, player);
 		}
 
 		bool Board::bishopCapture(int h, int w, int player) {
-			std::cout << "[" << h << ", " << w << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "[" << h << ", " << w << "]" << std::endl;
+			}
 			//Out of board
 			if (not inBound(h, w)) {
 				std::cout << "#1::Your movement is out of bounds for a bishop" << std::endl;
@@ -623,7 +660,9 @@ namespace Chess {
 				++it_h;
 				--it_w;
 			}
-			std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
+			}
 			if (hasFriendly('B', it_h, it_w, player)) {
 				++bishop_count;
 				orig_h = it_h;
@@ -636,7 +675,9 @@ namespace Chess {
 				--it_h;
 				--it_w;
 			}
-			std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
+			}
 			if (hasFriendly('B', it_h, it_w, player)) {
 				++bishop_count;
 				orig_h = it_h;
@@ -653,7 +694,9 @@ namespace Chess {
 				++it_h;
 				++it_w;
 			}
-			std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
+			}
 			if (hasFriendly('B', it_h, it_w, player)) {
 				++bishop_count;
 				orig_h = it_h;
@@ -670,7 +713,9 @@ namespace Chess {
 				--it_h;
 				++it_w;
 			}
-			std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
+			}
 			if (hasFriendly('B', it_h, it_w, player)) {
 				++bishop_count;
 				orig_h = it_h;
@@ -684,13 +729,17 @@ namespace Chess {
 				std::cout << "#4::No bishop found to make the move" << std::endl;
 				return false;
 			}
-			std::cout << "Found a bishop in [" << orig_h << ", " << orig_w << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found a bishop in [" << orig_h << ", " << orig_w << "]" << std::endl;
+			}
 			//Make the move
 			return makeCapture('B', orig_h, orig_w, h, w, player);
 		}
 
 		bool Board::queenCapture(int h, int w, int player) {
-			std::cout << "[" << h << ", " << w << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "[" << h << ", " << w << "]" << std::endl;
+			}
 			//Out of board
 			if (not inBound(h, w)) {
 				std::cout << "#1::Your movement is out of bounds for a queen" << std::endl;
@@ -716,7 +765,9 @@ namespace Chess {
 				++it_h;
 				--it_w;
 			}
-			std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
+			}
 			if (hasFriendly('Q', it_h, it_w, player)) {
 				++queen_count;
 				orig_h = it_h;
@@ -729,7 +780,9 @@ namespace Chess {
 				--it_h;
 				--it_w;
 			}
-			std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
+			}
 			if (hasFriendly('Q', it_h, it_w, player)) {
 				++queen_count;
 				orig_h = it_h;
@@ -746,7 +799,9 @@ namespace Chess {
 				++it_h;
 				++it_w;
 			}
-			std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
+			}
 			if (hasFriendly('Q', it_h, it_w, player)) {
 				++queen_count;
 				orig_h = it_h;
@@ -763,7 +818,9 @@ namespace Chess {
 				--it_h;
 				++it_w;
 			}
-			std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found piece at [" << it_h << ", " << it_w << "]" << std::endl;
+			}
 			if (hasFriendly('Q', it_h, it_w, player)) {
 				++queen_count;
 				orig_h = it_h;
@@ -778,7 +835,9 @@ namespace Chess {
 			while (it <= 7 and not main[it][w].hasPiece()) {
 				++it;
 			}
-			std::cout << "Found piece at [" << it << ", " << w << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found piece at [" << it << ", " << w << "]" << std::endl;
+			}
 			if (hasFriendly('Q', it, w, player)) {
 				++queen_count;
 				orig_h = it;
@@ -789,7 +848,9 @@ namespace Chess {
 			while (it >= 0 and not main[it][w].hasPiece()) {
 				--it;
 			}
-			std::cout << "Found piece at [" << it << ", " << w << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found piece at [" << it << ", " << w << "]" << std::endl;
+			}
 			if (hasFriendly('Q', it, w, player)) {
 				++queen_count;
 				orig_h = it;
@@ -800,7 +861,9 @@ namespace Chess {
 			while (it <= 7 and not main[h][it].hasPiece()) {
 				++it;
 			}
-			std::cout << "Found piece at [" << h << ", " << it << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found piece at [" << h << ", " << it << "]" << std::endl;
+			}
 			if (hasFriendly('Q', h, it, player)) {
 				++queen_count;
 				orig_h = h;
@@ -815,7 +878,9 @@ namespace Chess {
 			while (it >= 0 and not main[h][it].hasPiece()) {
 				--it;
 			}
-			std::cout << "Found piece at [" << h << ", " << it << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found piece at [" << h << ", " << it << "]" << std::endl;
+			}
 			if (hasFriendly('Q', h, it, player)) {
 				++queen_count;
 				orig_h = h;
@@ -829,13 +894,17 @@ namespace Chess {
 				std::cout << "#4::No queen found to make the move" << std::endl;
 				return false;
 			}
-			std::cout << "Found a queen in [" << orig_h << ", " << orig_w << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found a queen in [" << orig_h << ", " << orig_w << "]" << std::endl;
+			}
 			//Make the move
 			return makeCapture('Q', orig_h, orig_w, h, w, player);
 		}
 
 		bool Board::kingCapture(int h, int w, int player) {
-			std::cout << "[" << h << ", " << w << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "[" << h << ", " << w << "]" << std::endl;
+			}
 			//Out of board
 			if (not inBound(h, w)) {
 				std::cout << "#1::Your movement is out of bounds for a king" << std::endl;
@@ -872,15 +941,17 @@ namespace Chess {
 				std::cout << "#4::No king found to make the move" << std::endl;
 				return false;
 			}
-			std::cout << "Found a king in [" << orig_h << ", " << orig_w << "]" << std::endl;
+			if (MODE == DEBUG) {
+				std::cout << "Found a king in [" << orig_h << ", " << orig_w << "]" << std::endl;
+			}
 			//Make the move
 			if (makeCapture('K', orig_h, orig_w, h, w, player)) {
 				if (player == RED) {
-					redKing = { h,w };
+					Red.setKing(h, w);
 					return true;
 				}
 				else if (player == GREEN) {
-					greenKing = { h,w };
+					Green.setKing(h, w);
 					return true;
 				}
 				else {

@@ -1,0 +1,61 @@
+[Event "Hastings 1975/76"]
+[Site "Hastings ENG"]
+[Date "1976.01.12"]
+[EventDate "?"]
+[Round "13"]
+[Result "1-0"]
+[White "Raymond Keene"]
+[Black "Anthony Miles"]
+[ECO "D42"]
+[WhiteElo "?"]
+[BlackElo "?"]
+[PlyCount "51"]
+
+1. Nf3 { Notes by Raymond Keene. } Nf6 2. c4 c5 3. Nc3 Nc6
+4. e3 e6 5. d4 d5 6. cxd5 Nxd5 7. Bd3 cxd4 {Perhaps 7...Be7 is
+more accurate, maintaining the central tension.} 8. exd4 Be7
+9. O-O O-O {One of the classical isolated queen's pawn
+positions, in which White's extra space and attacking chances
+compensate for the structural weakness.} 10. Re1 Nf6 {A solid
+alternative is 10...Bf6 11 Be4 etc.} 11. Bg5 {!? Fashionable
+was 11 a3, but the text is not bad. All White's pieces are
+coming out at great speed while Black still has problems
+completing his queenside development.} 11...Nb4 {The immediate
+11...b6 deserves attention. Black's plan to dominate the
+blockade square d5 instantly is possibly too straightforward.}
+12. Bb1 b6 {12...Bd7 is a more cautious treatment, planning a
+later development with ...Bc6.} 13. Ne5 Bb7 {It might look as
+if Black is over the worst but now a vicious attack appears
+almost out of nowhere.} 14. Re3 {!! A difficult and bold
+move. When I played it I already had to be sure that my
+kingside attacking chances would be sufficient compensation
+for my lack of queenside development and the clumsy position
+of my rook on the third rank. Strangely, a similar rook
+manoeuvre occurred in a game Filip - Pogats, played 14 years
+previously, but neither Miles nor I had any notion of this
+until I discovered the theoretical background after our
+game. Incidentally, the Filip game ended in a draw.} 14...g6
+{To prevent 15 Bxf6 Bxf6 16 Bxh7+ Kxh7 17 Qh5+ and 18 Rh3.}
+15. Rg3 {! It looks odd to aim the rook against a granite wall
+(g6) but the granite has faulty foundations. In contrast, the
+more natural 15 Rh3 achieves nothing.} 15...Rc8 {?! At the
+time the course I feared most was 15...Nc6! 16 Bh6 Qxd4! when
+Black breaks White's attack by sacrificing the exchange. In
+view of the lack of weaknesses in Black's position it would
+then be a distinctly uphill struggle for White to win. After
+the move played the solution became susceptible to precise
+tactical analysis.} 16. Bh6 Re8 17. a3 Nc6 {17...Nbd5 does not
+alter things significantly.} 18. Nxg6 {!} hxg6 19. Bxg6 {Apart
+from capturing the bishop Black has two other defences: a)
+19...Bf8 20 Bc2+ Kh8 21 Bxf8 Rxf8 22 Qd2 Ng8 23 Rh3+ Kg7 24
+Rh7+ (Fritz gives 24 Qf4) 24...Kf6 25 d5+-; b) 19...Bd6 20
+Bxf7+ Kxf7 21 Rg7+ Kf8 22 Qf3+-. In this position Black is
+quite helpless, in spite of his extra material.} 19...fxg6
+20. Qb1 {! An original square for the queen in a mating
+combination, but neither 20 Qd3 Ne5 nor 20 Qc2 Ne5! 21 dxe5
+Ne4 (exploiting the pin on the c-file) would be good enough
+for White.} 20...Ne5 21. dxe5 Ne4 {Without the c-file pin this
+is sheer desperation.} 22. Nxe4 Kh7 23. Nf6+ Bxf6 24. Qxg6+
+Kh8 25. Bg7+ Bxg7 26. Qxg7# 1-0
+
+https://www.chessgames.com/perl/chessgame?gid=1071404

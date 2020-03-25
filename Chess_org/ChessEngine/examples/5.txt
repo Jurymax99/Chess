@@ -1,0 +1,26 @@
+[Event "Karlsbad"]
+[Site "Karlsbad CSR"]
+[Date "1923.05.06"]
+[EventDate "1923.04.28"]
+[Round "7"]
+[Result "0-1"]
+[White "Alexander Alekhine"]
+[Black "Fred Dewhirst Yates"]
+[ECO "E62"]
+[WhiteElo "?"]
+[BlackElo "?"]
+[PlyCount "100"]
+
+1. d4 Nf6 2. c4 g6 3. g3 Bg7 4. Bg2 O-O 5. Nc3 d6 6. Nf3 Nc6
+7. d5 Nb8 8. e4 Nbd7 9. O-O a5 10. Be3 Ng4 11. Bd4 Nge5
+12. Nxe5 Nxe5 13. c5 dxc5 14. Bxc5 b6 15. Bd4 Ba6 16. Re1 Qd6
+17. Bf1 Bxf1 18. Rxf1 c5 19. Bxe5 Qxe5 20. Qb3 Rab8 21. Qb5 f5
+22. Rae1 f4 23. Qd7 Rbd8 24. gxf4 Qxf4 25. Qe6+ Kh8 26. f3
+Qg5+ 27. Kh1 Rd6 28. Qh3 Be5 29. Re2 Rdf6 30. Nd1 Rf4 31. Ne3
+Rh4 32. Qe6 Qh5 33. Ng4 Rxg4 34. fxg4 Rxf1+ 35. Kg2 Qxh2+
+36. Kxf1 Qh1+ 37. Kf2 Bd4+ 38. Kg3 Qg1+ 39. Kh3 Qf1+ 40. Rg2
+Qh1+ 41. Kg3 Qe1+ 42. Kh3 g5 43. Rc2 Qf1+ 44. Kh2 Qg1+ 45. Kh3
+Qh1+ 46. Kg3 Qd1 47. Rc3 Qg1+ 48. Kh3 Qf1+ 49. Kg3 Bf2+
+50. Kf3 Bg1+ 0-1
+
+https://www.chessgames.com/perl/chessgame?gid=1012179

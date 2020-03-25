@@ -2,10 +2,13 @@
 #include <vector>
 #include <set>
 #include "Tile.h"
-
+#include "Player.h"
 
 namespace Chess {
 	namespace Engine {
+
+		class Player;
+
 		class Board {
 
 			typedef std::vector <Tile> Row;
@@ -14,21 +17,7 @@ namespace Chess {
 		private:
 			int height, width, pieces;
 			Matrix main;
-			std::vector <Pieces::Piece> GreenDead;
-			std::vector <Pieces::Piece> RedDead;
-			struct PositionState {
-				int h, w;
-				bool empty = true;
-
-				bool operator <(const PositionState& rhs) const;
-			};
-			std::set <PositionState, std::less<PositionState>> RedThreat;
-			std::set <PositionState, std::less<PositionState>> GreenThreat;
-			int redScore, greenScore;
-			struct Position {
-				int h, w;
-			} redKing, greenKing;
-
+			Player Red, Green;
 			struct EnPassant {
 				int h, w;
 				bool possible = false;
@@ -112,34 +101,17 @@ namespace Chess {
 			bool castleKingside				(int player);
 			bool castleQueenside			(int player);
 
-			void addGreenDead				(Pieces::Piece);
-			void addRedDead					(Pieces::Piece);
-
-			void checkGreenDeadDebug() const;
-			void checkRedDeadDebug() const;
-			void checkGreenDeadRelease() const;
-			void checkRedDeadRelease() const;
-
-			void checkRedThreats() const;
-			void checkGreenThreats() const;
-
-			void checkRedKing() const;
-			void checkGreenKing() const;
-
-			void updateRedThreats();
-			void updateGreenThreats();
-
 			void print_blank(int par);
 			void printBoardRelease();
 			void printBoardDebug();
 		public:
+			friend void updateThreats(Player& p, Board& b);
 			Board();
 			~Board();
 
-			void printBoard(int mode);
+			void printBoard();
 			bool move(std::string movement, int player, bool& enp);
 			bool isChecked					();
-			void updateThreats();
 		};
 	}
 }
