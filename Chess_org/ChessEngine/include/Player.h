@@ -2,11 +2,14 @@
 #include <vector>
 #include <set>
 #include "Piece.h"
+#include "Utilities.h"
+#include "MoveSet.h"
 
 namespace Chess {
 	namespace Engine {
 
 		class Board;
+		class MoveSet;
 
 		class Player {
 		private:
@@ -20,15 +23,14 @@ namespace Chess {
 			};
 			std::set <PositionState, std::less<PositionState>> Threat;
 			int score;
-			struct Position {
-				int h, w;
-			} king;
+			Position king;
+			MoveSet moves;
 
 		public:
 			Player();
 			Player(int color);
 			void addDead(Pieces::Piece piece);
-			bool findDead(int i, int j);
+			bool findThreat(int i, int j);
 			bool findThreat(int i, int j, bool cond);
 			bool findThreat(Position p, bool cond);
 			Position checkKingPosition();
@@ -36,10 +38,15 @@ namespace Chess {
 			void setKing(int h, int w);
 			void addScore(int score);
 
-			friend void updateThreats(Player& p, Board& b);
+			Position findMove(char type, Position dest, Board& b);
 
+			void updateThreats(Board& b);
+			void updateMoveSet(Board& b);
+
+			bool hasMoves() const;
+			void checkMoves() const;
 			void checkDeadRelease() const;
-			void checkDeadDebug();
+			void checkDeadDebug() const;
 			int checkScore() const;
 			void checkThreats() const;
 		};

@@ -1,0 +1,20 @@
+[Event "Vienna"]
+[Site "Vienna"]
+[Date "1860.04.??"]
+[EventDate "?"]
+[Round "?"]
+[Result "0-1"]
+[White "Reiner"]
+[Black "Wilhelm Steinitz"]
+[ECO "C44"]
+[WhiteElo "?"]
+[BlackElo "?"]
+[PlyCount "36"]
+
+1. e4 e5 2. Nf3 Nc6 3. d4 exd4 4. Bc4 Bc5 5. O-O d6 6. c3 Bg4
+7. Qb3 Bxf3 8. Bxf7+ Kf8 9. Bxg8 Rxg8 10. gxf3 g5 11. Qe6 Ne5
+12. Qf5+ Kg7 13. Kh1 Kh8 14. Rg1 g4 15. f4 Nf3 16. Rxg4 Qh4
+17. Rg2 Qxh2+ 18. Rxh2 Rg1# 0-1
+
+
+https://www.chessgames.com/perl/chessgame?gid=1132565

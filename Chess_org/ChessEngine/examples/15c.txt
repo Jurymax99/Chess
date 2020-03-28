@@ -1,0 +1,23 @@
+[Event "Ostend"]
+[Site "Ostend BEL"]
+[Date "1906.06.08"]
+[EventDate "?"]
+[Round "4"]
+[Result "1-0"]
+[White "Paul F Johner"]
+[Black "Walter Montagu Gattie"]
+[ECO "C11"]
+[WhiteElo "?"]
+[BlackElo "?"]
+[PlyCount "87"]
+
+1.e4 e6 2.d4 d5 3.Nc3 Nf6 4.e5 Nfd7 5.f4 c5 6.dxc5 Nc6 7.a3
+Bxc5 8.Qg4 O-O 9.Bd3 f5 10.Qh3 a6 11.Nf3 Be7 12.g4 Nc5 13.gxf5
+Nxd3+ 14.cxd3 Rxf5 15.Rg1 Bd7 16.Ne2 Qb6 17.d4 Rf7 18.Kf2 Kh8
+19.Be3 Rg8 20.Ng5 Bxg5 21.Rxg5 g6 22.Rag1 Ne7 23.b4 Rfg7 24.f5
+Nxf5 25.R5g4 Nxe3 26.Qxe3 Be8 27.Kg2 Qc7 28.Kh1 Qc2 29.Rc1 Qa4
+30.Nf4 Qd7 31.Nh3 Qe7 32.Rcg1 Rf8 33.R4g3 Rf5 34.Nf2 g5 35.Ng4
+Bg6 36.Nf6 h6 37.h4 Rf4 38.hxg5 Be4+ 39.Kh2 Rh4+ 40.Rh3 hxg5
+41.Rxh4+ gxh4 42.Qh6+ Bh7 43.Qxh7+ Rxh7 44.Rg8# 1-0
+
+https://www.chessgames.com/perl/chessgame?gid=1378156

@@ -3,11 +3,13 @@
 #include <set>
 #include "Tile.h"
 #include "Player.h"
+#include "MoveSet.h"
 
 namespace Chess {
 	namespace Engine {
 
 		class Player;
+		class MoveSet;
 
 		class Board {
 
@@ -26,14 +28,24 @@ namespace Chess {
 			bool inBound					(int h, int w)	const;
 			bool contains					(char c, std::string word) const;
 			bool hasFriendly				(char type, int h, int w, int player) const;
+			bool hasFriendly				(int h, int w, int player) const;
 			bool hasEnemy					(char type, int h, int w, int player) const;
+			bool hasEnemy					(int h, int w, int player) const;
 			bool rank						(char a) const;
 			bool file						(char a) const;
 			bool isChecked					(int& player);
+			bool isChecked					();
+			bool areBothChecked				();
 
 			bool makeMove					(char type, int orig_h, int orig_w, int h, int w, int player);
 			bool makeCapture				(char type, int orig_h, int orig_w, int h, int w, int player);
 			bool makeCapture				(char type, char typepro, int orig_h, int orig_w, int h, int w, int player);
+
+			bool makeFakeMove				(char type, int orig_h, int orig_w, int h, int w, int player, bool& check);
+			bool makeFakeCapture			(char type, int orig_h, int orig_w, int h, int w, int player, bool& check);
+			bool makeFakeMovePro				(char type, int orig_h, int orig_w, int h, int w, int player, bool& check);
+			bool makeFakeCapturePro			(char type, int orig_h, int orig_w, int h, int w, int player, bool& check);
+			bool makeFakeEnPassant			(int orig_h, int orig_w, int dest_h, int dest_w, int killed_h, int killed_w, int player, bool& check);
 
 			//Pawn
 			bool pawnMove					(int h, int w, int player);
@@ -100,18 +112,23 @@ namespace Chess {
 			//Castling
 			bool castleKingside				(int player);
 			bool castleQueenside			(int player);
+			bool castleFakeKingside			(int player, bool& check);
+			bool castleFakeQueenside		(int player, bool& check);
 
 			void print_blank(int par);
 			void printBoardRelease();
 			void printBoardDebug();
 		public:
-			friend void updateThreats(Player& p, Board& b);
+			friend class Player;
+			friend class MoveSet;
+
 			Board();
 			~Board();
 
 			void printBoard();
 			bool move(std::string movement, int player, bool& enp);
-			bool isChecked					();
+			void update();
+			bool isCheckmate				(int player) const;
 		};
 	}
 }

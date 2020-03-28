@@ -1,0 +1,20 @@
+[Event "European Individual Women's Championship"]
+[Site "Gaziantep TUR"]
+[Date "2012.03.04"]
+[EventDate "2012.03.02"]
+[Round "3"]
+[Result "0-1"]
+[White "Irmak Dai"]
+[Black "Monika Motycakova"]
+[ECO "C63"]
+[WhiteElo "1592"]
+[BlackElo "2087"]
+[PlyCount "44"]
+
+1. e4 e5 2. Nf3 Nc6 3. Bb5 f5 4. d3 Bc5 5. O-O d6 6. a3 Nf6
+7. Nc3 O-O 8. Bc4+ Kh8 9. Ng5 Qe7 10. Nd5 Nxd5 11. Bxd5 f4
+12. Nxh7 Rd8 13. Qh5 g6 14. Qxg6 Qg7 15. Qxg7+ Kxg7 16. Ng5
+Kf6 17. Nf3 Bg4 18. Nd2 Nd4 19. c3 Ne2+ 20. Kh1 Rh8 21. Nb3
+Rxh2+ 22. Kxh2 Rh8+ 0-1
+
+https://www.chessgames.com/perl/chessgame?gid=1658348

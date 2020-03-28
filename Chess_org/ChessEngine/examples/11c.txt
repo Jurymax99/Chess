@@ -1,0 +1,24 @@
+[Event "European Club Cup"]
+[Site "Rhodes GRE"]
+[Date "2013.10.20"]
+[EventDate "2013.10.20"]
+[Round "1.2"]
+[Result "0-1"]
+[White "Andreas G R Moen"]
+[Black "Veselin Topalov"]
+[ECO "B43"]
+[WhiteElo "2390"]
+[BlackElo "2771"]
+[PlyCount "70"]
+
+1. e4 c5 2. Nf3 e6 3. d4 cxd4 4. Nxd4 a6 5. Nc3 Qc7 6. Bd3 Bc5
+7. Nb3 Be7 8. f4 b5 9. a3 Bb7 10. O-O d6 11. Kh1 Nd7 12. Bd2
+Ngf6 13. Qe2 O-O 14. Nd4 Rac8 15. Rae1 Nc5 16. b4 Nxd3
+17. cxd3 Qd7 18. Rc1 Rfe8 19. Nb3 g6 20. Be3 Bf8 21. Rc2 Nh5
+22. Rfc1 d5 23. exd5 exd5 24. Qf2 d4 25. Nxd4 Rcd8 26. Ne4
+Bxe4 27. dxe4 Rxe4 28. Nb3 Qe6 29. Rc3 Re8 30. Bd2 Nxf4
+31. Nd4 Rxd4 32. Bxf4 Rxf4 33. Qxf4 Bh6 34. Qxh6 Qe1+ 35. Rxe1
+Rxe1# 0-1
+
+
+https://www.chessgames.com/perl/chessgame?gid=1734470

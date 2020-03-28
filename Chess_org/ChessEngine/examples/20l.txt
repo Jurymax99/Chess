@@ -1,0 +1,66 @@
+[Event "ICC 2 1"]
+[Site "Internet Chess Club"]
+[Date "2009.05.21"]
+[EventDate "?"]
+[Round "-"]
+[Result "1/2-1/2"]
+[White "Bassem Amin"]
+[Black "TransWarp (Computer)"]
+[ECO "C42"]
+[WhiteElo "?"]
+[BlackElo "?"]
+[PlyCount "479"]
+
+1. e4 e5 2. Nf3 Nf6 3. Nxe5 d6 4. Nf3 Nxe4 5. Nc3 Nxc3 6. dxc3
+Be7 7. Bd3 O-O 8. Be3 c5 9. c4 Qb6 10. Qc1 Nc6 11. c3 Ne5
+12. Nxe5 dxe5 13. Qc2 f5 14. f3 Bd7 15. O-O-O Rad8 16. Rd2 Be6
+17. Rhd1 Qc6 18. Bf1 Rxd2 19. Rxd2 b6 20. b3 a6 21. a4 Qe8
+22. Kb2 Qg6 23. Bd3 Bc8 24. Qd1 Qh5 25. Qg1 Rd8 26. Bc2 Rxd2
+27. Bxd2 Be6 28. Be3 a5 29. Bd1 Qh4 30. Bf2 Qg5 31. Be3 Qf6
+32. Bc2 Bd7 33. Qd1 Bc6 34. Qd2 g6 35. Qf2 Kg7 36. Qd2 Qh4
+37. g3 Qf6 38. f4 e4 39. Bd1 Qe6 40. h4 Bf6 41. Be2 Kf7
+42. Kc2 Ke7 43. Bd1 Bg7 44. Be2 Bd7 45. Bf1 Kd8 46. Be2 Kc7
+47. Bf1 Be8 48. Be2 Bc6 49. Bf1 Bb7 50. Be2 Qf7 51. Bf1 Bc6
+52. Be2 Qf6 53. Bf1 Qe6 54. Be2 Kb7 55. Bf1 Qf6 56. Be2 Qe7
+57. Bf1 Kc7 58. Be2 Bb7 59. Bf1 Qe8 60. Be2 Qe6 61. Bf1 Qe7
+62. Be2 Bc6 63. Bf1 Kb7 64. Be2 Qf6 65. Bf1 Qf7 66. Be2 Bf6
+67. Bf1 Qe7 68. Be2 Kc7 69. Bf1 Qe6 70. Be2 Bb7 71. Bf1 Qe8
+72. Be2 Qf7 73. Bf1 Qe6 74. Be2 Qe8 75. Bf1 Qe7 76. Be2 Qf8
+77. Bf1 Bc6 78. Be2 Qe8 79. Bf1 Qf7 80. Be2 Qe6 81. Bf1 Qc8
+82. Be2 Qf8 83. Bf1 Bg7 84. Be2 Qf7 85. Bf1 Be8 86. Be2 Qf6
+87. Bf1 Bd7 88. Be2 Qe7 89. Bf1 h6 90. Be2 Bc6 91. Bf1 Kb7
+92. Be2 Qe6 93. Bf1 Qf6 94. Be2 Qf7 95. Bf1 Bf6 96. Be2 Qg8
+97. Bf1 Qe6 98. Be2 Qf7 99. Bf1 Qe7 100. Be2 Qg7 101. Bf1 Qf8
+102. Be2 Qe8 103. Bf1 Kc7 104. Be2 Qf7 105. Bf1 Qe6 106. Be2
+Qe8 107. Bf1 Qf8 108. Be2 Qg8 109. Bf1 Qf7 110. Be2 Qg7
+111. Bf1 Qe7 112. Be2 Be8 113. Bf1 Qg7 114. Be2 Bd7 115. Bf1
+Bc6 116. Be2 Be8 117. Bf1 Qe7 118. Be2 Qf8 119. Bf1 Bd7
+120. Be2 Qg8 121. Bf1 Qe8 122. Be2 Bg7 123. Bf1 Bc6 124. Be2
+Qf7 125. Bf1 Qe6 126. Be2 Be8 127. Bf1 Qf6 128. Be2 Kb7
+129. Bf1 Qe7 130. Be2 Kc7 131. Bf1 Qe6 132. Be2 Qf6 133. Bf1
+Bc6 134. Be2 Kb7 135. Bf1 Kb8 136. Be2 Kc7 137. Bf1 Qe7
+138. Be2 Qe6 139. Bf1 h5 140. Be2 Bf6 141. Bf1 Kb7 142. Be2
+Qe7 143. Bf1 Bg7 144. Be2 Bd7 145. Bf1 Kc7 146. Be2 Bc6
+147. Bf1 Bb7 148. Be2 Qf6 149. Bf1 Qe6 150. Be2 Bc6 151. Bf1
+Qe7 152. Be2 Kb7 153. Bf1 Bf6 154. Be2 Qf7 155. Bf1 Qf8
+156. Be2 Bg7 157. Bf1 Qf6 158. Be2 Qe6 159. Bf1 Qf7 160. Be2
+Qf6 161. Bf1 Qe6 162. Be2 Bf6 163. Bf1 Kc7 164. Be2 Qe7
+165. Bf1 Kb8 166. Be2 Bb7 167. Bf1 Bg7 168. Be2 Kc7 169. Bf1
+Qf6 170. Be2 Kb8 171. Bf1 Bc6 172. Be2 Kc7 173. Bf1 Be8
+174. Be2 Bd7 175. Bf1 Bc6 176. Be2 Qf7 177. Bf1 Bh6 178. Be2
+Bf8 179. Bf1 Bg7 180. Be2 Bb7 181. Bf1 Qe8 182. Be2 Bc6
+183. Bf1 Bf6 184. Be2 Kb7 185. Bd1 Qh8 186. Be2 Qf8 187. Bd1
+Qg8 188. Be2 Qd8 189. Bf1 Qxd2+ 190. Kxd2 Bg7 191. Be2 Kc7
+192. Bf1 Bb7 193. Be2 Ba8 194. Bf1 Kd7 195. Be2 Ke6 196. Bf1
+Bc6 197. Be2 Kd6 198. Bf1 Bf6 199. Be2 Bd7 200. Bf1 Kc7
+201. Be2 Kb7 202. Bf1 Be6 203. Be2 Kc6 204. Bf1 Bg8 205. Be2
+Bg7 206. Bf1 Kb7 207. Be2 Kc7 208. Bf1 Bh7 209. Be2 Kd6
+210. Bf1 Bh8 211. Be2 Bg8 212. Bf1 Ke6 213. Be2 Bf7 214. Bf1
+Be8 215. Be2 Bc6 216. Bf1 Ba8 217. Be2 Ke7 218. Bf1 Bb7
+219. Be2 Bg7 220. Bd1 Ke6 221. Be2 Bc8 222. Bf1 Kf6 223. Be2
+Be6 224. Bd1 Bf7 225. Be2 Ke6 226. Bf1 Bh6 227. Be2 Kd7
+228. Bf1 Kc7 229. Be2 Bg7 230. Bf1 Bg8 231. Be2 Bf6 232. Bf1
+Bh7 233. Be2 Be7 234. Bf1 Kd6 235. Be2 Bf6 236. Bf1 Bg8
+237. Be2 Kc6 238. Bf1 Bh7 239. Be2 Be7 240. Bf1 1/2-1/2
+
+https://www.chessgames.com/perl/chessgame?gid=1560133

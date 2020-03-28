@@ -1,6 +1,15 @@
 ﻿  Application.cpp
-C:\Users\David\source\repos\Chess_org\Chess_org\ChessEngine\src\engine\Application.cpp(430,7): warning C4311: 'type cast': pointer truncation from 'HINSTANCE' to 'int'
-C:\Users\David\source\repos\Chess_org\Chess_org\ChessEngine\src\engine\Application.cpp(430,7): warning C4302: 'type cast': truncation from 'HINSTANCE' to 'int'
-C:\Users\David\source\repos\Chess_org\Chess_org\ChessEngine\src\engine\Application.cpp(434,24): warning C4311: 'type cast': pointer truncation from 'HINSTANCE' to 'int'
-C:\Users\David\source\repos\Chess_org\Chess_org\ChessEngine\src\engine\Application.cpp(434,24): warning C4302: 'type cast': truncation from 'HINSTANCE' to 'int'
+C:\Users\David\source\repos\Chess_org\Chess_org\ChessEngine\src\engine\Application.cpp(469,7): warning C4311: 'type cast': pointer truncation from 'HINSTANCE' to 'int'
+C:\Users\David\source\repos\Chess_org\Chess_org\ChessEngine\src\engine\Application.cpp(469,7): warning C4302: 'type cast': truncation from 'HINSTANCE' to 'int'
+C:\Users\David\source\repos\Chess_org\Chess_org\ChessEngine\src\engine\Application.cpp(474,24): warning C4311: 'type cast': pointer truncation from 'HINSTANCE' to 'int'
+C:\Users\David\source\repos\Chess_org\Chess_org\ChessEngine\src\engine\Application.cpp(474,24): warning C4302: 'type cast': truncation from 'HINSTANCE' to 'int'
+  Board.cpp
+  MoveSet.cpp
+  Player.cpp
+  AmbiguousCaptures.cpp
+  AmbiguousMovements.cpp
+  Captures.cpp
+  Movements.cpp
+  SpecialMovements.cpp
+  Generating Code...
   Chess_org.vcxproj -> C:\Users\David\source\repos\Chess_org\x64\Debug\Chess.exe

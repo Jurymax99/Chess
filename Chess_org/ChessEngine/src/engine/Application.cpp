@@ -131,15 +131,18 @@ namespace Chess {
 			std::cout << "PLAY MODE" << std::endl;
 			std::cout << "Game #" << gameCount << " started" << std::endl;
 			Board* mainBoard = new Board;
-			mainBoard->isChecked();
+			mainBoard->update();
 			mainBoard -> printBoard();
 			int currentPlayer;
 			std::string mov;
 			while (not ended) {
 				//Red's turn
 				currentPlayer = RED;
+				if (mainBoard->isCheckmate(currentPlayer)) {
+					std::cout << "CHECKMATE" << std::endl;
+					break;
+				}
 				std::cout << "Red's turn" << std::endl;
-				mainBoard->isChecked();
 				std::cout << "Insert your movement: " << std::endl;
 				std::cin >> mov;
 				if (mov == "quit") {
@@ -150,8 +153,8 @@ namespace Chess {
 				//Check if movement is valid
 				while (not ended and not mainBoard -> move(mov, currentPlayer, enp)) {
 					std::cout << "Red's turn" << std::endl;
+					mainBoard->update();
 					mainBoard->printBoard();
-					mainBoard->isChecked();
 					std::cout << "Cannot perform movement, please try again:" << std::endl;
 					std::cin >> mov;
 					if (mov == "quit") {
@@ -164,11 +167,14 @@ namespace Chess {
 				}
 				enp = false;
 				std::cout << "Piece successfully moved" << std::endl;
-				//mainBoard->isChecked();
+				mainBoard->update();
 				mainBoard->printBoard();
-
 				//Green's turn
 				currentPlayer = GREEN;
+				if (mainBoard->isCheckmate(currentPlayer)) {
+					std::cout << "CHECKMATE" << std::endl;
+					break;
+				}
 				std::cout << "Green's turn" << std::endl;
 				std::cout << "Insert your movement: " << std::endl;
 				std::cin >> mov;
@@ -179,8 +185,8 @@ namespace Chess {
 				//Check if movement is valid
 				while (not ended and not mainBoard->move(mov, currentPlayer, enp)) {
 					std::cout << "Green's turn" << std::endl;
+					mainBoard->update();
 					mainBoard->printBoard();
-					mainBoard->isChecked();
 					std::cout << "Cannot perform movement, please try again:" << std::endl;
 					std::cin >> mov;
 					if (mov == "quit") {
@@ -193,8 +199,8 @@ namespace Chess {
 				}
 				enp = false;
 				std::cout << "Piece successfully moved" << std::endl;
+				mainBoard->update();
 				mainBoard->printBoard();
-				mainBoard->isChecked();
 			}
 			delete mainBoard;
 			if (MODE == DEBUG) {
@@ -209,7 +215,7 @@ namespace Chess {
 			std::cout << "READ MODE" << std::endl;
 			std::cout << "Game #" << gameCount << " started" << std::endl;
 			Board* mainBoard = new Board;
-			mainBoard->isChecked();
+			mainBoard->update();
 			mainBoard->printBoard();
 			int currentPlayer;
 			std::string mov;
@@ -217,7 +223,6 @@ namespace Chess {
 				//Red's turn
 				currentPlayer = RED;
 				std::cout << "Red's turn" << std::endl;
-				//mainBoard->isChecked();
 				std::cout << "Insert your movement: " << std::endl;
 				char ppp;
 				while (std::cin >> ppp and ppp != '.');
@@ -233,7 +238,7 @@ namespace Chess {
 				//Check if movement is valid
 				while (not ended and not mainBoard->move(mov, currentPlayer, enp)) {
 					std::cout << "Red's turn" << std::endl;
-					//mainBoard->isChecked();
+					mainBoard->update();
 					mainBoard->printBoard();
 					std::cout << "Cannot perform movement, please try again:" << std::endl;
 					std::cin >> mov;
@@ -247,14 +252,12 @@ namespace Chess {
 				}
 				enp = false;
 				std::cout << "Piece successfully moved" << std::endl;
-				mainBoard->isChecked();
-				//mainBoard->isChecked();
+				mainBoard->update();
 				mainBoard->printBoard();
 
 				//Green's turn
 				currentPlayer = GREEN;
 				std::cout << "Green's turn" << std::endl;
-				//mainBoard->isChecked();
 				std::cout << "Insert your movement: " << std::endl;
 				std::cin >> mov;
 				if (mov == "quit") {
@@ -267,8 +270,7 @@ namespace Chess {
 				//Check if movement is valid
 				while (not ended and not mainBoard->move(mov, currentPlayer, enp)) {
 					std::cout << "Green's turn" << std::endl;
-					mainBoard->isChecked();
-					//mainBoard->isChecked();
+					mainBoard->update();
 					mainBoard->printBoard();
 					std::cout << "Cannot perform movement, please try again:" << std::endl;
 					std::cin >> mov;
@@ -281,8 +283,7 @@ namespace Chess {
 					break;
 				}
 				std::cout << "Piece successfully moved" << std::endl;
-				mainBoard->isChecked();
-				//mainBoard->isChecked();
+				mainBoard->update();
 				mainBoard->printBoard();
 			}
 			delete mainBoard;
@@ -300,44 +301,79 @@ namespace Chess {
 			Board* mainBoard = new Board;
 			int currentPlayer;
 			std::ifstream inFile;
+			mainBoard->update();
 			if (MODE == DEBUG) {
-				mainBoard->isChecked();
 				mainBoard->printBoard();
 			}
-			system("dir ChessEngine\\examples\\");
+			//system("dir");
+			std::string directory;
+			if (ENVIRONMENT == VISUAL) {
+				directory = "ChessEngine\\examples\\";
+			}
+			else {
+				directory = "..\\..\\Chess_org\\ChessEngine\\examples\\";
+			}
+			std::string full = "dir " + directory;
+			//From outside
+			system(full.c_str());
+
 			std::cout << "You have these files available, type the one you'd like to read" << std::endl;
 			std::cout << "Format: E.g. if you want to read file named 3.txt, type 3" << std::endl;
 			std::string ans;
 			std::cin >> ans;
-			inFile.open("ChessEngine\\examples\\" + ans + ".txt");
+			inFile.open(directory + ans + ".txt");
+
 			if (not inFile) {
 				std::cout << "Could not open file" << std::endl;
-				ended = true;
+				delete mainBoard;
+				if (MODE == DEBUG) {
+					printHelpDebug();
+				}
+				else {
+					printHelp();
+				}
+				return;
 			}
-			std::string playcount;
-			while (inFile >> playcount and playcount != "[PlyCount");
-			inFile >> playcount;
+			std::string result;
+			while (inFile >> result and result != "[Result");
+			inFile >> result;
 			int i = 1;
-			while (i < playcount.length() and playcount[i] != '"') {
+			while (i < result.length() and result[i] != '"') {
 				++i;
 			}
-			int Plycount = stoi(playcount.substr(1, i - 1));
-			int temp = Plycount;
-			std::cout << Plycount << std::endl;
+			std::string end = result.substr(1, i - 1);
+			if (MODE == DEBUG) {
+				std::cout << end << std::endl;
+			}
 			std::string mov;
-			while (Plycount > 0) {
+			int count = 1;
+			while (mov != end) {
+				//F 11c n F 12c n F 13c n F 14c n F 15c n F 16c n F 17c n F 18c 
 				//Red's turn
 				currentPlayer = RED;
+				std::cout << (count / 2) + 1 << "." << std::endl;
 				if (MODE == DEBUG) {
 					std::cout << "Red's turn" << std::endl;
-					mainBoard->isChecked();
 					std::cout << "Insert your movement: " << std::endl;
 				}
+				std::string acum;
 				char ppp;
-				while (inFile >> ppp and ppp != '.');
+				while (inFile >> ppp and ppp != '.') {
+					acum += ppp;
+					if (acum == end) {
+						mov = end;
+						break;
+					}
+				}
+				if (mainBoard->isCheckmate(RED)) {
+					std::cout << "CHECKMATE" << std::endl;
+					break;
+				}
+				if (mov == end) {
+					break;
+				}
 				inFile >> mov;
 				//Play number
-				--Plycount;
 				if (mov.back() == '+' or mov.back() == '#') {
 					mov = mov.substr(0, mov.length() - 1);
 				}
@@ -346,10 +382,10 @@ namespace Chess {
 				if (not ended and not mainBoard->move(mov, currentPlayer, enp)) {
 					if (MODE == DEBUG) {
 						std::cout << "Red's turn" << std::endl;
-						mainBoard->isChecked();
+						mainBoard->update();
 						mainBoard->printBoard();
 					}
-					std::cout << "Cannot perform movement number " << ((temp - Plycount) / 2) + 1 << " for player red" << std::endl;
+					std::cout << "Cannot perform movement number " << ((count) / 2) + 1 << " for player red" << std::endl;
 					if (mov == "quit") {
 						ended = true;
 						break;
@@ -359,16 +395,12 @@ namespace Chess {
 					break;
 				}
 				enp = false;
+				mainBoard->update();
 				if (MODE == DEBUG) {
 					std::cout << "Piece successfully moved" << std::endl;
-					mainBoard->isChecked();
 					mainBoard->printBoard();
 				}
-
-				if (Plycount == 0) {
-					break;
-				}
-
+				++count;
 				//Green's turn
 				currentPlayer = GREEN;
 				if (MODE == DEBUG) {
@@ -376,18 +408,24 @@ namespace Chess {
 					std::cout << "Insert your movement: " << std::endl;
 				}
 				inFile >> mov;
-				--Plycount;
-				if (mov.back() == '+') {
+				if (mainBoard->isCheckmate(GREEN)) {
+					std::cout << "CHECKMATE" << std::endl;
+					break;
+				}
+				if (mov == end) {
+					break;
+				}
+				if (mov.back() == '+' or mov.back() == '#') {
 					mov = mov.substr(0, mov.length() - 1);
 				}
 				//Check if movement is valid
 				if (not ended and not mainBoard->move(mov, currentPlayer, enp)) {
+					mainBoard->update();
 					if (MODE == DEBUG) {
 						std::cout << "Green's turn" << std::endl;
-						mainBoard->isChecked();
 						mainBoard->printBoard();
 					}
-					std::cout << "Cannot perform movement number " << ((temp - Plycount) / 2) + 1 << " for player green" << std::endl;
+					std::cout << "Cannot perform movement number " << ((count) / 2) + 1 << " for player green" << std::endl;
 					if (mov == "quit") {
 						ended = true;
 						break;
@@ -396,11 +434,12 @@ namespace Chess {
 				if (ended) {
 					break;
 				}
+				mainBoard->update();
 				if (MODE == DEBUG) {
 					std::cout << "Piece successfully moved" << std::endl;
-					mainBoard->isChecked();
 					mainBoard->printBoard();
 				}
+				++count;
 			}
 			mainBoard->printBoard();
 			std::cout << "Do you want to open the match in your default browser? Y / n" << std::endl;
@@ -427,8 +466,9 @@ namespace Chess {
 			HINSTANCE result = ShellExecuteA(parent, NULL, URL, NULL, NULL, SW_SHOWNORMAL);
 
 			// If that fails due to privileges, let's ask for more and try again
-			if ((int)result == SE_ERR_ACCESSDENIED)
+			if ((int)result == SE_ERR_ACCESSDENIED) {
 				result = ShellExecuteA(parent, "runas", URL, NULL, NULL, SW_SHOWNORMAL);
+			}
 
 			// Return whether or not we were successful.
 			return ((int)result > 32);

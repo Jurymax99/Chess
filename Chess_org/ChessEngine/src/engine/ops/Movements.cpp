@@ -5,6 +5,7 @@ namespace Chess {
 	namespace Engine {
 
 		bool Board::makeMove(char type, int orig_h, int orig_w, int h, int w, int player) {
+			bool first = main[orig_h][orig_w].isFirstMov();
 			main[orig_h][orig_w].removePiece();
 			main[h][w].addPiece(type, player);
 			if (type == 'K') {
@@ -39,9 +40,122 @@ namespace Chess {
 				}
 				main[h][w].removePiece();
 				main[orig_h][orig_w].addPiece(type, player);
+				if (not first) {
+					main[orig_h][orig_w].checkPiecePoint()->firstMove();
+				}
 				return false;
 			}
 			main[h][w].checkPiecePoint()->firstMove();
+			return true;
+		}
+
+		bool Board::makeFakeMove(char type, int orig_h, int orig_w, int h, int w, int player, bool& check) {
+			bool first = main[orig_h][orig_w].isFirstMov();
+			main[orig_h][orig_w].removePiece();
+			main[h][w].addPiece(type, player);
+			if (type == 'K') {
+				if (player == RED) {
+					Red.setKing(h, w);
+				}
+				else if (player == GREEN) {
+					Green.setKing(h, w);
+				}
+			}
+			int player_checked;
+			if (isChecked(player_checked)) {				
+				if (areBothChecked() or player_checked == player) {
+					if (player == RED) {
+						if (type == 'K') {
+							Red.setKing(orig_h, orig_w);
+						}
+						if (MODE == DEBUG) {
+							std::cout << "#10::The red king is in check" << std::endl;
+						}
+					}
+					else if (player == GREEN) {
+						if (type == 'K') {
+							Green.setKing(orig_h, orig_w);
+						}
+						if (MODE == DEBUG) {
+							std::cout << "#10::The green king is in check" << std::endl;
+						}
+					}
+					else {
+						std::cout << "#10::No known player" << std::endl;
+						return false;
+					}
+					main[h][w].removePiece();
+					main[orig_h][orig_w].addPiece(type, player);
+					if (not first) {
+						main[orig_h][orig_w].checkPiecePoint()->firstMove();
+					}
+					return false;
+				}
+				else {
+					check = true;
+				}
+			}
+			if (type == 'K') {
+				if (player == RED) {
+					Red.setKing(orig_h, orig_w);
+				}
+				else if (player == GREEN) {
+					Green.setKing(orig_h, orig_w);
+				}
+			}
+			main[h][w].removePiece();
+			main[orig_h][orig_w].addPiece(type, player);
+			if (not first) {
+				main[orig_h][orig_w].checkPiecePoint() -> firstMove();
+			}
+			return true;
+		}
+
+		bool Board::makeFakeMovePro(char type, int orig_h, int orig_w, int h, int w, int player, bool& check) {
+			bool first = main[orig_h][orig_w].isFirstMov();
+			main[orig_h][orig_w].removePiece();
+			std::vector<char> types = { 'Q', 'N', 'R', 'B' };
+			int i = 0;
+			while (i < 4 and not check) {
+				main[h][w].addPiece(types[i], player);
+				int player_checked;
+				if (isChecked(player_checked)) {
+					if (areBothChecked() or player_checked == player) {
+						if (player == RED) {
+							if (MODE == DEBUG) {
+								std::cout << "#10::The red king is in check" << std::endl;
+							}
+						}
+						else if (player == GREEN) {
+							if (MODE == DEBUG) {
+								std::cout << "#10::The green king is in check" << std::endl;
+							}
+						}
+						else {
+							std::cout << "#10::No known player" << std::endl;
+							return false;
+						}
+						main[h][w].removePiece();
+						main[orig_h][orig_w].addPiece(type, player);
+						if (not first) {
+							main[orig_h][orig_w].checkPiecePoint()->firstMove();
+						}
+						return false;
+					}
+					else {
+						check = true;
+					}
+				}
+				if (not check) {
+					main[h][w].removePiece();
+				}
+				++i;
+			}
+			main[h][w].removePiece();
+			main[orig_h][orig_w].addPiece(type, player);
+			if (not first) {
+				main[orig_h][orig_w].checkPiecePoint()->firstMove();
+			}
 			return true;
 		}
 

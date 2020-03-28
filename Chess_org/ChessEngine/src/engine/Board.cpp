@@ -1,4 +1,5 @@
 ﻿#include "Board.h"
+#include "Player.h"
 #include <windows.h>
 
 namespace Chess {
@@ -12,7 +13,7 @@ namespace Chess {
 			Green = Player(GREEN);
 			target = { -1, -1, false };
 			std::cout << "Standard " << height << "x" << width << " board created with " << pieces << " pieces" << std::endl;
-
+			
 			//Green pieces
 			main[0][0].addPiece('R', GREEN);
 			main[0][1].addPiece('N', GREEN);
@@ -48,6 +49,44 @@ namespace Chess {
 			main[7][5].addPiece('B', RED);
 			main[7][6].addPiece('N', RED);
 			main[7][7].addPiece('R', RED);
+
+
+
+			////Green pieces
+			//main[0][0].addPiece('R', GREEN);
+			//main[0][1].addPiece('N', GREEN);
+			//main[0][2].addPiece('B', GREEN);
+			//main[0][3].addPiece('Q', GREEN);
+			//main[0][4].addPiece('K', GREEN);
+			//main[0][5].addPiece('B', GREEN);
+			//main[0][6].addPiece('N', GREEN);
+			//main[0][7].addPiece('R', GREEN);
+			///*main[1][0].addPiece('P', GREEN);
+			//main[1][1].addPiece('P', GREEN);
+			//main[1][2].addPiece('P', GREEN);
+			//main[1][3].addPiece('P', GREEN);
+			//main[1][4].addPiece('P', GREEN);
+			//main[1][5].addPiece('P', GREEN);
+			//main[1][6].addPiece('P', GREEN);
+			//main[1][7].addPiece('P', GREEN);*/
+			//
+			////Red pieces
+			///*main[6][0].addPiece('P', RED);
+			//main[6][1].addPiece('P', RED);
+			//main[6][2].addPiece('P', RED);
+			//main[6][3].addPiece('P', RED);
+			//main[6][4].addPiece('P', RED);
+			//main[6][5].addPiece('P', RED);
+			//main[6][6].addPiece('P', RED);*/
+			//main[6][7].addPiece('P', RED);
+			//main[7][0].addPiece('R', RED);
+			///*main[7][1].addPiece('N', RED);
+			//main[7][2].addPiece('B', RED);
+			//main[7][3].addPiece('Q', RED);*/
+			//main[7][4].addPiece('K', RED);
+			///*main[7][5].addPiece('B', RED);
+			//main[7][6].addPiece('N', RED);*/
+			//main[7][7].addPiece('R', RED);
 		}
 
 		Board::~Board() {
@@ -169,7 +208,15 @@ namespace Chess {
 			Green.checkThreats();
 			std::cout << "__________________________________________" << std::endl;
 			std::cout << "__________________________________________" << std::endl;
+			Red.checkMoves();
+			Green.checkMoves();
+			std::cout << "__________________________________________" << std::endl;
+			std::cout << "__________________________________________" << std::endl;
+			std::cout << "Red ";
+			std::cout.flush();
 			Red.checkKing();
+			std::cout << "Green ";
+			std::cout.flush();
 			Green.checkKing();
 			std::cout << "__________________________________________" << std::endl;
 			std::cout << "   A    B    C    D    E    F    G    H" << std::endl;
@@ -194,8 +241,8 @@ namespace Chess {
 						}
 					}
 					else {
-						bool it_b = Red.findDead(i, j); 
-						bool it_g = Green.findDead(i, j);
+						bool it_b = Red.findThreat(i, j); 
+						bool it_g = Green.findThreat(i, j);
 						if (it_b) {
 							std::cout << blue << ".    " << def;
 						}
@@ -234,12 +281,30 @@ namespace Chess {
 				main[h][w].checkPlayer() == player;
 		}
 
+		bool Board::hasFriendly( int h, int w, int player) const {
+			//std::cout << "Checking [" << h << ", " << w << "]" << std::endl;
+			return inBound(h, w) and
+				main[h][w].hasPiece() and
+				main[h][w].checkPlayer() == player;
+		}
+
 		bool Board::hasEnemy(char type, int h, int w, int player) const {
 			if (player == RED) {
 				return hasFriendly(type, h, w, GREEN);
 			}
 			else if(player == GREEN){
 				return hasFriendly(type, h, w, RED);
+			}
+			std::cout << "No known player" << std::endl;
+			return false;
+		}
+
+		bool Board::hasEnemy(int h, int w, int player) const {
+			if (player == RED) {
+				return hasFriendly(h, w, GREEN);
+			}
+			else if (player == GREEN) {
+				return hasFriendly(h, w, RED);
 			}
 			std::cout << "No known player" << std::endl;
 			return false;
@@ -252,65 +317,6 @@ namespace Chess {
 		bool Board::file(char a) const {
 			return a >= 'a' and a <= 'h';
 		}
-
-		//TODO: 
-		//		-checkmate detection
-		//		-flip board
-		//		-count pieces
-		//			-left
-		//			-per player
-		//			-warnings at start if dif than 32
-		//		-go back funtionality
-		//		-FEN encoding
-		//		-interactive GUI
-
-		//CHANGELOG:
-		//	-Added ambiguous moves :
-		//		-knight e.g.Nfg5
-		//		- rook
-		//		- bishop
-		//		- queen
-		//		- king(possible ? )
-		//_____________________________________________________________________________________
-		//	- Added single ambiguous captures :
-		//		-knight e.g.Nfxg5
-		//		- rook
-		//		- bishop
-		//		- queen
-		//		- king(possible ? )
-		//		- Added double ambiguity moves and captures
-		//		- bishop e.g.Bd5xe4
-		//		- queen e.g.Qd5xe4
-		//_____________________________________________________________________________________
-		//		- Added pawn promotion :
-		//			- by moving e.g.b8 = Q
-		//			- by moving e.g.axb7 = Q
-		//_____________________________________________________________________________________
-		//		- Added castling e.g. O-O or 0-0-0
-		//		- Added read mode, to directly read pgn formatted matches
-		//_____________________________________________________________________________________
-		//		- Added scoreboard
-		//_____________________________________________________________________________________
-		//		- Added en passant
-		//_____________________________________________________________________________________
-		//		- Added a system to know threatened tiles by each player
-		//		- Added check detection
-		//_____________________________________________________________________________________
-		//		- Added move restriction when board is in check
-		//_____________________________________________________________________________________
-		//		- Fixed en passant minor bug:
-		//			- If a move failed, you couldn't capture en passant even if it was valid
-		//		- Fixed ambiguous rook moves and captures
-		//		- Added RELEASE and DEBUG modes
-		//		- Added new colorisation method (Windows API)
-		//_____________________________________________________________________________________
-		//		- RELEASE mode now just shows the board without control messages
-		//		- Rearranged some classes
-		//		- Added new functionality that allows you to read for a file
-		//		- Added functionality to browse online the match read in the file if URL is in 
-		//		  the bottom of file
-		//		- Improved performance
-		//		- Fixed minor bugs
 
 		bool Board::move(std::string movement, int player, bool &enp) {
 			int rank_d, file_d;
@@ -519,6 +525,25 @@ namespace Chess {
 				}
 			}
 			return false;
+		}
+
+		bool Board::isCheckmate(int player) const{
+			if (player == RED) {
+				return not Red.hasMoves();
+			}
+			else if (player == GREEN) {
+				return not Green.hasMoves();
+			}
+			else {
+				std::cout << "No such known player" << std::endl;
+				return false;
+			}
+		}
+
+		void Board::update() {
+			isChecked();
+			Red.updateMoveSet(*this);
+			Green.updateMoveSet(*this);
 		}
 	}
 }

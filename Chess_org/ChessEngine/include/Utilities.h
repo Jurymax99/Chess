@@ -10,3 +10,10 @@
 #define DEBUG 1
 #define MODE RELEASE
 
+#define VISUAL 0
+#define OUTSIDE 1
+#define ENVIRONMENT VISUAL
+
+struct Position {
+	int h, w;
+};

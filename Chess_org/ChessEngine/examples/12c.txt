@@ -1,0 +1,21 @@
+[Event "Groningen Chess Festival"]
+[Site "Groningen NED"]
+[Date "2013.12.21"]
+[EventDate "2013.12.21"]
+[Round "1.3"]
+[Result "1-0"]
+[White "Zaven Andriasian"]
+[Black "Brent Burg"]
+[ECO "B07"]
+[WhiteElo "2610"]
+[BlackElo "2227"]
+[PlyCount "57"]
+
+1. e4 d6 2. d4 Nf6 3. Nc3 Nbd7 4. f4 e5 5. Nf3 exd4 6. Qxd4 c6
+7. Be3 d5 8. e5 Ng4 9. Bg1 Bc5 10. Qd2 Bxg1 11. Rxg1 Qb6
+12. O-O-O Nxh2 13. Nd4 Nxf1 14. Rgxf1 O-O 15. Rh1 Re8 16. g4
+Nf8 17. Nf5 f6 18. Rde1 Bxf5 19. gxf5 fxe5 20. fxe5 Qc7 21. e6
+Qe7 22. Ne2 Qf6 23. Ng3 h6 24. Nh5 Qg5 25. Reg1 Qxd2+ 26. Kxd2
+Re7 27. Nf6+ Kh8 28. Rxh6+ gxh6 29. Rg8# 1-0
+
+https://www.chessgames.com/perl/chessgame?gid=1742023
