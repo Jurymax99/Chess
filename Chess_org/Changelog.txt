@@ -1,0 +1,82 @@
+
+		//TODO: 
+		//		-finish transforming moves/captures into set searches
+		//		-faster movements(no repeated operations)
+		//			-delete Threats system
+		//			-save piece positions per player
+		//			-for each piece check the possible movements
+		//			-last one to check movements will be the king
+		//			-if it lands on a tile that another piece can move, it's check
+		//			-chackmate not affected
+		//		-statlemate
+		//		-halfmoves (no captures nor pawn movements)
+		//		-50 movement rule
+		//		-read files with multiple pgn matches
+		//		-move counter
+		//		-FEN encoding
+		//			-displaying actual board's FEN
+		//			-reading FEN 
+		//			-keep a stack of FENs to go back
+		//		-flip board
+		//		-mini AI
+		//		-interactive GUI
+
+		//CHANGELOG:
+		//	-Added ambiguous moves :
+		//		-knight e.g.Nfg5
+		//		- rook
+		//		- bishop
+		//		- queen
+		//		- king(possible ? )
+		//_____________________________________________________________________________________
+		//	- Added single ambiguous captures :
+		//		-knight e.g.Nfxg5
+		//		- rook
+		//		- bishop
+		//		- queen
+		//		- king(possible ? )
+		//		- Added double ambiguity moves and captures
+		//		- bishop e.g.Bd5xe4
+		//		- queen e.g.Qd5xe4
+		//_____________________________________________________________________________________
+		//		- Added pawn promotion :
+		//			- by moving e.g.b8 = Q
+		//			- by moving e.g.axb7 = Q
+		//_____________________________________________________________________________________
+		//		- Added castling e.g. O-O or 0-0-0
+		//		- Added read mode, to directly read pgn formatted matches
+		//_____________________________________________________________________________________
+		//		- Added scoreboard
+		//_____________________________________________________________________________________
+		//		- Added en passant
+		//_____________________________________________________________________________________
+		//		- Added a system to know threatened tiles by each player
+		//		- Added check detection
+		//_____________________________________________________________________________________
+		//		- Added move restriction when board is in check
+		//_____________________________________________________________________________________
+		//		- Fixed en passant minor bug:
+		//			- If a move failed, you couldn't capture en passant even if it was valid
+		//		- Fixed ambiguous rook moves and captures
+		//		- Added RELEASE and DEBUG modes
+		//		- Added new colorisation method (Windows API)
+		//_____________________________________________________________________________________
+		//		- RELEASE mode now just shows the board without control messages
+		//		- Rearranged some classes
+		//		- Added new functionality that allows you to read for a file
+		//		- Added functionality to browse online the match read in the file if URL is at 
+		//		  the bottom of file
+		//		- Improved performance
+		//		- Fixed minor bugs
+		//_____________________________________________________________________________________
+		//		- Added a Move Generator
+		//		- Added a Move Set of available moves/captures per player
+		//		- Added checkmate detection
+		//		- Added more rules to castling (king can't slide through attacked tiles)
+		//		- Fixed comparator bugs and errors
+		//_____________________________________________________________________________________
+		//		- Improved performance by deleting redundant operations
+		//		- Fixed bugs related to moves and captures
+		//		- Added a minimalistic faster mode which outputs only board
+
+

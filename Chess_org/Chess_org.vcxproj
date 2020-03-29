@@ -83,6 +83,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>C:\Users\David\source\repos\Chess_org\Chess_org\ChessEngine\include;$(IncludePath)</IncludePath>
+    <SourcePath>C:\Users\David\source\repos\Chess_org\Chess_org\ChessEngine\src\engine\ops;C:\Users\David\source\repos\Chess_org\Chess_org\ChessEngine\src\engine;C:\Users\David\source\repos\Chess_org\Chess_org\ChessEngine\src\pieces;C:\Users\David\source\repos\Chess_org\Chess_org\Main;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -132,6 +134,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -143,6 +146,7 @@
   <ItemGroup>
     <ClCompile Include="ChessEngine\src\engine\Application.cpp" />
     <ClCompile Include="ChessEngine\src\engine\Board.cpp" />
+    <ClCompile Include="ChessEngine\src\engine\MoveSet.cpp" />
     <ClCompile Include="ChessEngine\src\engine\ops\AmbiguousCaptures.cpp" />
     <ClCompile Include="ChessEngine\src\engine\ops\AmbiguousMovements.cpp" />
     <ClCompile Include="ChessEngine\src\engine\ops\Captures.cpp" />
@@ -159,10 +163,14 @@
     <ClInclude Include="ChessEngine\include\Application.h" />
     <ClInclude Include="ChessEngine\include\Board.h" />
     <ClInclude Include="ChessEngine\include\Color.h" />
+    <ClInclude Include="ChessEngine\include\MoveSet.h" />
     <ClInclude Include="ChessEngine\include\Piece.h" />
     <ClInclude Include="ChessEngine\include\Player.h" />
     <ClInclude Include="ChessEngine\include\Tile.h" />
     <ClInclude Include="ChessEngine\include\Utilities.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Changelog.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
