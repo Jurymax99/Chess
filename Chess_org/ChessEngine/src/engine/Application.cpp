@@ -296,8 +296,10 @@ namespace Chess {
 		}
 
 		void Application::fileRead_pgn() {
-			std::cout << "READ FILE MODE" << std::endl;
-			std::cout << "Game #" << gameCount << " started" << std::endl;
+			if (OUTPUT != MINIMAL) {
+				std::cout << "READ FILE MODE" << std::endl;
+				std::cout << "Game #" << gameCount << " started" << std::endl;
+			}
 			Board* mainBoard = new Board;
 			int currentPlayer;
 			std::ifstream inFile;
@@ -314,17 +316,17 @@ namespace Chess {
 				directory = "..\\..\\Chess_org\\ChessEngine\\examples\\";
 			}
 			std::string full = "dir " + directory;
-			//From outside
-			system(full.c_str());
-
+			if (OUTPUT != MINIMAL) {
+				system(full.c_str());
 			std::cout << "You have these files available, type the one you'd like to read" << std::endl;
 			std::cout << "Format: E.g. if you want to read file named 3.txt, type 3" << std::endl;
+			}
 			std::string ans;
 			std::cin >> ans;
 			inFile.open(directory + ans + ".txt");
-
+			std::cout << ans << std::endl;
 			if (not inFile) {
-				std::cout << "Could not open file" << std::endl;
+				std::cout << "Could not open file " << ans << std::endl;
 				delete mainBoard;
 				if (MODE == DEBUG) {
 					printHelpDebug();
@@ -346,12 +348,17 @@ namespace Chess {
 				std::cout << end << std::endl;
 			}
 			std::string mov;
+			inFile >> mov;
+			while (std::getline(inFile, mov) and not mov.empty());
 			int count = 1;
 			while (mov != end) {
-				//F 11c n F 12c n F 13c n F 14c n F 15c n F 16c n F 17c n F 18c 
+				//F 11c n F 12c n F 13c n F 14c n F 15c n F 16c n F 17c n F 18c n F 3 n F 19l n F 20l n F 21l n F 22l n
+				//F 11c n F 12c n F 13c n F 14c n F 15c n F 16c n F 17c n F 18c n F 3 n F 1 n F 4 n F 5 n F 6 n F 7 n F 8 n F 9 n F 10 n
 				//Red's turn
 				currentPlayer = RED;
-				std::cout << (count / 2) + 1 << "." << std::endl;
+				if (OUTPUT == NORMAL) {
+					std::cout << (count / 2) + 1 << "." << std::endl;
+				}
 				if (MODE == DEBUG) {
 					std::cout << "Red's turn" << std::endl;
 					std::cout << "Insert your movement: " << std::endl;
@@ -441,22 +448,29 @@ namespace Chess {
 				}
 				++count;
 			}
-			mainBoard->printBoard();
-			std::cout << "Do you want to open the match in your default browser? Y / n" << std::endl;
-			while (std::cin >> ans and ans != "Y" and ans != "n");
-			std::string aux;
-			inFile >> aux;
-			inFile >> aux;
-			if (ans == "Y") {
-				open_browser(aux.c_str());
+			if (OUTPUT != MINIMAL) {
+				mainBoard->printBoard();
+				std::cout << "Do you want to open the match in your default browser? Y / n" << std::endl;
+				while (std::cin >> ans and ans != "Y" and ans != "n");
+				std::string aux;
+				inFile >> aux;
+				inFile >> aux;
+				if (ans == "Y") {
+					open_browser(aux.c_str());
+				}
 			}
 			inFile.close();
 			delete mainBoard;
-			if (MODE == DEBUG) {
-				printHelpDebug();
+			if (OUTPUT != MINIMAL) {
+				if (MODE == DEBUG) {
+					printHelpDebug();
+				}
+				else {
+					printHelp();
+				}
 			}
 			else {
-				printHelp();
+				std::cout << "GAME READ" << std::endl;
 			}
 		}
 

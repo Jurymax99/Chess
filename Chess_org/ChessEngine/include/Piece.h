@@ -16,7 +16,7 @@ namespace Chess {
 			char checkType() const;
 			bool isFirst() const;
 			int checkPoints() const;
-			bool operator <(Piece& a) const;
+			bool operator <(const Piece& rhs) const;
 			void firstMove();
 		};
 	}

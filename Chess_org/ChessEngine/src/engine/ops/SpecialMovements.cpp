@@ -267,7 +267,9 @@ namespace Chess {
 			if (player == RED) {
 				for (int i = w_k + 1; i < w_r; ++i) {
 					if (Green.findThreat(h, i)) {
-						std::cout << "There is a threat in between" << std::endl;
+						if (MODE == DEBUG) {
+							std::cout << "There is a threat in between" << std::endl;
+						}
 						return false;
 					}
 				}
@@ -275,7 +277,9 @@ namespace Chess {
 			else if (player == GREEN) {
 				for (int i = w_k + 1; i < w_r; ++i) {
 					if (Red.findThreat(h, i)) {
-						std::cout << "There is a threat in between" << std::endl;
+						if (MODE == DEBUG) {
+							std::cout << "There is a threat in between" << std::endl;
+						}
 						return false;
 					}
 				}
@@ -384,7 +388,9 @@ namespace Chess {
 			if (player == RED) {
 				for (int i = w_r + 2; i < w_k; ++i) {
 					if (Green.findThreat(h, i)) {
-						std::cout << "There is a threat in between" << std::endl;
+						if (MODE == DEBUG) {
+							std::cout << "There is a threat in between" << std::endl;
+						}
 						return false;
 					}
 				}
@@ -392,7 +398,9 @@ namespace Chess {
 			else if (player == GREEN) {
 				for (int i = w_r + 2; i < w_k; ++i) {
 					if (Red.findThreat(h, i)) {
-						std::cout << "There is a threat in between" << std::endl;
+						if (MODE == DEBUG) {
+							std::cout << "There is a threat in between" << std::endl;
+						}
 						return false;
 					}
 				}

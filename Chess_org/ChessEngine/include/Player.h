@@ -39,6 +39,9 @@ namespace Chess {
 			void addScore(int score);
 
 			Position findMove(char type, Position dest, Board& b);
+			Position findCapture(char type, Position dest, Board& b);
+			Position findAmbRMove(char type, int source_h, Position dest, Board& b);
+			Position findAmbFMove(char type, int souce_w, Position dest, Board& b);
 
 			void updateThreats(Board& b);
 			void updateMoveSet(Board& b);

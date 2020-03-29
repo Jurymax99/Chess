@@ -1,4 +1,5 @@
 #include "Piece.h"
+#include <tuple>		//for std::tie
 
 namespace Chess {
 	namespace Pieces {
@@ -51,11 +52,11 @@ namespace Chess {
 			first = false;
 		}
 
-		bool Piece::operator <(Piece& a) const{
-			if (checkPoints() == a.checkPoints()) {
-				return checkType() < a.checkType();
+		bool Piece::operator <(const Piece& rhs) const{
+			if (checkPoints() == rhs.checkPoints()) {
+				return checkType() < rhs.checkType();
 			}
-			return checkPoints() < a.checkPoints();
+			return checkPoints() < rhs.checkPoints();
 		}
 	}
 }

@@ -69,6 +69,22 @@ namespace Chess {
 			this -> score += score;
 		}
 
+		Position Player::findMove(char type, Position dest, Board& b) {
+			return  moves.findMove(type, dest, b);
+		}
+
+		Position Player::findCapture(char type, Position dest, Board& b) {
+			return  moves.findCapture(type, dest, b);
+		}
+
+		Position Player::findAmbRMove(char type, int source_h, Position dest, Board& b) {
+			return  moves.findMoveR(type, source_h, dest, b);
+		}
+
+		Position Player::findAmbFMove(char type, int source_w, Position dest, Board& b) {
+			return  moves.findMoveF(type, source_w, dest, b);
+		}
+
 		void Player::updateThreats(Board& b) {
 			Threat.clear();
 			int enemyColor;

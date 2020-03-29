@@ -111,7 +111,7 @@ namespace Chess {
 			return true;
 		}
 
-		bool Board::makeFakeMovePro(char type, int orig_h, int orig_w, int h, int w, int player, bool& check) {
+		bool Board::makeFakeMovePro(int orig_h, int orig_w, int h, int w, int player, bool& check) {
 			bool first = main[orig_h][orig_w].isFirstMov();
 			main[orig_h][orig_w].removePiece();
 			std::vector<char> types = { 'Q', 'N', 'R', 'B' };
@@ -136,7 +136,7 @@ namespace Chess {
 							return false;
 						}
 						main[h][w].removePiece();
-						main[orig_h][orig_w].addPiece(type, player);
+						main[orig_h][orig_w].addPiece('P', player);
 						if (not first) {
 							main[orig_h][orig_w].checkPiecePoint()->firstMove();
 						}
@@ -151,8 +151,10 @@ namespace Chess {
 				}
 				++i;
 			}
-			main[h][w].removePiece();
-			main[orig_h][orig_w].addPiece(type, player);
+			if (main[h][w].hasPiece()) {
+				main[h][w].removePiece();
+			}
+			main[orig_h][orig_w].addPiece('P', player);
 			if (not first) {
 				main[orig_h][orig_w].checkPiecePoint()->firstMove();
 			}
@@ -405,7 +407,7 @@ namespace Chess {
 			return false;
 		}
 
-		bool Board::knightMove(int h, int w, int player) {
+		/*bool Board::knightMove(int h, int w, int player) {
 			if (MODE == DEBUG) {
 				std::cout << "[" << h << ", " << w << "]" << std::endl;
 			}
@@ -924,5 +926,6 @@ namespace Chess {
 			}
 			return false;
 		}
+	*/
 	}
 }
