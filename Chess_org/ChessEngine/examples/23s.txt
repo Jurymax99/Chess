@@ -1,0 +1,31 @@
+[Event "Harrwitz - Williams"]
+[Site "London ENG"]
+[Date "1846.??.??"]
+[EventDate "1846.??.??"]
+[Round "1"]
+[Result "1/2-1/2"]
+[White "Elijah Williams"]
+[Black "Daniel Harrwitz"]
+[ECO "D20"]
+[WhiteElo "?"]
+[BlackElo "?"]
+[PlyCount "167"]
+
+1.d4 d5 2.c4 dxc4 3.e3 e5 4.Bxc4 exd4 5.exd4 Nf6 6.Nc3 Bd6
+7.Nf3 O-O 8.O-O Nbd7 9.Qd3 Nb6 10.Bb3 h6 11.Bxh6 gxh6 12.Qg6+
+Kh8 13.Qxh6+ Nh7 14.Ne4 Bf5 15.Neg5 Qf6 16.Qxf6+ Nxf6 17.Nxf7+
+Kg7 18.Nh4 Bd3 19.Rfd1 Bc4 20.Nxd6 cxd6 21.Bxc4 Nxc4 22.b3 Nb6
+23.Nf5+ Kg6 24.Nxd6 Rab8 25.f4 Nbd5 26.f5 Kg5 27.Rd3 Nf4
+28.Rg3+ Kh5 29.Re1 Rbd8 30.Nxb7 Rxd4 31.Nc5 Rd2 32.Ne6 Nxe6
+33.fxe6 Rxa2 34.e7 Re8 35.Re5+ Kh4 36.Re1 Rc2 37.Rf3 Rc6 38.g3
+Kg5 39.Re5+ Kg6 40.h4 Rc1+ 41.Kg2 Rc2+ 42.Kh3 Rh2+ 43.Kxh2
+Ng4+ 44.Kh3 Nxe5 45.h5+ Kg7 46.Rc3 Rxe7 47.g4 Kh6 48.Kh4 Rg7
+49.Rg3 a5 50.Rg2 Nf3+ 51.Kg3 Nd4 52.Kh4 Nf3+ 53.Kg3 Ng5 54.Ra2
+Ra7 55.b4 a4 56.b5 Ne4+ 57.Kf4 Nc3 58.g5 Kxh5 59.Rh2+ Kg6
+60.Rh6+ Kg7 61.b6 Rb7 62.Rc6 Nd5+ 63.Ke5 Rxb6 64.Rc4 Rb5
+65.Kd4 a3 66.Rc1 a2 67.Ra1 Nb4 68.Kc4 Rb8 69.Kc3 Kg6 70.Kb2
+Kxg5 71.Rg1+ Kf4 72.Ka1 Ra8 73.Rc1 Ke3 74.Rc4 Ra4 75.Rc1 Kd2
+76.Rc4 Kd3 77.Rc3+ Kd4 78.Rc1 Ra3 79.Rd1+ Kc5 80.Rc1+ Kb5
+81.Rc7 Nd5 82.Rc2 Nc3 83.Rb2+ Kc4 84.Rb3 1/2-1/2
+
+https://www.chessgames.com/perl/chessgame?gid=1001276

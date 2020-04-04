@@ -1,0 +1,33 @@
+[Event "Tal Memorial"]
+[Site "Moscow RUS"]
+[Date "2008.08.26"]
+[EventDate "2008.08.18"]
+[Round "8"]
+[Result "1/2-1/2"]
+[White "Ruslan Ponomariov"]
+[Black "Vassily Ivanchuk"]
+[ECO "C93"]
+[WhiteElo "2718"]
+[BlackElo "2781"]
+[PlyCount "177"]
+
+1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Ba4 Nf6 5. O-O Be7 6. Re1 b5
+7. Bb3 O-O 8. c3 d6 9. h3 Bb7 10. d4 Re8 11. Ng5 Rf8 12. Nf3
+Re8 13. Nbd2 Bf8 14. a3 h6 15. Bc2 Nb8 16. b4 Nbd7 17. Bb2 c6
+18. Rc1 Rc8 19. Bb1 g6 20. Qb3 c5 21. dxc5 dxc5 22. c4 Qe7
+23. bxc5 Qxc5 24. cxb5 Qxb5 25. Rxc8 Bxc8 26. Qxb5 axb5
+27. Rc1 Bb7 28. Rc7 Ba8 29. Bd3 Bd6 30. Ra7 Bc6 31. Nb3 Bb8
+32. Ra6 Bxe4 33. Bxb5 Bd5 34. Na5 Bc7 35. Ra7 Bb6 36. Bxd7 Re7
+37. Ra6 Nxd7 38. Nxe5 Bc7 39. Ra7 Nxe5 40. Bxe5 Rxe5 41. Rxc7
+Rg5 42. g4 Re5 43. Rc1 Re4 44. Rd1 Be6 45. Nc6 Ra4 46. Rd3 Kg7
+47. f3 h5 48. Kf2 Kf6 49. Nd4 Bc4 50. Re3 Ba6 51. Nc6 Bc8
+52. Nb4 Ra5 53. Kg3 hxg4 54. hxg4 Be6 55. Rc3 Ra8 56. Nd3 Ra5
+57. Kf4 g5+ 58. Ke3 Ke7 59. Nc5 f5 60. Kd4 fxg4 61. Re3 gxf3
+62. Rxe6+ Kf7 63. Re3 g4 64. Ne4 Kg6 65. Rc3 Kf5 66. Ke3 Re5
+67. Rc5 Rxc5 68. Nxc5 Ke5 69. Ne4 Kd5 70. Kd3 Ke5 71. Ke3 Kd5
+72. Nd2 Kc5 73. Kd3 Kb5 74. Kc3 Ka4 75. Kb2 g3 76. Nxf3 g2
+77. Ka2 Ka5 78. Kb3 Kb5 79. a4+ Ka5 80. Ka3 Ka6 81. Kb4 Kb6
+82. a5+ Ka6 83. Ka4 Ka7 84. Kb5 Kb7 85. a6+ Ka7 86. Ka5 Kb8
+87. Kb6 Ka8 88. a7 g1=B+ 89. Nxg1 1/2-1/2
+
+https://www.chessgames.com/perl/chessgame?gid=1503564

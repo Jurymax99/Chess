@@ -1,0 +1,31 @@
+[Event "Vienna"]
+[Site "Vienna AUH"]
+[Date "1898.06.24"]
+[EventDate "1898.??.??"]
+[Round "17"]
+[Result "1/2-1/2"]
+[White "Amos Burn"]
+[Black "Harry Nelson Pillsbury"]
+[ECO "D50"]
+[WhiteElo "?"]
+[BlackElo "?"]
+[PlyCount "167"]
+
+1.d4 d5 2.c4 e6 3.Nc3 Nf6 4.Bg5 Be7 5.e3 c6 6.Nf3 Ne4 7.Bxe7
+Qxe7 8.Bd3 f5 9.O-O Nd7 10.Nd2 O-O 11.f3 Nxc3 12.bxc3 e5 13.e4
+Nf6 14.exd5 exd4 15.Re1 Qd6 16.cxd4 cxd5 17.Re5 dxc4 18.Bxc4+
+Kh8 19.Nb3 Bd7 20.Nc5 b6 21.Nxd7 Qxd7 22.Be6 Qd6 23.Bxf5 Rad8
+24.a4 Qb4 25.Rb5 Qxd4+ 26.Qxd4 Rxd4 27.a5 Rd6 28.Rc1 Nd5
+29.Be4 Nf6 30.Bb7 Rfd8 31.Kf2 Kg8 32.g4 Nd7 33.Rc7 Nc5 34.h4
+Ne6 35.axb6 axb6 36.Rc4 Nc5 37.Be4 g6 38.Kg3 Re8 39.Rcb4 Nd7
+40.Rd5 Rxd5 41.Bxd5+ Kg7 42.Bc6 Re7 43.Bxd7 Rxd7 44.Rxb6 Ra7
+45.g5 Rc7 46.h5 gxh5 47.Rh6 Ra7 48.f4 Ra3+ 49.Kh4 Rf3 50.Rf6
+h6 51.Kxh5 hxg5 52.Kxg5 Ra3 53.Rb6 Ra1 54.Rb7+ Kf8 55.f5 Ra6
+56.Rh7 Rc6 57.Rd7 Ra6 58.Rd5 Kf7 59.Rb5 Rc6 60.Rb7+ Kf8 61.Rd7
+Ra6 62.Rd4 Kf7 63.Re4 Rb6 64.Ra4 Rc6 65.Ra7+ Kf8 66.Kf4 Rb6
+67.Ra4 Kf7 68.Ke5 Rc6 69.Ra7+ Kf8 70.Rd7 Ra6 71.Rd5 Rb6 72.Rc5
+Ra6 73.f6 Ra1 74.Ke6 Re1+ 75.Re5 Rxe5+ 76.Kxe5 Kf7 77.Kf5 Kf8
+78.Ke4 Kf7 79.Ke5 Kf8 80.Kf5 Kf7 81.Kg5 Kf8 82.Kg6 Kg8 83.f7
+Kf8 84.Kf6 1/2-1/2
+
+https://www.chessgames.com/perl/chessgame?gid=1035968

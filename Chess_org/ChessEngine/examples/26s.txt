@@ -1,0 +1,24 @@
+[Event "London"]
+[Site "London ENG"]
+[Date "1883.04.30"]
+[EventDate "1883.04.26"]
+[Round "3"]
+[Result "1/2-1/2"]
+[White "Henry Edward Bird"]
+[Black "Berthold Englisch"]
+[ECO "C53"]
+[WhiteElo "?"]
+[BlackElo "?"]
+[PlyCount "87"]
+
+1. e4 e5 2. Nf3 Nc6 3. Bc4 Bc5 4. c3 Nf6 5. b4 Bb6 6. d3 d6
+7. O-O O-O 8. Bg5 Be6 9. Nbd2 Qe7 10. a4 a6 11. a5 Ba7 12. Kh1
+h6 13. Bh4 Rad8 14. b5 Bxc4 15. Nxc4 axb5 16. Ne3 Bxe3
+17. fxe3 Qe6 18. Qb1 g5 19. Bg3 Na7 20. c4 c6 21. c5 Nh5
+22. a6 bxa6 23. Rxa6 Qd7 24. d4 Nxg3+ 25. hxg3 Nc8 26. cxd6 f6
+27. Rc1 Nxd6 28. Rcxc6 Ne8 29. Qxb5 g4 30. Nh4 exd4 31. exd4
+Qxd4 32. Nf5 Qxe4 33. Re6 Rd1+ 34. Kh2 Qb1 35. Qxb1 Rxb1
+36. Ra7 Rb5 37. Nxh6+ Kh8 38. Nxg4 Rg5 39. Rxe8 Rh5+ 40. Kg1
+Rxe8 41. Nxf6 Rh1+ 42. Kxh1 Re1+ 43. Kh2 Rh1+ 44. Kxh1 1/2-1/2
+
+https://www.chessgames.com/perl/chessgame?gid=1001819

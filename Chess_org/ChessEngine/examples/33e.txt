@@ -1,0 +1,33 @@
+[Event "Youth - Experience"]
+[Site "Amsterdam NED"]
+[Date "2006.08.27"]
+[EventDate "2006.08.19"]
+[Round "8"]
+[Result "1/2-1/2"]
+[White "Ulf Andersson"]
+[Black "Daniel Stellwagen"]
+[ECO "A04"]
+[WhiteElo "2542"]
+[BlackElo "2575"]
+[PlyCount "175"]
+
+1. Nf3 f5 2. d4 g6 3. g3 Bg7 4. Bg2 Nf6 5. O-O O-O 6. c4 d6
+7. Nc3 Qe8 8. d5 a5 9. Nd4 Na6 10. e4 fxe4 11. Nxe4 Nxe4
+12. Bxe4 Bh3 13. Re1 Nc5 14. Bh1 Qf7 15. Be3 Rae8 16. Qd2 b6
+17. b3 Kh8 18. Rad1 e5 19. dxe6 Nxe6 20. Bd5 Nxd4 21. Bxd4 Qd7
+22. a3 Bxd4 23. Qxd4+ Qg7 24. Qxg7+ Kxg7 25. Bc6 Rxe1+
+26. Rxe1 g5 27. f3 Bf5 28. Kf2 Kf6 29. b4 axb4 30. axb4 Be6
+31. Re4 Bf5 32. Rd4 Rf7 33. b5 Re7 34. Bd5 Be6 35. f4 Bxd5
+36. fxg5+ Kxg5 37. Rxd5+ Kg6 38. Kf3 Re1 39. h4 h5 40. Rg5+
+Kh6 41. g4 hxg4+ 42. Rxg4 Re5 43. Rd4 Rc5 44. Ke4 Kg6 45. Kd3
+Rh5 46. Rg4+ Kf6 47. Kd4 Ke6 48. Re4+ Kf6 49. Rg4 Ke6 50. Rf4
+Ke7 51. Ke4 Re5+ 52. Kf3 d5 53. Rd4 Re1 54. Rxd5 Rc1 55. Rd4
+Kf6 56. Ke4 Ke6 57. Kd3 Rd1+ 58. Kc3 Rc1+ 59. Kd2 Rh1 60. Re4+
+Kf6 61. Ke3 Rc1 62. Rg4 Kf5 63. Rg5+ Kf6 64. Kd4 Rh1 65. Rg4
+Ke6 66. Ke4 Re1+ 67. Kf3 Rc1 68. Ke3 Kf5 69. Rd4 Ke5 70. Rd5+
+Ke6 71. Kd3 Rd1+ 72. Ke4 Rh1 73. h5 Rh4+ 74. Kd3 Rh3+ 75. Kd4
+Rh4+ 76. Kc3 Rh3+ 77. Kb4 Rg3 78. Rd8 Rh3 79. Rh8 Kd7 80. h6
+c5+ 81. bxc6+ Kxc6 82. Rh7 Rh4 83. Kb3 Kc5 84. Rc7+ Kd6
+85. Rh7 Kc5 86. Rc7+ Kd6 87. Rb7 Kc6 88. Rh7 1/2-1/2
+
+https://www.chessgames.com/perl/chessgame?gid=1427255

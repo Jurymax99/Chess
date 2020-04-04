@@ -1,0 +1,29 @@
+[Event "Bosna 21st"]
+[Site "Sarajevo BIH"]
+[Date "1982.??.??"]
+[EventDate "?"]
+[Round "?"]
+[Result "0-1"]
+[White "Vitomir Arapovic"]
+[Black "Alexander Beliavsky"]
+[ECO "C26"]
+[WhiteElo "?"]
+[BlackElo "?"]
+[PlyCount "150"]
+
+1.e4 e5 2.Nc3 Nf6 3.Bc4 Bc5 4.d3 O-O 5.Nf3 Re8 6.Ng5 Re7 7.O-O
+h6 8.Nf3 c6 9.d4 exd4 10.e5 Ne8 11.Nxd4 d5 12.exd6 Nxd6 13.Bb3
+Na6 14.Be3 Qe8 15.Qf3 Bxd4 16.Bxd4 Nf5 17.Rad1 Bd7 18.Qh5 b6
+19.Qg6 Nxd4 20.Rxd4 Nc5 21.Bc4 Be6 22.Qg3 Bxc4 23.Rxc4 Rd8
+24.Rg4 f5 25.Rg6 Rd4 26.Rd6 f4 27.Qg6 Qxg6 28.Rxg6 Ne6 29.h4
+h5 30.g4 fxg3 31.Rxg3 Rf7 32.Re1 Nc5 33.Re8+ Kh7 34.Rg5 Rxh4
+35.b4 Nd7 36.Ne4 Nf6 37.Nxf6+ Rxf6 38.Re7 Rg6 39.Rxg6 Kxg6
+40.Re6+ Kh7 41.a3 Rc4 42.Re7 Rxc2 43.Rxa7 Rc4 44.Kg2 b5 45.Ra6
+g6 46.Ra8 Kh6 47.Rh8+ Kg5 48.Rg8 Kf5 49.Rf8+ Kg4 50.Rf6 g5
+51.Rf8 Rc3 52.Ra8 h4 53.a4 h3+ 54.Kh2 Rc2 55.Kg1 Rb2 56.axb5
+cxb5 57.Ra3 Kh4 58.Rd3 Rxb4 59.Kh2 g4 60.Rd5 Rb2 61.Kg1 Rb1+
+62.Kh2 Rf1 63.Rxb5 Rxf2+ 64.Kg1 Rc2 65.Rb4 Re2 66.Ra4 Kg3
+67.Ra1 Re3 68.Kh1 Kf3 69.Rf1+ Ke2 70.Rf8 g3 71.Kg1 Re4 72.Rh8
+Kf3 73.Rf8+ Rf4 74.Rg8 Rf7 75.Rh8 h2+ 0-1
+
+https://www.chessgames.com/perl/chessgame?gid=1229276
