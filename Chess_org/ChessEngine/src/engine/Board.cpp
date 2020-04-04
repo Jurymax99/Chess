@@ -1,5 +1,4 @@
 ﻿#include "Board.h"
-#include "Player.h"
 #include <windows.h>
 
 namespace Chess {
@@ -12,10 +11,10 @@ namespace Chess {
 			Red = Player(RED);
 			Green = Player(GREEN);
 			target = { -1, -1, false };
-			if (OUTPUT != MINIMAL) {
+			if (OUTPUT == NORMAL) {
 				std::cout << "Standard " << height << "x" << width << " board created with " << pieces << " pieces" << std::endl;
 			}
-			
+
 			//Green pieces
 			main[0][0].addPiece('R', GREEN);
 			main[0][1].addPiece('N', GREEN);
@@ -51,44 +50,6 @@ namespace Chess {
 			main[7][5].addPiece('B', RED);
 			main[7][6].addPiece('N', RED);
 			main[7][7].addPiece('R', RED);
-
-
-
-			////Green pieces
-			//main[0][0].addPiece('R', GREEN);
-			//main[0][1].addPiece('N', GREEN);
-			//main[0][2].addPiece('B', GREEN);
-			//main[0][3].addPiece('Q', GREEN);
-			//main[0][4].addPiece('K', GREEN);
-			//main[0][5].addPiece('B', GREEN);
-			//main[0][6].addPiece('N', GREEN);
-			//main[0][7].addPiece('R', GREEN);
-			///*main[1][0].addPiece('P', GREEN);
-			//main[1][1].addPiece('P', GREEN);
-			//main[1][2].addPiece('P', GREEN);
-			//main[1][3].addPiece('P', GREEN);
-			//main[1][4].addPiece('P', GREEN);
-			//main[1][5].addPiece('P', GREEN);
-			//main[1][6].addPiece('P', GREEN);
-			//main[1][7].addPiece('P', GREEN);*/
-			//
-			////Red pieces
-			///*main[6][0].addPiece('P', RED);
-			//main[6][1].addPiece('P', RED);
-			//main[6][2].addPiece('P', RED);
-			//main[6][3].addPiece('P', RED);
-			//main[6][4].addPiece('P', RED);
-			//main[6][5].addPiece('P', RED);
-			//main[6][6].addPiece('P', RED);*/
-			//main[6][7].addPiece('P', RED);
-			//main[7][0].addPiece('R', RED);
-			///*main[7][1].addPiece('N', RED);
-			//main[7][2].addPiece('B', RED);
-			//main[7][3].addPiece('Q', RED);*/
-			//main[7][4].addPiece('K', RED);
-			///*main[7][5].addPiece('B', RED);
-			//main[7][6].addPiece('N', RED);*/
-			//main[7][7].addPiece('R', RED);
 		}
 
 		Board::~Board() {
@@ -97,7 +58,7 @@ namespace Chess {
 			}
 		}
 
-		void Board::printBoard(){
+		void Board::printBoard() const{
 			if (MODE == RELEASE) {
 				printBoardRelease();
 			}
@@ -109,7 +70,7 @@ namespace Chess {
 			}
 		}
 
-		void Board::print_blank(int par) {
+		void Board::print_blank(int par) const{
 			HANDLE  hConsole;
 			hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 			std::cout << "   ";
@@ -126,7 +87,7 @@ namespace Chess {
 			std::cout << "_" << std::endl;
 		}
 
-		void Board::printBoardRelease() {
+		void Board::printBoardRelease() const{
 			std::cout << "_______________________________________________________________" << std::endl;
 			Red.checkDeadRelease();
 			if (Red.checkScore() < Green.checkScore()) {
@@ -194,7 +155,7 @@ namespace Chess {
 			std::cout << "      A      B      C      D      E      F      G      H" << std::endl;
 		}
 
-		void Board::printBoardDebug() {
+		void Board::printBoardDebug() const{
 			std::cout << "__________________________________________" << std::endl;
 			Red.checkDeadDebug();
 			if (Red.checkScore() < Green.checkScore()) {
@@ -263,11 +224,6 @@ namespace Chess {
 			std::cout << "   A    B    C    D    E    F    G    H" << std::endl;
 		}
 
-		inline bool Board::inBound(int h, int w) const {
-			//std::cout << "Checking [" << h << ", " << w << "]" << std::endl;
-			return w >= 0 and w <= 7 and h >= 0 and h <= 7;
-		}
-
 		inline bool Board::contains(char c, std::string word) const {
 			for (int i = 0; i < word.size(); ++i) {
 				if (c == word[i]) {
@@ -314,19 +270,10 @@ namespace Chess {
 			return false;
 		}
 
-		inline bool Board::rank(char a) const {
-			return a >= '1' and a <= '8';
-		}
-
-		inline bool Board::file(char a) const {
-			return a >= 'a' and a <= 'h';
-		}
-
-		bool Board::findMove(char type, Position dest, int player) {
+		bool Board::findMove(char type, const Position& dest, int player){
 			Position source;
 			if (player == RED) {
 				source = Red.findMove(type, dest, *this);
-
 			}
 			else if (player == GREEN) {
 				source = Green.findMove(type, dest, *this);
@@ -335,12 +282,13 @@ namespace Chess {
 				std::cout << "No such known player" << std::endl;
 			}
 			if (not source.isNull()) {
-				return makeMove(type, source.h, source.w, dest.h, dest.w, player);
+				bool enp = type == 'P' and abs(source.h - dest.h) == 2;
+				return makeMove(type, source.h, source.w, dest.h, dest.w, player, enp);
 			}
 			return false;
 		}
 
-		bool Board::findCapture(char type, Position dest, int player) {
+		bool Board::findCapture(char type, const Position& dest, int player) {
 			Position source;
 			if (player == RED) {
 				source = Red.findCapture(type, dest, *this);
@@ -358,7 +306,7 @@ namespace Chess {
 			return false;
 		}
 
-		bool Board::findAmbiguousMove(char type, char dis, Position dest, int player) {
+		bool Board::findAmbiguousMove(char type, char dis, const Position& dest, int player) {
 			Position source;
 			if (rank(dis)) {
 				if (MODE == DEBUG) {
@@ -373,7 +321,6 @@ namespace Chess {
 				else {
 					std::cout << "No such known player" << std::endl;
 				}
-				//return knightMoveRank((8 - (dis - 48)), h, w, player);
 			}
 			else if (file(dis)) {
 				if (MODE == DEBUG) {
@@ -388,14 +335,89 @@ namespace Chess {
 				else {
 					std::cout << "No such known player" << std::endl;
 				}
-				//return knightMoveFile((dis - 97), h, w, player);
 			}
 			else {
 				std::cout << "Couldn't convert instruction to tile" << std::endl;
 				return false;
 			}
 			if (not source.isNull()) {
-				return makeMove(type, source.h, source.w, dest.h, dest.w, player);
+				return makeMove(type, source.h, source.w, dest.h, dest.w, player, false);
+			}
+			return false;
+		}
+	
+		bool Board::findAmbiguousCapture(char type, char dis, const Position& dest, int player) {
+			Position source;
+			if (rank(dis)) {
+				if (MODE == DEBUG) {
+					std::cout << "The ambiguity is at the file" << std::endl;
+				}
+				if (player == RED) {
+					source = Red.findAmbRCapture(type, (8 - (dis - 48)), dest, *this);
+				}
+				else if (player == GREEN) {
+					source = Green.findAmbRCapture(type, (8 - (dis - 48)), dest, *this);
+				}
+				else {
+					std::cout << "No such known player" << std::endl;
+				}
+			}
+			else if (file(dis)) {
+				if (MODE == DEBUG) {
+					std::cout << "The ambiguity is at the rank" << std::endl;
+				}
+				if (player == RED) {
+					source = Red.findAmbFCapture(type, (dis - 97), dest, *this);
+				}
+				else if (player == GREEN) {
+					source = Green.findAmbFCapture(type, (dis - 97), dest, *this);
+				}
+				else {
+					std::cout << "No such known player" << std::endl;
+				}
+			}
+			else {
+				std::cout << "Couldn't convert instruction to tile" << std::endl;
+				return false;
+			}
+			if (not source.isNull()) {
+				return makeCapture(type, source.h, source.w, dest.h, dest.w, player);
+			}
+			return false;
+		}
+
+		bool Board::findDoubleAmbiguousMove(char type, int source_h, int source_w, const Position& dest, int player) {
+			Position source;
+			
+			if (player == RED) {
+				source = Red.findDAmbMove(type, source_h, source_w, dest, *this);
+			}
+			else if (player == GREEN) {
+				source = Green.findDAmbMove(type, source_h, source_w, dest, *this);
+			}
+			else {
+				std::cout << "No such known player" << std::endl;
+			}
+			if (not source.isNull()) {
+				return makeMove(type, source.h, source.w, dest.h, dest.w, player, false);
+			}
+			return false;
+		}
+
+		bool Board::findDoubleAmbiguousCapture(char type, int source_h, int source_w, const Position& dest, int player) {
+			Position source;
+
+			if (player == RED) {
+				source = Red.findDAmbCapture(type, source_h, source_w, dest, *this);
+			}
+			else if (player == GREEN) {
+				source = Green.findDAmbCapture(type, source_h, source_w, dest, *this);
+			}
+			else {
+				std::cout << "No such known player" << std::endl;
+			}
+			if (not source.isNull()) {
+				return makeCapture(type, source.h, source.w, dest.h, dest.w, player);
 			}
 			return false;
 		}
@@ -407,7 +429,7 @@ namespace Chess {
 			}
 			bool temp = target.possible or enp;
 			if (temp) {
-				target.possible = false;
+				target.possible = true;
 				enp = true;
 			}
 
@@ -417,9 +439,8 @@ namespace Chess {
 
 			//normal pawn move
 			else if (movement.length() == 2) {
-				rank_d = 8 - (movement[1] - 48);
-				file_d = movement[0] - 97;
-				return pawnMove(rank_d, file_d, player);
+				Position dest = { 8 - (movement[1] - 48) , movement[0] - 97 };
+				return findMove('P', dest, player);
 			}
 
 			//non-ambiguous other moves
@@ -461,14 +482,12 @@ namespace Chess {
 						std::cout << "Capture detected!" << std::endl;
 					}
 					//if first letter is lowercase it is a pawn capture
-					rank_d = 8 - (movement[3] - 48);
-					file_d = movement[2] - 97;
+					Position dest = { 8 - (movement[3] - 48) , movement[2] - 97 };
 					if (islower(movement[0])) {
 						//p.e: exf5
 						int file_s = movement[0] - 97;
-						return pawnCapture(file_s, rank_d, file_d, player, temp);
+						return pawnCapture(file_s, dest.h, dest.w, player, temp);
 					}
-					Position dest = { 8 - (movement[3] - 48) , movement[2] - 97 };
 					//normal knight capture
 					if (movement[0] == 'N') {
 						return findCapture('N', dest, player);
@@ -502,8 +521,6 @@ namespace Chess {
 				//ambiguous moves
 				else {
 					Position dest = { 8 - (movement[3] - 48) , movement[2] - 97 };
-					rank_d = 8 - (movement[3] - 48);
-					file_d = movement[2] - 97;
 					char dis = movement[1];
 					//knight
 					if (movement[0] == 'N') {
@@ -529,24 +546,23 @@ namespace Chess {
 					if (MODE == DEBUG) {
 						std::cout << "Capture detected!" << std::endl;
 					}
-					rank_d = 8 - (movement[4] - 48);
-					file_d = movement[3] - 97;
+					Position dest = { 8 - (movement[4] - 48) , movement[3] - 97 };
 					char dis = movement[1];
 					//knight
 					if (movement[0] == 'N') {
-						return knightAmbiguousCapture(dis, rank_d, file_d, player);
+						return findAmbiguousCapture('N', dis, dest, player);
 					}
 					//rook
 					if (movement[0] == 'R') {
-						return rookAmbiguousCapture(dis, rank_d, file_d, player);
+						return findAmbiguousCapture('R', dis, dest, player);
 					}
 					//bishop
 					if (movement[0] == 'B') {
-						return bishopAmbiguousCapture(dis, rank_d, file_d, player);
+						return findAmbiguousCapture('B', dis, dest, player);
 					}
 					//queen
 					if (movement[0] == 'Q') {
-						return queenAmbiguousCapture(dis, rank_d, file_d, player);
+						return findAmbiguousCapture('Q', dis, dest, player);
 					}
 				}
 				if (movement == "O-O-O" or movement == "0-0-0") {
@@ -560,17 +576,16 @@ namespace Chess {
 					if (MODE == DEBUG) {
 						std::cout << "Double ambiguous detected!" << std::endl;
 					}
-					rank_d = 8 - (movement[4] - 48);
-					file_d = movement[3] - 97;
+					Position dest = { 8 - (movement[4] - 48) , movement[3] - 97 };
 					int rank_s = 8 - (movement[2] - 48);
 					int file_s = movement[1] - 97;
 					//bishop
 					if (movement[0] == 'B') {
-						return bishopDoubleAmbiguousMove(rank_s, file_s, rank_d, file_d, player);
+						return findDoubleAmbiguousMove('B', rank_s, file_s, dest, player);
 					}
 					//queen
 					if (movement[0] == 'Q') {
-						return queenDoubleAmbiguousMove(rank_s, file_s, rank_d, file_d, player);
+						return findDoubleAmbiguousMove('Q', rank_s, file_s, dest, player);
 					}
 				}
 			}
@@ -594,17 +609,16 @@ namespace Chess {
 						if (MODE == DEBUG) {
 							std::cout << "Capture detected!" << std::endl;
 						}
-						rank_d = 8 - (movement[5] - 48);
-						file_d = movement[4] - 97;
+						Position dest = { 8 - (movement[5] - 48) , movement[4] - 97 };
 						int rank_s = 8 - (movement[2] - 48);
 						int file_s = movement[1] - 97;
 						//bishop
 						if (movement[0] == 'B') {
-							return bishopDoubleAmbiguousCapture(rank_s, file_s, rank_d, file_d, player);
+							return findDoubleAmbiguousCapture('B', rank_s, file_s, dest, player);
 						}
 						//queen
 						if (movement[0] == 'Q') {
-							return queenDoubleAmbiguousCapture(rank_s, file_s, rank_d, file_d, player);
+							return findDoubleAmbiguousCapture('Q', rank_s, file_s, dest, player);
 						}
 					}
 				}
@@ -612,21 +626,47 @@ namespace Chess {
 			return false;
 		}
 
-		bool Board::isCheckmate(int player) const{
+		bool Board::isCheckmate(int player, Ending& status) {
 			if (player == RED) {
-				return not Red.hasMoves();
+				int player_checked;
+				//checkmate
+				if (not Red.hasMoves()){
+					if (isChecked(player_checked) and player_checked == RED) {
+						status = Ending::CHECKMATE;
+						return true;
+					}
+				//stalemate
+					else {
+						status = Ending::STALEMATE;
+						return true;
+					}
+				}
 			}
 			else if (player == GREEN) {
-				return not Green.hasMoves();
+				int player_checked;
+				//checkmate
+				if (not Green.hasMoves()) {
+					if (isChecked(player_checked) and player_checked == GREEN) {
+						status = Ending::CHECKMATE;
+						return true;
+					}
+					//stalemate
+					else {
+						status = Ending::STALEMATE;
+						return true;
+					}
+				}
 			}
 			else {
+				status = Ending::UNDEFINED;
 				std::cout << "No such known player" << std::endl;
 				return false;
 			}
+			status = Ending::UNDEFINED;
+			return false;
 		}
 
 		void Board::update() {
-			isChecked();
 			Red.updateMoveSet(*this);
 			Green.updateMoveSet(*this);
 		}

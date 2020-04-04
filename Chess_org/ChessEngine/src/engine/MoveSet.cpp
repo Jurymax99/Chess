@@ -5,28 +5,34 @@
 
 namespace Chess {
 	namespace Engine {
-		void MoveSet::update(int color, Board& b) {
+		void MoveSet::update(int color, int pieceCount, Board& b) {
 			Set.clear();
 			int enemyColor;
 			int pawnConst;
+			int i;
 			if (color == RED) {
 				enemyColor = GREEN;
 				pawnConst = -1;
+				i = b.height - 1;
 			}
 			else if (color == GREEN) {
 				enemyColor = RED;
 				pawnConst = 1;
+				i = 0;
 			}
 			else {
 				std::cout << "No such known color" << std::endl;
 				enemyColor = 0;
 				pawnConst = 0;
+				i = 0;
 			}
-			for (int i = 0; i < b.height; ++i) {
-				for (int j = 0; j < b.width; ++j) {
+			int auxCount = 0;
+			while ((color == RED ? i >= 0 : i < b.height) and auxCount <= pieceCount) {
+				for (int j = 0; j < b.width and auxCount <= pieceCount; ++j) {
 					bool check = false;
 					//Pawn
 					if (b.hasFriendly('P', i, j, color)) {
+						++auxCount;
 						if ((color == RED and i > 1) or (color == GREEN and i < 6)) {
 							//Pawn 1 up move
 							if (b.inBound(i + pawnConst, j) and
@@ -62,7 +68,8 @@ namespace Chess {
 								b.target.possible and
 								b.target.h == i and
 								b.target.w == j + 1 and
-								b.makeFakeEnPassant(i,j,i + pawnConst, j + 1, i,j+1,color, check)) {
+								not b.main[i + pawnConst][j + 1].hasPiece() and
+								b.makeFakeEnPassant(i,j,i + pawnConst, j + 1, i, j + 1, color, check)) {
 								Set.insert({ 'P', {i,j},{ i + pawnConst, j + 1}, true, false, false, false, false, check });
 								check = false;
 							}
@@ -70,6 +77,7 @@ namespace Chess {
 								b.target.possible and
 								b.target.h == i and
 								b.target.w == j - 1 and
+								not b.main[i + pawnConst][j - 1].hasPiece() and
 								b.makeFakeEnPassant(i, j, i + pawnConst, j - 1, i, j - 1, color, check)) {
 								Set.insert({ 'P', {i,j},{ i + pawnConst, j - 1}, true, false, false, false, false, check });
 								check = false;
@@ -100,6 +108,7 @@ namespace Chess {
 					
 					//Knight
 					else if (b.hasFriendly('N', i, j, color)) {
+						++auxCount;
 						//Check -2, -1
 						addKnight(b, i, j, i - 2, j - 1, color, enemyColor);
 						
@@ -126,6 +135,7 @@ namespace Chess {
 					}
 					//Rook
 					else if (b.hasFriendly('R', i, j, color)) {
+						++auxCount;
 						//Search below
 						int it = i + 1;
 						while (it <= 7 and not b.main[it][j].hasPiece()) {
@@ -217,7 +227,8 @@ namespace Chess {
 					}
 					//Bishop
 					else if (b.hasFriendly('B', i, j, color)) {
-						//Search diagonal left-up
+						++auxCount;
+						//Search diagonal left-down
 						int it_h = i + 1;
 						int it_w = j - 1;
 						while (it_h <= 7 and it_w >= 0 and not b.main[it_h][it_w].hasPiece()) {
@@ -233,7 +244,7 @@ namespace Chess {
 							Set.insert({ 'B', {i,j},{ it_h, it_w }, true, false, false, false, false, check });
 							check = false;
 						}
-						//Search diagonal left-down
+						//Search diagonal left-up
 						it_h = i - 1;
 						it_w = j - 1;
 						while (it_h >= 0 and it_w >= 0 and not b.main[it_h][it_w].hasPiece()) {
@@ -249,7 +260,7 @@ namespace Chess {
 							Set.insert({ 'B', {i,j},{ it_h, it_w }, true, false, false, false, false, check });
 							check = false;
 						}
-						//Search diagonal right-up
+						//Search diagonal right-down
 						it_h = i + 1;
 						it_w = j + 1;
 						while (it_h <= 7 and it_w <= 7 and not b.main[it_h][it_w].hasPiece()) {
@@ -265,7 +276,7 @@ namespace Chess {
 							Set.insert({ 'B', {i,j},{ it_h, it_w }, true, false, false, false, false, check });
 							check = false;
 						}
-						//Search diagonal right-down
+						//Search diagonal right-up
 						it_h = i - 1;
 						it_w = j + 1;
 						while (it_h >= 0 and it_w <= 7 and not b.main[it_h][it_w].hasPiece()) {
@@ -284,6 +295,7 @@ namespace Chess {
 					}
 					//Queen
 					else if (b.hasFriendly('Q', i, j, color)) {
+						++auxCount;
 						//Search below
 						int it = i + 1;
 						while (it <= 7 and not b.main[it][j].hasPiece()) {
@@ -407,24 +419,25 @@ namespace Chess {
 					}
 					//King
 					else if (b.hasFriendly('K', i, j, color)) {
+						++auxCount;
 						for (int ii = -1; ii < 2; ++ii) {
 							for (int jj = -1; jj < 2; ++jj) {
 								if (b.inBound(i + ii, j + jj)) {
 									if (not b.main[i + ii][j + jj].hasPiece() and
-										b.makeFakeMove('K',i,j,i + ii, j + jj,color,check)) {
+										b.makeFakeMove('K',i, j, i + ii, j + jj,color, check)) {
 										Set.insert({ 'K', {i,j},{ i + ii, j + jj }, false, true, false, false, false, check });
-										check = false;
 									}
 									else if (b.main[i + ii][j + jj].checkPlayer() == enemyColor and
 										b.makeFakeCapture('K', i, j, i + ii, j + jj, color, check)) {
 										Set.insert({ 'K', {i,j},{ i + ii, j + jj }, true, false, false, false, false, check });
-										check = false;
 									}
+									check = false;
 								}
 							}
 						}
 					}
 				}
+				color == RED ? --i : ++i;
 			}
 			b.Red.updateThreats(b);
 			b.Green.updateThreats(b);
@@ -494,108 +507,6 @@ namespace Chess {
 		bool MoveSet::empty() const {
 			return Set.empty();
 		}
-
-		struct MoveSet::find_move_by_piece {
-			find_move_by_piece(const char& type, const Position& dest)
-				: type(type), dest(dest) {}
-			
-			bool operator()(const Move& m) const {
-				return m.type == type and
-					m.destination == dest and
-					m.move;
-			}
-
-		private:
-			char type;
-			Position dest;
-		};
-
-		struct MoveSet::find_moveR_by_piece {
-			find_moveR_by_piece(const char& type, const int& source_h, const Position& dest)
-				: type(type), source_h(source_h), dest(dest) {}
-
-			bool operator()(const Move& m) const {
-				return m.type == type and
-					m.source.h == source_h and
-					m.destination == dest and
-					m.move;
-			}
-		private:
-			char type;
-			int source_h;
-			Position dest;
-		};
-
-		struct MoveSet::find_moveF_by_piece {
-			find_moveF_by_piece(const char& type, const int& source_w, const Position& dest)
-				: type(type), source_w(source_w), dest(dest) {}
-
-			bool operator()(const Move& m) const {
-				return m.type == type and
-					m.source.w == source_w and
-					m.destination == dest and
-					m.move;
-			}
-		private:
-			char type;
-			Position dest;
-			int source_w;
-		};
-
-		struct MoveSet::find_capture_by_piece {
-			find_capture_by_piece(const char& type, const Position& dest)
-				: type(type), dest(dest) {}
-
-			bool operator()(const Move& m) const {
-				return m.type == type and
-					m.destination == dest and
-					m.capture;
-			}
-		private:
-			char type;
-			Position dest;
-		};
-
-		Position MoveSet::findMove(char type, Position dest, Board& b) const{
-			auto it = std::find_if(Set.begin(),
-				Set.end(),
-				find_move_by_piece(type, dest));
-			if (it != Set.end()) {
-				return it->source;
-			}
-			return { -1, -1};
-		}
-
-		Position MoveSet::findMoveR(char type, int source_h, Position dest, Board& b) const{
-			auto it = std::find_if(Set.begin(),
-				Set.end(),
-				find_moveR_by_piece(type, source_h, dest));
-			if (it != Set.end()) {
-				return it->source;
-			}
-			return { -1, -1 };
-		}
-
-		Position MoveSet::findMoveF(char type, int source_w, Position dest, Board& b) const {
-			auto it = std::find_if(Set.begin(),
-				Set.end(),
-				find_moveF_by_piece(type, source_w, dest));
-			if (it != Set.end()) {
-				return it->source;
-			}
-			return { -1, -1 };
-		}
-
-		Position MoveSet::findCapture(char type, Position dest, Board& b) const {
-			auto it = std::find_if(Set.begin(),
-				Set.end(),
-				find_capture_by_piece(type, dest));
-			if (it != Set.end()) {
-				return it->source;
-			}
-			return { -1, -1 };
-		}
-
 	}
 }
 

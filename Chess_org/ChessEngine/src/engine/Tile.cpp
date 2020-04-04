@@ -51,22 +51,6 @@ namespace Chess {
 			}
 		}
 
-		bool Tile::hasPiece() const {
-			return not empty;
-		}
-
-		bool Tile::isFirstMov() const {
-			return piece -> isFirst();
-		}
-
-		int Tile::checkPlayer() const {
-			return piece -> checkColor();
-		}
-
-		Pieces::Piece* Tile::checkPiecePoint() {
-			return piece;
-		}
-
 		Tile& Tile::operator=(Tile obj) {
 			this->empty = obj.empty;
 			if (not obj.empty) {
@@ -96,14 +80,6 @@ namespace Chess {
 			else {
 				//std::cout << "Tile was already empty" << std::endl;
 			}
-		}
-
-		Pieces::Piece Tile::checkPiece() const {
-			return *piece;
-		}
-
-		char Tile::checkPieceType() const {
-			return piece -> checkType();
 		}
 	}
 }
