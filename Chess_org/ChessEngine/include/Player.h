@@ -4,6 +4,7 @@
 #include "Piece.h"
 #include "Utilities.h"
 #include "MoveSet.h"
+#include "PositionState.h"
 
 namespace Chess {
 	namespace Engine {
@@ -12,46 +13,67 @@ namespace Chess {
 		class MoveSet;
 
 		class Player {
-		private:
-			int color;
+		protected:
+			int color, score, pieceCount;
 			std::vector <Pieces::Piece> Dead;
-			struct PositionState {
-				int h, w;
-				bool empty = true;
-
-				bool operator <(const PositionState& rhs) const;
-			};
-			std::set <PositionState, std::less<PositionState>> Threat;
-			int score;
+			std::set <PositionState> Threat;
 			Position king;
 			MoveSet moves;
 
 		public:
 			Player();
 			Player(int color);
+
 			void addDead(Pieces::Piece piece);
-			bool findThreat(int i, int j);
-			bool findThreat(int i, int j, bool cond);
-			bool findThreat(Position p, bool cond);
-			Position checkKingPosition();
-			void checkKing() const;
-			void setKing(int h, int w);
-			void addScore(int score);
 
-			Position findMove(char type, Position dest, Board& b);
-			Position findCapture(char type, Position dest, Board& b);
-			Position findAmbRMove(char type, int source_h, Position dest, Board& b);
-			Position findAmbFMove(char type, int souce_w, Position dest, Board& b);
+			Position findMove(char type, const Position& dest, const Board& b) const;
+			Position findAmbRMove(char type, int source_h, const Position& dest, const Board& b) const;
+			Position findAmbFMove(char type, int souce_w, const Position& dest, const Board& b) const;
+			Position findDAmbMove(char type, int source_h, int source_w, const Position& dest, const Board& b) const;
+			Position findCapture(char type, const Position& dest, const Board& b) const;
+			Position findAmbRCapture(char type, int source_h, const Position& dest, const Board& b) const;
+			Position findAmbFCapture(char type, int souce_w, const Position& dest, const Board& b) const;
+			Position findDAmbCapture(char type, int source_h, int source_w, const Position& dest, const Board& b) const;
 
-			void updateThreats(Board& b);
-			void updateMoveSet(Board& b);
-
-			bool hasMoves() const;
-			void checkMoves() const;
+			void updateThreats(const Board& b);
+			void addKnight(const Board& b, const int& i, const int& j, const int& enemyColor);
+			void addRookLike(const Board& b, const int& i, const int& j, const int& enemyColor);
+			void addBishopLike(const Board& b, const int& i, const int& j, const int& enemyColor);
+			
 			void checkDeadRelease() const;
 			void checkDeadDebug() const;
-			int checkScore() const;
 			void checkThreats() const;
+			
+			inline void setKing(int h, int w) { king = { h,w }; }
+			
+			inline Position checkKingPosition() const{return king;}
+			
+			inline void checkKing() const { std::cout << "king is at [" << char(king.w + 97) << char(8 - char(king.h - 48)) << "]" << std::endl; }
+
+			
+			inline void checkMoves() const { if (MODE == DEBUG) moves.checkDebug(color); };
+
+			inline bool hasMoves() const { return not moves.empty(); }
+			
+			
+			inline void addScore(int score){this->score += score;}
+			
+			inline int checkScore() const { return score; }
+
+			inline int checkColor() const { return color; }
+
+			inline int chackPiecesLeft() const { return pieceCount; }
+			
+			inline void updateMoveSet(Board& b) {moves.update(color, pieceCount, b);}
+
+			
+
+			inline bool findThreat(int i, int j) const{return Threat.find({ i,j,false }) != Threat.end();}
+
+			inline bool findThreat(int i, int j, bool cond) const{return Threat.find({ i,j, cond }) != Threat.end();}
+
+			inline bool findThreat(const Position& p, bool cond) const{return Threat.find({ p.h,p.w, cond }) != Threat.end();}
+
 		};
 	}
 }
