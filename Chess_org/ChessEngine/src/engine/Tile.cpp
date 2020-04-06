@@ -54,7 +54,7 @@ namespace Chess {
 		Tile& Tile::operator=(Tile obj) {
 			this->empty = obj.empty;
 			if (not obj.empty) {
-				std::cout << "Disallocating piece in " << this->piece << std::endl;
+				//std::cout << "Disallocating piece in " << this->piece << std::endl;
 				delete this->piece;
 				this->piece = new Pieces::Piece(*obj.piece);
 			}
@@ -62,6 +62,18 @@ namespace Chess {
 				this->piece = nullptr;
 			}
 			return *this;
+		}
+
+		Tile::Tile(const Tile& t) {
+			this->empty = t.empty;
+			if (not t.empty) {
+				//std::cout << "Disallocating piece in " << this->piece << std::endl;
+				//delete this->piece;
+				this->piece = new Pieces::Piece(*t.piece);
+			}
+			else {
+				this->piece = nullptr;
+			}
 		}
 
 		Tile::Tile() {

@@ -4,12 +4,12 @@
 #include "Tile.h"
 #include "Player.h"
 #include "MoveSet.h"
+#include "Dummy.h"
 
 namespace Chess {
 	namespace Engine {
 
 		class Player;
-		class Dummy;
 		class MoveSet;
 
 		class Board {
@@ -18,7 +18,7 @@ namespace Chess {
 			typedef std::vector <Row> Matrix;
 			
 		private:
-			int height, width, pieces;
+			int height, width, pieces, halfMoves;
 			Matrix main;
 			Player Red, Green;
 			struct EnPassant {
@@ -56,7 +56,9 @@ namespace Chess {
 			//Pawn
 			bool pawnPromote				(int h, int w, char type, int player);
 			bool pawnCapture				(int w_s, int h_d, int w_d, int player, bool enpassant);
+			bool pawnCapture				(const Position& source, const Position& dest, int player, bool enpassant);
 			bool pawnPromoteCapture			(int w_s, int h_d, int w_d, char type, int player);
+			bool pawnPromoteCapture			(const Position& source, const Position& dest, char type, int player);
 
 			//Castling
 			bool castleKingside				(int player);
@@ -76,6 +78,7 @@ namespace Chess {
 			
 		public:
 			friend class Player;
+			friend class Dummy;
 			friend class MoveSet;
 
 			Board();
@@ -83,6 +86,7 @@ namespace Chess {
 
 			void printBoard() const;
 			bool move						(std::string movement, int player, bool& enp);
+			bool move						(const Move& m, int player);
 			void update();
 
 			enum class Ending : int {
@@ -96,7 +100,34 @@ namespace Chess {
 				RESIGN
 			};
 			
-			bool isCheckmate				(int player, Ending& status);
+			bool isEnded(int player, Ending& status);
+
+			bool isEnded() const;
+
+			bool isEnded(int player, int& checked, int& pen);
+
+			inline int checkHeight() const {return height;}
+
+			inline int checkWidth() const {return width;}
+
+			Board& operator=(const Board& b) {
+				height = b.height;
+				width = b.width;
+				pieces = b.pieces;
+				Red = b.Red;
+				Green = b.Green;
+				target = b.target;
+				halfMoves = b.halfMoves;
+				main = Matrix(8, Row(8));
+				for (int i = 0; i < height; ++i) {
+					for (int j = 0; j < b.width; ++j) {
+						main[i][j] = b.main[i][j];
+					}
+				}
+				return *this;
+			}
+
+			Board(const Board& b);
 		};
 	}
 }

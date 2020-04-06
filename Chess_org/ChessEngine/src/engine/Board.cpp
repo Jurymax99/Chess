@@ -11,10 +11,38 @@ namespace Chess {
 			Red = Player(RED);
 			Green = Player(GREEN);
 			target = { -1, -1, false };
+			halfMoves = 0;
 			if (OUTPUT == NORMAL) {
 				std::cout << "Standard " << height << "x" << width << " board created with " << pieces << " pieces" << std::endl;
 			}
+			/*main[0][7].addPiece('R', GREEN);
+			main[0][6].addPiece('N', GREEN);
+			main[1][5].addPiece('P', GREEN);
+			main[1][4].addPiece('Q', GREEN);
+			main[1][7].addPiece('P', GREEN);
+			main[2][4].addPiece('P', GREEN);
+			main[2][6].addPiece('P', GREEN);
+			main[4][0].addPiece('P', GREEN);
+			main[6][2].addPiece('B', GREEN);
+			main[4][6].addPiece('K', GREEN);
 
+			//Red pieces
+			main[0][5].addPiece('Q', RED);
+			main[7][7].addPiece('R', RED);
+			main[7][0].addPiece('R', RED);
+			main[7][2].addPiece('B', RED);
+			main[7][4].addPiece('K', RED);
+			main[7][5].addPiece('B', RED);
+			main[1][3].addPiece('N', RED);
+			main[5][2].addPiece('N', RED);
+			main[6][1].addPiece('P', RED);
+			main[6][5].addPiece('P', RED);
+			main[5][6].addPiece('P', RED);
+			main[6][7].addPiece('P', RED);
+			main[4][3].addPiece('P', RED);
+			main[4][4].addPiece('P', RED);*/
+
+			
 			//Green pieces
 			main[0][0].addPiece('R', GREEN);
 			main[0][1].addPiece('N', GREEN);
@@ -54,7 +82,7 @@ namespace Chess {
 
 		Board::~Board() {
 			if (MODE == DEBUG) {
-				std::cout << "Board destroyed" << std::endl;
+				//std::cout << "Board destroyed" << std::endl;
 			}
 		}
 
@@ -90,13 +118,13 @@ namespace Chess {
 		void Board::printBoardRelease() const{
 			std::cout << "_______________________________________________________________" << std::endl;
 			Red.checkDeadRelease();
-			if (Red.checkScore() < Green.checkScore()) {
-				std::cout << "+" << Green.checkScore() - Red.checkScore();
+			if (Green.checkScore() < Red.checkScore()) {
+				std::cout << "+" << Red.checkScore() - Green.checkScore();
 			}
 			std::cout << std::endl;
 			Green.checkDeadRelease();
-			if (Green.checkScore() < Red.checkScore()) {
-				std::cout << "+" << Red.checkScore() - Green.checkScore();
+			if (Red.checkScore() < Green.checkScore()) {
+				std::cout << "+" << Green.checkScore() - Red.checkScore();
 			}
 			std::cout << std::endl;
 			std::cout << "_______________________________________________________________" << std::endl;
@@ -156,35 +184,41 @@ namespace Chess {
 		}
 
 		void Board::printBoardDebug() const{
+			std::cout << "__________________________________________\n";
+			std::cout << "Halfmoves: " << halfMoves << std::endl;
+			//Rg1 Rg8 Rh1 Rh8 
+			//Rg1 Rh1 
+			std::cout << "__________________________________________\n";
 			std::cout << "__________________________________________" << std::endl;
 			Red.checkDeadDebug();
-			if (Red.checkScore() < Green.checkScore()) {
-				std::cout << "+" << Green.checkScore() - Red.checkScore();
-			}
-			std::cout << std::endl;
-			Green.checkDeadDebug();
 			if (Green.checkScore() < Red.checkScore()) {
 				std::cout << "+" << Red.checkScore() - Green.checkScore();
 			}
 			std::cout << std::endl;
-			std::cout << "__________________________________________" << std::endl;
-			std::cout << "__________________________________________" << std::endl;
+			Green.checkDeadDebug();
+			if (Red.checkScore() < Green.checkScore()) {
+				std::cout << "+" << Green.checkScore() - Red.checkScore();
+			}
+			std::cout << std::endl;
+			std::cout << "__________________________________________\n";
+			std::cout << "__________________________________________\n";
 			Red.checkThreats();
 			Green.checkThreats();
-			std::cout << "__________________________________________" << std::endl;
-			std::cout << "__________________________________________" << std::endl;
+			std::cout << "__________________________________________\n";
+			std::cout << "__________________________________________\n";
 			Red.checkMoves();
 			Green.checkMoves();
-			std::cout << "__________________________________________" << std::endl;
-			std::cout << "__________________________________________" << std::endl;
+			std::cout << "__________________________________________\n";
+			std::cout << "__________________________________________\n";
 			std::cout << "Red ";
 			std::cout.flush();
 			Red.checkKing();
 			std::cout << "Green ";
 			std::cout.flush();
 			Green.checkKing();
-			std::cout << "__________________________________________" << std::endl;
-			std::cout << "   A    B    C    D    E    F    G    H" << std::endl;
+			std::cout << "__________________________________________\n";
+			std::cout << "__________________________________________\n";
+			std::cout << "   A    B    C    D    E    F    G    H\n";
 			Color::Modifier red(Color::FG_RED);
 			Color::Modifier green(Color::FG_GREEN);
 			Color::Modifier blue(Color::FG_BLUE);
@@ -202,7 +236,7 @@ namespace Chess {
 							std::cout << green << main[i][j].checkPieceType() << def << "    ";
 						}
 						else {
-							std::cout << std::endl << "ERROR::Pieces created with no player" << std::endl;
+							std::cout << std::endl << "ERROR::Pieces created with no player\n";
 						}
 					}
 					else {
@@ -221,7 +255,7 @@ namespace Chess {
 				}
 				std::cout << '\b' << -i + 8 << std::endl << std::endl;
 			}
-			std::cout << "   A    B    C    D    E    F    G    H" << std::endl;
+			std::cout << "   A    B    C    D    E    F    G    H\n";
 		}
 
 		inline bool Board::contains(char c, std::string word) const {
@@ -626,8 +660,62 @@ namespace Chess {
 			return false;
 		}
 
-		bool Board::isCheckmate(int player, Ending& status) {
+		bool Board::move(const Move& m, int player) {
+			char type = m.type;
+			Position source = m.source;
+			Position dest = m.destination;
+			int pawnConst;
 			if (player == RED) {
+				pawnConst = 1;
+			}
+			else if (player == GREEN) {
+				pawnConst = -1;
+			}
+			else {
+				std::cout << "No such known player" << std::endl;
+				return false;
+			}
+			bool correct_enp = /*false*/type == 'P' and 
+				((player == RED and source.h == 3) or (player == GREEN and source.h == 4)) and
+				target.possible and 
+				(target.h == dest.h + pawnConst and dest.w == target.w);
+			if (m.move) {
+				if (m.castleKing) {
+					return castleKingside(player);
+				}
+				else if (m.castleQueen) {
+					return castleQueenside(player);
+				}
+				else if (m.promote) {
+					return pawnPromote(dest.h, dest.w, 'Q', player);
+				}
+				else {
+					return findMove(type, dest, player);
+				}
+			}
+			else if (m.capture) {
+				//if (main[dest.h][dest.w].hasPiece()) {
+					if (m.promote) {
+						return pawnPromoteCapture(source, dest, 'Q', player);
+					}
+					else if (type == 'P') {
+						return pawnCapture(source, dest, player, correct_enp);
+					}
+					return findCapture(type, dest, player);
+				//}				
+				//else {
+					//int a = 0;
+				//}
+			}
+
+		}
+
+		bool Board::isEnded(int player, Ending& status) {
+			if (halfMoves == 50) {
+				status = Ending::FIFTYRULE;
+				return true;
+			}
+			else if (player == RED) {
 				int player_checked;
 				//checkmate
 				if (not Red.hasMoves()){
@@ -664,6 +752,76 @@ namespace Chess {
 			}
 			status = Ending::UNDEFINED;
 			return false;
+		}
+
+		bool Board::isEnded() const{
+			return halfMoves == 50 or not Red.hasMoves() or not Green.hasMoves();
+		}
+
+		bool Board::isEnded(int player, int& checked, int& pen) {
+			if (halfMoves == 50) {
+				pen = -100;
+				return true;
+			}
+			else if (player == RED) {
+				//checkmate
+				if (not Red.hasMoves()) {
+					if (isChecked(checked) and checked == RED) {
+						pen = -900;
+						return true;
+					}
+					//stalemate
+					else {
+						pen = -100;
+						checked = -1;
+						return true;
+					}
+				}
+				else if(isChecked(checked) and checked == GREEN) {
+					pen = 900;
+					return true;
+				}
+			}
+			else if (player == GREEN) {
+				//checkmate
+				if (not Green.hasMoves()) {
+					if (isChecked(checked) and checked == GREEN) {
+						return true;
+						pen = -900;
+					}
+					//stalemate
+					else {
+						pen = -100;
+						checked = -1;
+						return true;
+					}
+				}
+				else if (isChecked(checked) and checked == RED) {
+					pen = 900;
+					return true;
+				}
+			}
+			else {
+				std::cout << "No such known player" << std::endl;
+				return false;
+			}
+			return false;
+		}
+
+		Board::Board(const Board& b){
+			height = b.height;
+			width = b.width;
+			pieces = b.pieces;
+			Red = b.Red;
+			Green = b.Green;
+			target = b.target;
+			halfMoves = b.halfMoves;
+			main = Matrix(8, Row(8));
+			for (int i = 0; i < height; ++i) {
+				for (int j = 0; j < b.width; ++j) {
+					main[i][j] = b.main[i][j];
+				}
+			}
 		}
 
 		void Board::update() {

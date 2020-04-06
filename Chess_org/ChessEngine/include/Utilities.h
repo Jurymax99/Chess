@@ -15,7 +15,7 @@
 //file accessing modes
 #define VISUAL 0
 #define OUTSIDE 1
-#define ENVIRONMENT OUTSIDE
+#define ENVIRONMENT VISUAL
 
 //output modes
 #define NORMAL 0
@@ -73,4 +73,18 @@ struct PiecePosition {
 		return std::tie(h, w, type) < std::tie(rhs.h, rhs.w, rhs.type);
 	}
 
+};
+
+struct Move {
+	char type;
+	Position source, destination;
+	bool capture, move, castleKing, castleQueen, promote, check;
+	char killed;
+
+	bool operator<(const Move& rhs) const {
+		return std::tie(type, source.w, source.h, destination.w, destination.h,
+			move, capture, check, castleKing, castleQueen)
+			< std::tie(rhs.type, rhs.source.w, rhs.source.h, rhs.destination.w, rhs.destination.h,
+				rhs.move, rhs.capture, rhs.check, rhs.castleKing, rhs.castleQueen);
+	}
 };

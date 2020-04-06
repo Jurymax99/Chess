@@ -29,6 +29,8 @@ namespace Chess {
 			killed->addDead(tempPiece);
 			killer->addScore(tempScore);
 			main[h][w].checkPiecePoint()->firstMove();
+			halfMoves = 0;
+			target.possible = false;
 			return true;
 		}
 
@@ -55,6 +57,7 @@ namespace Chess {
 			killer->addScore(tempScore);
 			target.possible = false;
 			main[h][w].checkPiecePoint()->firstMove();
+			halfMoves = 0;
 			return true;
 		}
 
@@ -347,12 +350,106 @@ namespace Chess {
 				killer->addScore(tempScore);
 				target.possible = false;
 				main[h_d][w_d].checkPiecePoint()->firstMove();
+				halfMoves = 0;
 				return true;
 			}
 			else {
 				std::cout << "#5::You can't kill a friendly pawn" << std::endl;
 				return false;
 			}
+		}
+
+		bool Board::pawnCapture(const Position& source, const Position& dest, int player, bool enpassant) {
+			int pawnConst;
+			if (player == RED) {
+				pawnConst = -1;
+			}
+			else if (player == GREEN) {
+				pawnConst = 1;
+			}
+			else {
+				std::cout << "No such known player" << std::endl;
+				return false;
+			}
+			//look for pawn below the given position 
+			/*Player* pkiller, *pkilled;
+			if (player == RED) {
+				pkiller = &Red;
+				pkilled = &Green;
+			}
+			else {
+				pkiller = &Green;
+				pkilled = &Red;
+			}*/
+				//Make the move
+			Position killed;
+			if (enpassant) {
+				killed = { dest.h - pawnConst, dest.w };
+			}
+			else {
+				killed = { dest };
+			}
+			//TODO FIX THIS, DOESN'T WORK
+			if (main[killed.h][killed.w].checkPiecePoint() == nullptr) {
+				int a = 3;
+			}
+
+			if (player == RED) {
+				Red.addScore(main[killed.h][killed.w].checkPiece().checkPoints());
+				Green.addDead(main[killed.h][killed.w].checkPiece());
+			}
+			else {
+				Green.addScore(main[killed.h][killed.w].checkPiece().checkPoints());
+				Red.addDead(main[killed.h][killed.w].checkPiece());
+			}
+
+			main[source.h][source.w].removePiece();
+			main[killed.h][killed.w].removePiece();
+			main[dest.h][dest.w].addPiece('P', player);
+			
+			//Commit
+			target.possible = false;
+			main[dest.h][dest.w].checkPiecePoint()->firstMove();
+			halfMoves = 0;
+			return true;
+		}
+			
+		bool Board::pawnPromoteCapture(const Position& source, const Position& dest, char type, int player) {
+			int pawnConst;
+			if (player == RED) {
+				pawnConst = 1;
+			}
+			else if (player == GREEN) {
+				pawnConst = -1;
+			}
+			else {
+				std::cout << "No such known player" << std::endl;
+				return false;
+			}
+			//look for pawn below the given position 
+			Player* pkiller, * pkilled;
+			if (player == RED) {
+				pkiller = &Red;
+				pkilled = &Green;
+			}
+			else {
+				pkiller = &Green;
+				pkilled = &Red;
+			}
+			//Make the move
+
+			pkilled->addDead(main[dest.h][dest.w].checkPiece());
+			pkiller->addScore(main[dest.h][dest.w].checkPiece().checkPoints());
+
+			main[source.h][source.w].removePiece();
+			main[dest.h][dest.w].removePiece();
+			main[dest.h][dest.w].addPiece(type, player);
+
+			//Commit
+			target.possible = false;
+			main[dest.h][dest.w].checkPiecePoint()->firstMove();
+			halfMoves = 0;
+			return true;
 		}
 
 		bool Board::pawnPromoteCapture(int w_s, int h_d, int w_d, char type, int player) {

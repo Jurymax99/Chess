@@ -17,12 +17,17 @@ namespace Chess {
 			main[h][w].addPiece(type, player);
 			if (type == 'K') {
 				mover->setKing(h, w);
+				++halfMoves;
 			}
-			else if (type == 'P' and enp) {
-				target = { h,w, true };
+			else if (type == 'P'){
+				if (enp) {
+					target = { h,w, true };
+				}
+				halfMoves = 0;
 			}
 			else {
 				target.possible = false;
+				++halfMoves;
 			}
 			main[h][w].checkPiecePoint()->firstMove();
 			return true;
@@ -177,6 +182,7 @@ namespace Chess {
 				}
 				main[h][w].checkPiecePoint()->firstMove();
 				target.possible = false;
+				halfMoves = 0;
 				return true;
 			}
 			std::cout << "#4::No pawn available to make that move" << std::endl;

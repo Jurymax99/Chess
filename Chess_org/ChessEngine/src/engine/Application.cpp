@@ -4,6 +4,7 @@
 #include <fstream>
 #include <windows.h>
 #include <shellapi.h>		//For browser search
+#include <thread>
 #include "Timer.h"
 #include "Dummy.h"
 
@@ -20,7 +21,7 @@ namespace Chess {
 		int Application::gameCount = 0;
 
 		inline void Application::printHelpDebug() const{
-			std::cout << "You can: P / F / L / M / C / q\n";
+			std::cout << "You can: P / V / F / L / M / C / q\n";
 			std::cout << "    (P)lay\n";
 			std::cout << "    Play (V)s the computer\n";
 			std::cout << "    Read a (F)ile with a PGN formatted game\n";
@@ -31,7 +32,7 @@ namespace Chess {
 		}
 
 		inline void Application::printHelp() const{
-			std::cout << "You can: P / F / L / M / C / q\n";
+			std::cout << "You can: P / V / F / L / M / C / q\n";
 			std::cout << "    (P)lay\n";
 			std::cout << "    Play (V)s the computer\n";
 			std::cout << "    Read a (F)ile with a PGN formatted game\n";
@@ -167,7 +168,7 @@ namespace Chess {
 				//Red's turn
 				currentPlayer = RED;
 				Board::Ending ending;
-				if (mainBoard->isCheckmate(currentPlayer, ending)) {
+				if (mainBoard->isEnded(currentPlayer, ending)) {
 					print_end(ending);
 					break;
 				}
@@ -200,7 +201,7 @@ namespace Chess {
 				mainBoard->printBoard();
 				//Green's turn
 				currentPlayer = GREEN;
-				if (mainBoard->isCheckmate(currentPlayer, ending)) {
+				if (mainBoard->isEnded(currentPlayer, ending)) {
 					print_end(ending);
 					break;
 				}
@@ -247,13 +248,15 @@ namespace Chess {
 			mainBoard->update();
 			mainBoard->printBoard();
 			int currentPlayer;
+			//Dummy player1(RED);
 			Dummy player2(GREEN);
 			std::string mov;
+			std::chrono::seconds dura(1);
 			while (not ended) {
 				//Red's turn
 				currentPlayer = RED;
 				Board::Ending ending;
-				if (mainBoard->isCheckmate(currentPlayer, ending)) {
+				if (mainBoard->isEnded(currentPlayer, ending)) {
 					print_end(ending);
 					break;
 				}
@@ -281,41 +284,24 @@ namespace Chess {
 					break;
 				}
 				enp = false;
+				//player1.move(*mainBoard);
 				std::cout << "Piece successfully moved" << std::endl;
 				mainBoard->update();
 				mainBoard->printBoard();
-				//Green's turn
+				//std::this_thread::sleep_for(dura);
+				//AI's turn
 				currentPlayer = GREEN;
-				if (mainBoard->isCheckmate(currentPlayer, ending)) {
+				if (mainBoard->isEnded(currentPlayer, ending)) {
 					print_end(ending);
 					break;
 				}
 				std::cout << "Green's turn" << std::endl;
 				
-				std::cin >> mov;
-				if (mov == "quit") {
-					ended = true;
-					break;
-				}
-				//Check if movement is valid
-				while (not ended and not mainBoard->move(mov, currentPlayer, enp)) {
-					std::cout << "Green's turn" << std::endl;
-					mainBoard->update();
-					mainBoard->printBoard();
-					std::cout << "Cannot perform movement, please try again:" << std::endl;
-					std::cin >> mov;
-					if (mov == "quit") {
-						ended = true;
-						break;
-					}
-				}
-				if (ended) {
-					break;
-				}
-				enp = false;
+				player2.move(*mainBoard);
 				std::cout << "Piece successfully moved" << std::endl;
 				mainBoard->update();
 				mainBoard->printBoard();
+				//std::this_thread::sleep_for(dura);
 			}
 			delete mainBoard;
 			if (MODE == DEBUG) {
@@ -489,7 +475,7 @@ namespace Chess {
 						break;
 					}
 				}
-				if (mainBoard->isCheckmate(currentPlayer, ending)) {
+				if (mainBoard->isEnded(currentPlayer, ending)) {
 					break;
 				}
 				if (mov == end) {
@@ -530,7 +516,7 @@ namespace Chess {
 					std::cout << "Insert your movement: " << std::endl;
 				}
 				inFile >> mov;
-				if (mainBoard->isCheckmate(currentPlayer, ending)) {
+				if (mainBoard->isEnded(currentPlayer, ending)) {
 					break;
 				}
 				if (mov == end) {
@@ -669,7 +655,7 @@ namespace Chess {
 							break;
 						}
 					}
-					if (mainBoard->isCheckmate(currentPlayer, ending)) {
+					if (mainBoard->isEnded(currentPlayer, ending)) {
 						if (ending == Board::Ending::CHECKMATE) {
 							++checkmates;
 						}
@@ -719,7 +705,7 @@ namespace Chess {
 					if (MODE == DEBUG) {
 						std::cout << "Green's turn" << std::endl;
 					}
-					if (mainBoard->isCheckmate(currentPlayer, ending)) {
+					if (mainBoard->isEnded(currentPlayer, ending)) {
 						if (ending == Board::Ending::CHECKMATE) {
 							++checkmates;
 						}

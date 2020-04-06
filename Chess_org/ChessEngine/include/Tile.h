@@ -13,6 +13,7 @@ namespace Chess {
 		public:
 			Tile();
 			~Tile();
+			Tile(const Tile& t);
 
 			void addPiece(char newPiece, int newPlayer);
 			void removePiece();

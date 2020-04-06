@@ -18,9 +18,9 @@ namespace Chess {
 			std::vector <Pieces::Piece> Dead;
 			std::set <PositionState> Threat;
 			Position king;
-			MoveSet moves;
 
 		public:
+			MoveSet moves;
 			Player();
 			Player(int color);
 

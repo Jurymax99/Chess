@@ -78,6 +78,7 @@ namespace Chess {
 			target.possible = false;
 			main[h][w_r].checkPiecePoint()->firstMove();
 			main[h][w_k].checkPiecePoint()->firstMove();
+			++halfMoves;
 			return true;
 		}
 
@@ -156,6 +157,7 @@ namespace Chess {
 			target.possible = false;
 			main[h][w_r].checkPiecePoint()->firstMove();
 			main[h][w_k].checkPiecePoint()->firstMove();
+			++halfMoves;
 			return true;
 		}
 

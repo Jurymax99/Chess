@@ -10,13 +10,6 @@ namespace Chess {
 		class MoveSet {
 		private:
 			friend class Dummy;
-			struct Move {
-				char type;
-				Position source, destination;
-				bool capture, move, castleKing, castleQueen, promote, check;
-
-				bool operator <(const Move& rhs) const;
-			};
 			std::set<Move> Set;
 
 			void addKnight(Board& b, int orig_h, int orig_w, int i, int j, int color, int enemyColor);

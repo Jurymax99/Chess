@@ -140,7 +140,7 @@ namespace Chess {
 				Set.end(),
 				find_move_by_piece(type, dest));
 			if (available != 1) {
-				if (MODE == DEBUG) {
+				if (available > 1 and MODE == DEBUG) {
 					std::cout << "More than 1 piece can make this move" << std::endl;
 				}
 				return { -1,-1 };
@@ -157,7 +157,7 @@ namespace Chess {
 				Set.end(),
 				find_moveDA_by_piece(type, source_h, source_w, dest));
 			if (available != 1) {
-				if (MODE == DEBUG) {
+				if (available > 1 and MODE == DEBUG) {
 					std::cout << "More than 2 pieces can make this move" << std::endl;
 				}
 				return { -1,-1 };

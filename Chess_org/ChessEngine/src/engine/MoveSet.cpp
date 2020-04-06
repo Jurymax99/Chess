@@ -39,28 +39,29 @@ namespace Chess {
 								not b.main[i + pawnConst][j].hasPiece() and
 								b.makeFakeMove('P', i, j, i + pawnConst, j, color, check)) {
 								
-								Set.insert({ 'P', {i,j},{ i + pawnConst, j}, false, true, false, false, false, check });
+								Set.insert({ 'P', {i,j},{ i + pawnConst, j}, false, true, false, false, false, check, 'V' });
 								check = false;
 							}
 							//Pawn 2 up move
 							if (b.inBound(i + 2 * pawnConst, j) and
 								not b.main[i + pawnConst][j].hasPiece() and
 								not b.main[i + 2 * pawnConst][j].hasPiece() and
-								b.main[i][j].isFirstMov() and
+								/*b.main[i][j].isFirstMov() and*/
+								((color == RED and i == 6) or (color == GREEN and i == 1)) and
 								b.makeFakeMove('P', i, j, i + 2*pawnConst, j, color, check)) {
 								
-								Set.insert({ 'P', {i,j},{ i + 2 * pawnConst, j}, false, true, false, false, false, check });
+								Set.insert({ 'P', {i,j},{ i + 2 * pawnConst, j}, false, true, false, false, false, check, 'V' });
 								check = false;
 							}
 							//Pawn capture
 							if (b.hasEnemy(i + pawnConst, j + 1, color) and
 								b.makeFakeCapture('P', i, j, i + pawnConst, j + 1, color, check)) {
-								Set.insert({ 'P', {i,j},{ i + pawnConst, j + 1}, true, false, false, false, false, check });
+								Set.insert({ 'P', {i,j},{ i + pawnConst, j + 1}, true, false, false, false, false, check, b.main[i + pawnConst][j + 1].checkPieceType() });
 								check = false;
 							}
 							if (b.hasEnemy(i + pawnConst, j - 1, color) and
 								b.makeFakeCapture('P', i, j, i + pawnConst, j - 1, color, check)) {
-								Set.insert({ 'P', {i,j},{ i + pawnConst, j - 1}, true, false, false, false, false, check });
+								Set.insert({ 'P', {i,j},{ i + pawnConst, j - 1}, true, false, false, false, false, check, b.main[i + pawnConst][j - 1].checkPieceType() });
 								check = false;
 							}
 							//Enpassants
@@ -70,7 +71,7 @@ namespace Chess {
 								b.target.w == j + 1 and
 								not b.main[i + pawnConst][j + 1].hasPiece() and
 								b.makeFakeEnPassant(i,j,i + pawnConst, j + 1, i, j + 1, color, check)) {
-								Set.insert({ 'P', {i,j},{ i + pawnConst, j + 1}, true, false, false, false, false, check });
+								Set.insert({ 'P', {i,j},{ i + pawnConst, j + 1}, true, false, false, false, false, check, 'P' });
 								check = false;
 							}
 							if (b.hasEnemy('P', i, j - 1, color) and
@@ -79,7 +80,7 @@ namespace Chess {
 								b.target.w == j - 1 and
 								not b.main[i + pawnConst][j - 1].hasPiece() and
 								b.makeFakeEnPassant(i, j, i + pawnConst, j - 1, i, j - 1, color, check)) {
-								Set.insert({ 'P', {i,j},{ i + pawnConst, j - 1}, true, false, false, false, false, check });
+								Set.insert({ 'P', {i,j},{ i + pawnConst, j - 1}, true, false, false, false, false, check, 'P' });
 								check = false;
 							}
 						}
@@ -88,19 +89,19 @@ namespace Chess {
 							if (b.inBound(i + pawnConst, j)) {
 								if (not b.main[i + pawnConst][j].hasPiece() and
 									b.makeFakeMovePro(i, j, i + pawnConst, j, color, check)) {
-									Set.insert({ 'P',{i,j},{ i + pawnConst, j}, false, true, false, false, true, check });
+									Set.insert({ 'P',{i,j},{ i + pawnConst, j}, false, true, false, false, true, check, 'V' });
 									check = false;
 								}
 							}
 							//Pawn capture
 							if (b.hasEnemy(i + pawnConst, j + 1, color)
 								and	b.makeFakeCapturePro(i, j, i + pawnConst, j + 1, color, check)) {
-								Set.insert({ 'P',{i,j},{ i + pawnConst, j + 1}, true, false, false, false, true, check });
+								Set.insert({ 'P',{i,j},{ i + pawnConst, j + 1}, true, false, false, false, true, check, b.main[i + pawnConst][j + 1].checkPieceType() });
 								check = false;
 							}
 							if (b.hasEnemy(i + pawnConst, j - 1, color)
 								and b.makeFakeCapturePro(i, j, i + pawnConst, j - 1, color, check)) {
-								Set.insert({ 'P', {i,j},{ i + pawnConst, j - 1}, true, false, false, false, true, check });
+								Set.insert({ 'P', {i,j},{ i + pawnConst, j - 1}, true, false, false, false, true, check, b.main[i + pawnConst][j - 1].checkPieceType() });
 								check = false;
 							}
 						}
@@ -140,56 +141,56 @@ namespace Chess {
 						int it = i + 1;
 						while (it <= 7 and not b.main[it][j].hasPiece()) {
 							if (b.makeFakeMove('R', i, j, it, j, color, check)) {
-								Set.insert({ 'R', {i,j},{ it, j }, false, true, false, false, false, check });
+								Set.insert({ 'R', {i,j},{ it, j }, false, true, false, false, false, check, 'V' });
 								check = false;
 							}
 							++it;
 						}
 						if (it <= 7 and b.main[it][j].checkPlayer() == enemyColor and
 							b.makeFakeCapture('R', i, j, it, j, color, check)) {
-							Set.insert({ 'R', {i,j},{ it, j }, true, false, false, false, false, check });
+							Set.insert({ 'R', {i,j},{ it, j }, true, false, false, false, false, check , b.main[it][j].checkPieceType() });
 							check = false;
 						}
 						//Search above
 						it = i - 1;
 						while (it >= 0 and not b.main[it][j].hasPiece()) {
 							if (b.makeFakeMove('R', i, j, it, j, color, check)) {
-								Set.insert({ 'R', {i,j},{ it, j }, false, true, false, false, false, check });
+								Set.insert({ 'R', {i,j},{ it, j }, false, true, false, false, false, check, 'V' });
 								check = false;
 							}
 							--it;
 						}
 						if (it >= 0 and b.main[it][j].checkPlayer() == enemyColor and
 							b.makeFakeCapture('R', i, j, it, j, color, check)) {
-							Set.insert({ 'R', {i,j},{ it, j }, true, false, false, false, false, check });
+							Set.insert({ 'R', {i,j},{ it, j }, true, false, false, false, false, check, b.main[it][j].checkPieceType() });
 							check = false;
 						}
 						//Search to the right
 						it = j + 1;
 						while (it <= 7 and not b.main[i][it].hasPiece()) {
 							if (b.makeFakeMove('R', i, j, i, it, color, check)) {
-								Set.insert({ 'R', {i,j},{ i, it }, false, true, false, false, false, check });
+								Set.insert({ 'R', {i,j},{ i, it }, false, true, false, false, false, check, 'V' });
 								check = false;
 							}
 							++it;
 						}
 						if (it <= 7 and b.main[i][it].checkPlayer() == enemyColor and
 							b.makeFakeCapture('R', i, j, i, it, color, check)) {
-							Set.insert({ 'R', {i,j},{ i, it }, true, false, false, false, false, check });
+							Set.insert({ 'R', {i,j},{ i, it }, true, false, false, false, false, check, b.main[i][it].checkPieceType() });
 							check = false;
 						}
 						//Search to the left
 						it = j - 1;
 						while (it >= 0 and not b.main[i][it].hasPiece()) {
 							if (b.makeFakeMove('R', i, j, i, it, color, check)) {
-								Set.insert({ 'R', {i,j},{ i, it }, false, true, false, false, false, check });
+								Set.insert({ 'R', {i,j},{ i, it }, false, true, false, false, false, check, 'V' });
 								check = false;
 							}
 							--it;
 						}
 						if (it >= 0 and b.main[i][it].checkPlayer() == enemyColor and
 							b.makeFakeCapture('R', i, j, i, it, color, check)) {
-							Set.insert({ 'R', {i,j},{ i, it }, true, false, false, false, false, check });
+							Set.insert({ 'R', {i,j},{ i, it }, true, false, false, false, false, check, b.main[i][it].checkPieceType() });
 							check = false;
 						}
 						//castle kingside
@@ -204,8 +205,8 @@ namespace Chess {
 							else {
 								std::cout << "No known player" << std::endl;
 							}
-							Set.insert({ 'R', {h,7},{ h, 5 }, false, true, true, false, false, check });
-							Set.insert({ 'K', {h,4},{ h, 6 }, false, true, true, false, false, check });
+							Set.insert({ 'R', {h,7},{ h, 5 }, false, true, true, false, false, check, 'V' });
+							Set.insert({ 'K', {h,4},{ h, 6 }, false, true, true, false, false, check, 'V' });
 							check = false;
 						}
 						//castle queenside
@@ -220,8 +221,8 @@ namespace Chess {
 							else {
 								std::cout << "No known player" << std::endl;
 							}
-							Set.insert({ 'R', {h,0},{ h, 3 }, false, true, false, true, false, check });
-							Set.insert({ 'K', {h,4},{ h, 2 }, false, true, false, true, false, check });
+							Set.insert({ 'R', {h,0},{ h, 3 }, false, true, false, true, false, check, 'V' });
+							Set.insert({ 'K', {h,4},{ h, 2 }, false, true, false, true, false, check, 'V' });
 							check = false;
 						}
 					}
@@ -233,7 +234,7 @@ namespace Chess {
 						int it_w = j - 1;
 						while (it_h <= 7 and it_w >= 0 and not b.main[it_h][it_w].hasPiece()) {
 							if (b.makeFakeMove('B', i, j, it_h, it_w, color, check)) {
-								Set.insert({ 'B', {i,j},{ it_h, it_w }, false, true, false, false, false, check });
+								Set.insert({ 'B', {i,j},{ it_h, it_w }, false, true, false, false, false, check, 'V' });
 								check = false;
 							}
 							++it_h;
@@ -241,7 +242,7 @@ namespace Chess {
 						}
 						if (it_h <= 7 and it_w >= 0 and b.main[it_h][it_w].checkPlayer() == enemyColor and
 							b.makeFakeCapture('B', i, j, it_h, it_w, color, check)) {
-							Set.insert({ 'B', {i,j},{ it_h, it_w }, true, false, false, false, false, check });
+							Set.insert({ 'B', {i,j},{ it_h, it_w }, true, false, false, false, false, check, b.main[it_h][it_w].checkPieceType() });
 							check = false;
 						}
 						//Search diagonal left-up
@@ -249,7 +250,7 @@ namespace Chess {
 						it_w = j - 1;
 						while (it_h >= 0 and it_w >= 0 and not b.main[it_h][it_w].hasPiece()) {
 							if (b.makeFakeMove('B', i, j, it_h, it_w, color, check)) {
-								Set.insert({ 'B', {i,j},{ it_h, it_w }, false, true, false, false, false, check });
+								Set.insert({ 'B', {i,j},{ it_h, it_w }, false, true, false, false, false, check, 'V' });
 								check = false;
 							}
 							--it_h;
@@ -257,7 +258,7 @@ namespace Chess {
 						}
 						if (it_h >= 0 and it_w >= 0 and b.main[it_h][it_w].checkPlayer() == enemyColor and
 							b.makeFakeCapture('B', i, j, it_h, it_w, color, check)) {
-							Set.insert({ 'B', {i,j},{ it_h, it_w }, true, false, false, false, false, check });
+							Set.insert({ 'B', {i,j},{ it_h, it_w }, true, false, false, false, false, check, b.main[it_h][it_w].checkPieceType() });
 							check = false;
 						}
 						//Search diagonal right-down
@@ -265,7 +266,7 @@ namespace Chess {
 						it_w = j + 1;
 						while (it_h <= 7 and it_w <= 7 and not b.main[it_h][it_w].hasPiece()) {
 							if (b.makeFakeMove('B', i, j, it_h, it_w, color, check)) {
-								Set.insert({ 'B', {i,j},{ it_h, it_w }, false, true, false, false, false, check });
+								Set.insert({ 'B', {i,j},{ it_h, it_w }, false, true, false, false, false, check, 'V' });
 								check = false;
 							}
 							++it_h;
@@ -273,7 +274,7 @@ namespace Chess {
 						}
 						if (it_h <= 7 and it_w <= 7 and b.main[it_h][it_w].checkPlayer() == enemyColor and
 							b.makeFakeCapture('B', i, j, it_h, it_w, color, check)) {
-							Set.insert({ 'B', {i,j},{ it_h, it_w }, true, false, false, false, false, check });
+							Set.insert({ 'B', {i,j},{ it_h, it_w }, true, false, false, false, false, check, b.main[it_h][it_w].checkPieceType() });
 							check = false;
 						}
 						//Search diagonal right-up
@@ -281,7 +282,7 @@ namespace Chess {
 						it_w = j + 1;
 						while (it_h >= 0 and it_w <= 7 and not b.main[it_h][it_w].hasPiece()) {
 							if (b.makeFakeMove('B', i, j, it_h, it_w, color, check)) {
-								Set.insert({ 'B', {i,j},{ it_h, it_w }, false, true, false, false, false, check });
+								Set.insert({ 'B', {i,j},{ it_h, it_w }, false, true, false, false, false, check, 'V' });
 								check = false;
 							}
 							--it_h;
@@ -289,7 +290,7 @@ namespace Chess {
 						}
 						if (it_h >= 0 and it_w <= 7 and b.main[it_h][it_w].checkPlayer() == enemyColor and
 							b.makeFakeCapture('B', i, j, it_h, it_w, color, check)) {
-							Set.insert({ 'B',{i,j},{ it_h, it_w }, true, false, false, false, false, check });
+							Set.insert({ 'B',{i,j},{ it_h, it_w }, true, false, false, false, false, check, b.main[it_h][it_w].checkPieceType() });
 							check = false;
 						}
 					}
@@ -300,56 +301,56 @@ namespace Chess {
 						int it = i + 1;
 						while (it <= 7 and not b.main[it][j].hasPiece()) {
 							if (b.makeFakeMove('Q', i, j, it, j, color, check)) {
-								Set.insert({ 'Q', {i,j},{ it, j }, false, true, false, false, false, check });
+								Set.insert({ 'Q', {i,j},{ it, j }, false, true, false, false, false, check, 'V' });
 								check = false;
 							}
 							++it;
 						}
 						if (it <= 7 and b.main[it][j].checkPlayer() == enemyColor and
 							b.makeFakeCapture('Q', i, j, it, j, color, check)) {
-							Set.insert({ 'Q', {i,j},{ it, j }, true, false, false, false, false, check });
+							Set.insert({ 'Q', {i,j},{ it, j }, true, false, false, false, false, check, b.main[it][j].checkPieceType() });
 							check = false;
 						}
 						//Search above
 						it = i - 1;
 						while (it >= 0 and not b.main[it][j].hasPiece()) {
 							if (b.makeFakeMove('Q', i, j, it, j, color, check)) {
-								Set.insert({ 'Q', {i,j},{ it, j }, false, true, false, false, false, check });
+								Set.insert({ 'Q', {i,j},{ it, j }, false, true, false, false, false, check, 'V' });
 								check = false;
 							}
 							--it;
 						}
 						if (it >= 0 and b.main[it][j].checkPlayer() == enemyColor and
 							b.makeFakeCapture('Q', i, j, it, j, color, check)) {
-							Set.insert({ 'Q',{i,j},{ it, j }, true, false, false, false, false, check });
+							Set.insert({ 'Q',{i,j},{ it, j }, true, false, false, false, false, check, b.main[it][j].checkPieceType() });
 							check = false;
 						}
 						//Search to the right
 						it = j + 1;
 						while (it <= 7 and not b.main[i][it].hasPiece()) {
 							if (b.makeFakeMove('Q', i, j, i, it, color, check)) {
-								Set.insert({ 'Q',{i,j},{ i, it }, false, true, false, false, false, check });
+								Set.insert({ 'Q',{i,j},{ i, it }, false, true, false, false, false, check, 'V' });
 								check = false;
 							}
 							++it;
 						}
 						if (it <= 7 and b.main[i][it].checkPlayer() == enemyColor and
 							b.makeFakeCapture('Q', i, j, i, it, color, check)) {
-							Set.insert({ 'Q',{i,j},{ i, it }, true, false, false, false, false, check });
+							Set.insert({ 'Q',{i,j},{ i, it }, true, false, false, false, false, check, b.main[i][it].checkPieceType() });
 							check = false;
 						}
 						//Search to the left
 						it = j - 1;
 						while (it >= 0 and not b.main[i][it].hasPiece()) {
 							if (b.makeFakeMove('Q', i, j, i, it, color, check)) {
-								Set.insert({ 'Q', {i,j},{ i, it }, false, true, false, false, false, check });
+								Set.insert({ 'Q', {i,j},{ i, it }, false, true, false, false, false, check, 'V' });
 								check = false;
 							}
 							--it;
 						}
 						if (it >= 0 and b.main[i][it].checkPlayer() == enemyColor and
 							b.makeFakeCapture('Q', i, j, i, it, color, check)) {
-							Set.insert({ 'Q', {i,j},{ i, it }, true, false, false, false, false, check });
+							Set.insert({ 'Q', {i,j},{ i, it }, true, false, false, false, false, check, b.main[i][it].checkPieceType() });
 							check = false;
 						}
 						//Search diagonal left-down
@@ -357,7 +358,7 @@ namespace Chess {
 						int it_w = j - 1;
 						while (it_h <= 7 and it_w >= 0 and not b.main[it_h][it_w].hasPiece()) {
 							if (b.makeFakeMove('Q', i, j, it_h, it_w, color, check)) {
-								Set.insert({ 'Q',{i,j},{ it_h, it_w }, false, true, false, false, false, check });
+								Set.insert({ 'Q',{i,j},{ it_h, it_w }, false, true, false, false, false, check, 'V' });
 								check = false;
 							}
 							++it_h;
@@ -365,7 +366,7 @@ namespace Chess {
 						}
 						if (it_h <= 7 and it_w >= 0 and b.main[it_h][it_w].checkPlayer() == enemyColor and
 							b.makeFakeCapture('Q', i, j, it_h, it_w, color, check)) {
-							Set.insert({ 'Q', {i,j},{ it_h, it_w }, true, false, false, false, false, check });
+							Set.insert({ 'Q', {i,j},{ it_h, it_w }, true, false, false, false, false, check, b.main[it_h][it_w].checkPieceType() });
 							check = false;
 						}
 						//Search diagonal left-up
@@ -373,7 +374,7 @@ namespace Chess {
 						it_w = j - 1;
 						while (it_h >= 0 and it_w >= 0 and not b.main[it_h][it_w].hasPiece()) {
 							if (b.makeFakeMove('Q', i, j, it_h, it_w, color, check)) {
-								Set.insert({ 'Q', {i,j},{ it_h, it_w }, false, true, false, false, false, check });
+								Set.insert({ 'Q', {i,j},{ it_h, it_w }, false, true, false, false, false, check, 'V' });
 								check = false;
 							}
 							--it_h;
@@ -381,7 +382,7 @@ namespace Chess {
 						}
 						if (it_h >= 0 and it_w >= 0 and b.main[it_h][it_w].checkPlayer() == enemyColor and
 							b.makeFakeCapture('Q', i, j, it_h, it_w, color, check)) {
-							Set.insert({ 'Q', {i,j},{ it_h, it_w }, true, false, false, false, false, check });
+							Set.insert({ 'Q', {i,j},{ it_h, it_w }, true, false, false, false, false, check, b.main[it_h][it_w].checkPieceType() });
 							check = false;
 						}
 						//Search diagonal right-down
@@ -389,7 +390,7 @@ namespace Chess {
 						it_w = j + 1;
 						while (it_h <= 7 and it_w <= 7 and not b.main[it_h][it_w].hasPiece()) {
 							if (b.makeFakeMove('Q', i, j, it_h, it_w, color, check)) {
-								Set.insert({ 'Q', {i,j},{ it_h, it_w }, false, true, false, false, false, check });
+								Set.insert({ 'Q', {i,j},{ it_h, it_w }, false, true, false, false, false, check, 'V' });
 								check = false;
 							}
 							++it_h;
@@ -397,7 +398,7 @@ namespace Chess {
 						}
 						if (it_h <= 7 and it_w <= 7 and b.main[it_h][it_w].checkPlayer() == enemyColor and
 							b.makeFakeCapture('Q', i, j, it_h, it_w, color, check)) {
-							Set.insert({ 'Q', {i,j},{ it_h, it_w }, true, false, false, false, false, check });
+							Set.insert({ 'Q', {i,j},{ it_h, it_w }, true, false, false, false, false, check, b.main[it_h][it_w].checkPieceType() });
 							check = false;
 						}
 						//Search diagonal right-up
@@ -405,7 +406,7 @@ namespace Chess {
 						it_w = j + 1;
 						while (it_h >= 0 and it_w <= 7 and not b.main[it_h][it_w].hasPiece()) {
 							if (b.makeFakeMove('Q', i, j, it_h, it_w, color, check)) {
-								Set.insert({ 'Q', {i,j},{ it_h, it_w }, false, true, false, false, false, check });
+								Set.insert({ 'Q', {i,j},{ it_h, it_w }, false, true, false, false, false, check, 'V' });
 								check = false;
 							}
 							--it_h;
@@ -413,7 +414,7 @@ namespace Chess {
 						}
 						if (it_h >= 0 and it_w <= 7 and b.main[it_h][it_w].checkPlayer() == enemyColor and
 							b.makeFakeCapture('Q', i, j, it_h, it_w, color, check)) {
-							Set.insert({ 'Q', {i,j},{ it_h, it_w }, true, false, false, false, false, check });
+							Set.insert({ 'Q', {i,j},{ it_h, it_w }, true, false, false, false, false, check, b.main[it_h][it_w].checkPieceType() });
 							check = false;
 						}
 					}
@@ -425,11 +426,11 @@ namespace Chess {
 								if (b.inBound(i + ii, j + jj)) {
 									if (not b.main[i + ii][j + jj].hasPiece() and
 										b.makeFakeMove('K',i, j, i + ii, j + jj,color, check)) {
-										Set.insert({ 'K', {i,j},{ i + ii, j + jj }, false, true, false, false, false, check });
+										Set.insert({ 'K', {i,j},{ i + ii, j + jj }, false, true, false, false, false, check, 'V' });
 									}
 									else if (b.main[i + ii][j + jj].checkPlayer() == enemyColor and
 										b.makeFakeCapture('K', i, j, i + ii, j + jj, color, check)) {
-										Set.insert({ 'K', {i,j},{ i + ii, j + jj }, true, false, false, false, false, check });
+										Set.insert({ 'K', {i,j},{ i + ii, j + jj }, true, false, false, false, false, check, b.main[i + ii][j + jj].checkPieceType() });
 									}
 									check = false;
 								}
@@ -448,11 +449,11 @@ namespace Chess {
 			if (b.inBound(i, j)) {
 				if (not b.main[i][j].hasPiece() and
 					b.makeFakeMove('N', orig_h, orig_w, i, j, color, check)) {
-					Set.insert({ 'N', {orig_h, orig_w},{ i, j}, false, true, false, false, false, check });
+					Set.insert({ 'N', {orig_h, orig_w},{ i, j}, false, true, false, false, false, check, 'V' });
 				}
 				else if (b.main[i][j].checkPlayer() == enemyColor and
 					b.makeFakeCapture('N', orig_h, orig_w, i, j, color, check)) {
-					Set.insert({ 'N', {orig_h, orig_w},{ i, j}, true, false, false, false, false, check });
+					Set.insert({ 'N', {orig_h, orig_w},{ i, j}, true, false, false, false, false, check, b.main[i][j].checkPieceType() });
 				}
 			}
 		}
@@ -477,7 +478,7 @@ namespace Chess {
 					std::cout << "pr";
 				}
 				if (it->capture) {
-					std::cout << "x";
+					std::cout << "x" << it->killed;
 				}
 				if (it->move) {
 					std::cout << "m";
@@ -492,16 +493,8 @@ namespace Chess {
 					std::cout << "+";
 				}
 				std::cout << "] ";
-				std::cout.flush();
 			}
 			std::cout << std::endl;
-		}
-
-		bool MoveSet::Move::operator<(const Move& rhs) const {
-			return std::tie(type,source.w, source.h, destination.w, destination.h, 
-				move, capture, check, castleKing, castleQueen)
-				< std::tie(rhs.type, rhs.source.w, rhs.source.h, rhs.destination.w, rhs.destination.h, 
-				rhs.move, rhs.capture, rhs.check, rhs.castleKing, rhs.castleQueen);
 		}
 
 		bool MoveSet::empty() const {
