@@ -75,7 +75,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Users\David\source\repos\Chess_org\Chess_org\ChessEngine\include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\David\source\repos\Chess_org\Chess_org\ChessEngine\src\ai;C:\Users\David\source\repos\Chess_org\Chess_org\ChessEngine\include;$(IncludePath)</IncludePath>
     <SourcePath>C:\Users\David\source\repos\Chess_org\Chess_org\Main;C:\Users\David\source\repos\Chess_org\Chess_org\ChessEngine\src\engine\ops;C:\Users\David\source\repos\Chess_org\Chess_org\ChessEngine\src\pieces;C:\Users\David\source\repos\Chess_org\Chess_org\ChessEngine\src\engine;C:\Users\David\source\repos\Chess_org\Chess_org\ChessEngine\src;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -83,7 +83,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>C:\Users\David\source\repos\Chess_org\Chess_org\ChessEngine\include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\David\source\repos\Chess_org\Chess_org\ChessEngine\src\ai;C:\Users\David\source\repos\Chess_org\Chess_org\ChessEngine\include;$(IncludePath)</IncludePath>
     <SourcePath>C:\Users\David\source\repos\Chess_org\Chess_org\ChessEngine\src\engine\ops;C:\Users\David\source\repos\Chess_org\Chess_org\ChessEngine\src\engine;C:\Users\David\source\repos\Chess_org\Chess_org\ChessEngine\src\pieces;C:\Users\David\source\repos\Chess_org\Chess_org\Main;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -144,15 +144,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ChessEngine\src\ai\Dummy.cpp" />
     <ClCompile Include="ChessEngine\src\engine\Application.cpp" />
     <ClCompile Include="ChessEngine\src\engine\Board.cpp" />
     <ClCompile Include="ChessEngine\src\engine\MoveSet.cpp" />
-    <ClCompile Include="ChessEngine\src\engine\ops\AmbiguousCaptures.cpp" />
-    <ClCompile Include="ChessEngine\src\engine\ops\AmbiguousMovements.cpp" />
     <ClCompile Include="ChessEngine\src\engine\ops\Captures.cpp" />
+    <ClCompile Include="ChessEngine\src\engine\ops\MoveFinders.cpp" />
     <ClCompile Include="ChessEngine\src\engine\ops\Movements.cpp" />
     <ClCompile Include="ChessEngine\src\engine\ops\SpecialMovements.cpp" />
     <ClCompile Include="ChessEngine\src\engine\Player.cpp" />
+    <ClCompile Include="ChessEngine\src\engine\PositionState.cpp" />
     <ClCompile Include="ChessEngine\src\engine\Tile.cpp" />
     <ClCompile Include="ChessEngine\src\pieces\Piece.cpp" />
     <ClCompile Include="Main\Main.cpp">
@@ -166,8 +167,11 @@
     <ClInclude Include="ChessEngine\include\MoveSet.h" />
     <ClInclude Include="ChessEngine\include\Piece.h" />
     <ClInclude Include="ChessEngine\include\Player.h" />
+    <ClInclude Include="ChessEngine\include\PositionState.h" />
     <ClInclude Include="ChessEngine\include\Tile.h" />
+    <ClInclude Include="ChessEngine\include\Timer.h" />
     <ClInclude Include="ChessEngine\include\Utilities.h" />
+    <ClInclude Include="ChessEngine\src\ai\Dummy.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Changelog.txt" />

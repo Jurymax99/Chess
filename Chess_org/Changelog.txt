@@ -1,24 +1,12 @@
 
 		//TODO: 
-		//		-finish transforming moves/captures into set searches
-		//		-faster movements(no repeated operations)
-		//			-delete Threats system
-		//			-save piece positions per player
-		//			-for each piece check the possible movements
-		//			-last one to check movements will be the king
-		//			-if it lands on a tile that another piece can move, it's check
-		//			-chackmate not affected
-		//		-statlemate
-		//		-halfmoves (no captures nor pawn movements)
-		//		-50 movement rule
-		//		-read files with multiple pgn matches
+		//		-alpha beta pruning for AI
 		//		-move counter
 		//		-FEN encoding
 		//			-displaying actual board's FEN
 		//			-reading FEN 
 		//			-keep a stack of FENs to go back
 		//		-flip board
-		//		-mini AI
 		//		-interactive GUI
 
 		//CHANGELOG:
@@ -78,5 +66,12 @@
 		//		- Improved performance by deleting redundant operations
 		//		- Fixed bugs related to moves and captures
 		//		- Added a minimalistic faster mode which outputs only board
-
+		//_____________________________________________________________________________________
+		//		- Improved even more performance by deleting redundant operations
+		//		- Added functionality to read directly from .pgn files with multiple matches
+		//		- Much faster move generator
+		//_____________________________________________________________________________________
+		//		- Added 50 move rule and other possible endings
+		//		- Added AI using minimax algorithm
+		//		-50 movement rule
 
