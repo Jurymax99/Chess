@@ -1,14 +1,3 @@
-
-		//TODO: 
-		//		-alpha beta pruning for AI
-		//		-move counter
-		//		-FEN encoding
-		//			-displaying actual board's FEN
-		//			-reading FEN 
-		//			-keep a stack of FENs to go back
-		//		-flip board
-		//		-interactive GUI
-
 		//CHANGELOG:
 		//	-Added ambiguous moves :
 		//		-knight e.g.Nfg5
@@ -71,7 +60,14 @@
 		//		- Added functionality to read directly from .pgn files with multiple matches
 		//		- Much faster move generator
 		//_____________________________________________________________________________________
+		//		- Added halfmoves counter
 		//		- Added 50 move rule and other possible endings
 		//		- Added AI using minimax algorithm
-		//		-50 movement rule
+		//_____________________________________________________________________________________
+		//		- Improved AI's move algorithm using Alpha-Beta Pruning
+		//		- Added a turn counter
+		//		- Added a FEN generator and a FEN parser
+		//_____________________________________________________________________________________
+		//		- Much faster move generator
+		//		- Improved board and square representation using bitwise operations
 

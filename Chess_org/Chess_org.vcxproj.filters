@@ -21,13 +21,7 @@
     <ClCompile Include="Main\Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ChessEngine\src\engine\Board.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ChessEngine\src\engine\Tile.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ChessEngine\src\pieces\Piece.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ChessEngine\src\engine\ops\Captures.cpp">
@@ -45,13 +39,13 @@
     <ClCompile Include="ChessEngine\src\engine\MoveSet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ChessEngine\src\engine\PositionState.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ChessEngine\src\engine\ops\MoveFinders.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ChessEngine\src\ai\Dummy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ChessEngine\src\engine\Board.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -71,16 +65,10 @@
     <ClInclude Include="ChessEngine\include\Tile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ChessEngine\include\Piece.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ChessEngine\include\Player.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ChessEngine\include\MoveSet.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ChessEngine\include\PositionState.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ChessEngine\include\Timer.h">

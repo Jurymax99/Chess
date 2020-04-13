@@ -1,0 +1,6 @@
+		//TODO: 
+		//		-board fakemove with evaluation work with the same board all the time
+		//		-keep a stack of FENs to go back
+		//		-improve alpha-beta pruning to PVS or negascout
+		//		-flip board
+		//		-interactive GUI

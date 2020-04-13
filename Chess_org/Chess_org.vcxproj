@@ -135,6 +135,8 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <OpenMPSupport>false</OpenMPSupport>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -153,9 +155,7 @@
     <ClCompile Include="ChessEngine\src\engine\ops\Movements.cpp" />
     <ClCompile Include="ChessEngine\src\engine\ops\SpecialMovements.cpp" />
     <ClCompile Include="ChessEngine\src\engine\Player.cpp" />
-    <ClCompile Include="ChessEngine\src\engine\PositionState.cpp" />
     <ClCompile Include="ChessEngine\src\engine\Tile.cpp" />
-    <ClCompile Include="ChessEngine\src\pieces\Piece.cpp" />
     <ClCompile Include="Main\Main.cpp">
       <DeploymentContent>false</DeploymentContent>
     </ClCompile>
@@ -165,9 +165,7 @@
     <ClInclude Include="ChessEngine\include\Board.h" />
     <ClInclude Include="ChessEngine\include\Color.h" />
     <ClInclude Include="ChessEngine\include\MoveSet.h" />
-    <ClInclude Include="ChessEngine\include\Piece.h" />
     <ClInclude Include="ChessEngine\include\Player.h" />
-    <ClInclude Include="ChessEngine\include\PositionState.h" />
     <ClInclude Include="ChessEngine\include\Tile.h" />
     <ClInclude Include="ChessEngine\include\Timer.h" />
     <ClInclude Include="ChessEngine\include\Utilities.h" />
