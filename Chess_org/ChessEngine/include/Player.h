@@ -1,10 +1,8 @@
 #pragma once
+#include "MoveSet.h"
 #include <vector>
 #include <set>
-#include "Piece.h"
-#include "Utilities.h"
-#include "MoveSet.h"
-#include "PositionState.h"
+#include <algorithm>
 
 namespace Chess {
 	namespace Engine {
@@ -15,64 +13,66 @@ namespace Chess {
 		class Player {
 		protected:
 			int color, score, pieceCount;
-			std::vector <Pieces::Piece> Dead;
-			std::set <PositionState> Threat;
+			std::vector <char> Dead;
 			Position king;
+			bool castleKing, castleQueen;
+
+		private:
+			void addKnight(Board& b, const int& i, const int& j);
+			void addRookLike(Board& b, const int& i, const int& j);
+			void addBishopLike(Board& b, const int& i, const int& j);
 
 		public:
 			MoveSet moves;
 			Player();
 			Player(int color);
 
-			void addDead(Pieces::Piece piece);
+			void addDead(const char& piece);
+			void updateThreats(Board& b, const bool& clean);
 
-			Position findMove(char type, const Position& dest, const Board& b) const;
-			Position findAmbRMove(char type, int source_h, const Position& dest, const Board& b) const;
-			Position findAmbFMove(char type, int souce_w, const Position& dest, const Board& b) const;
-			Position findDAmbMove(char type, int source_h, int source_w, const Position& dest, const Board& b) const;
-			Position findCapture(char type, const Position& dest, const Board& b) const;
-			Position findAmbRCapture(char type, int source_h, const Position& dest, const Board& b) const;
-			Position findAmbFCapture(char type, int souce_w, const Position& dest, const Board& b) const;
-			Position findDAmbCapture(char type, int source_h, int source_w, const Position& dest, const Board& b) const;
-
-			void updateThreats(const Board& b);
-			void addKnight(const Board& b, const int& i, const int& j, const int& enemyColor);
-			void addRookLike(const Board& b, const int& i, const int& j, const int& enemyColor);
-			void addBishopLike(const Board& b, const int& i, const int& j, const int& enemyColor);
+			inline Position findMove(char type, const Position& dest, const Board& b) const { return  moves.findMove(type, dest, b); }
+			inline Position findAmbRMove(char type, int source_h, const Position& dest, const Board& b) const { return  moves.findMoveR(type, source_h, dest, b); }
+			inline Position findAmbFMove(char type, int source_w, const Position& dest, const Board& b) const { return  moves.findMoveF(type, source_w, dest, b); }
+			inline Position findDAmbMove(char type, const Position& source, const Position& dest, const Board& b) const { return moves.findMoveDA(type, source, dest, b); }
+			inline Position findCapture(char type, const Position& dest, const Board& b) const { return  moves.findCapture(type, dest, b); }
+			inline Position findAmbRCapture(char type, int source_h, const Position& dest, const Board& b) const { return  moves.findCaptureR(type, source_h, dest, b); }
+			inline Position findAmbFCapture(char type, int source_w, const Position& dest, const Board& b) const { return  moves.findCaptureF(type, source_w, dest, b); }
+			inline Position findDAmbCapture(char type, const Position& source, const Position& dest, const Board& b) const{ return moves.findCaptureDA(type, source, dest, b); }
+			inline bool findKingsideCastling(const Board& b) const {return moves.findKingsideCastling(b);}
+			inline bool findQueensideCastling(const Board& b) const {return moves.findQueensideCastling(b);}
 			
 			void checkDeadRelease() const;
 			void checkDeadDebug() const;
-			void checkThreats() const;
+
+			inline int checkPieceCount() const { return pieceCount; };
+
+			inline void setPieceCount(const int& count) { pieceCount = count; };
+
+			inline void setCastleKing(const bool& cond) { castleKing = cond; }
+
+			inline void setCastleQueen(const bool& cond) { castleQueen = cond; }
+
+			inline bool checkCastleKing() const { return castleKing; }
+
+			inline bool checkCastleQueen() const { return castleQueen; }
 			
 			inline void setKing(int h, int w) { king = { h,w }; }
 			
 			inline Position checkKingPosition() const{return king;}
 			
-			inline void checkKing() const { std::cout << "king is at [" << char(king.w + 97) << char(8 - char(king.h - 48)) << "]" << std::endl; }
-
+			inline void checkKing() const { std::cout << "king is at [" << char(king.checkW() + 97) << char(8 - char(king.checkH() - 48)) << "]" << std::endl; }
 			
 			inline void checkMoves() const { if (MODE == DEBUG) moves.checkDebug(color); };
 
 			inline bool hasMoves() const { return not moves.empty(); }
-			
 			
 			inline void addScore(int score){this->score += score;}
 			
 			inline int checkScore() const { return score; }
 
 			inline int checkColor() const { return color; }
-
-			inline int chackPiecesLeft() const { return pieceCount; }
 			
 			inline void updateMoveSet(Board& b) {moves.update(color, pieceCount, b);}
-
-			
-
-			inline bool findThreat(int i, int j) const{return Threat.find({ i,j,false }) != Threat.end();}
-
-			inline bool findThreat(int i, int j, bool cond) const{return Threat.find({ i,j, cond }) != Threat.end();}
-
-			inline bool findThreat(const Position& p, bool cond) const{return Threat.find({ p.h,p.w, cond }) != Threat.end();}
 
 		};
 	}

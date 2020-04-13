@@ -21,7 +21,7 @@ namespace Chess {
 			void printHelpDebug() const;
 			void printHelp() const;
 			bool open_browser(const char* URL) const;
-			void print_end(Board::Ending status) const;
+			void print_end(const Board::Ending& status) const;
 		};
 	}
 }
