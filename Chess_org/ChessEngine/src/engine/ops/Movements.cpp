@@ -12,12 +12,31 @@ namespace Chess {
 			else {
 				mover = &Green;
 			}
-			bool first = main[orig_h][orig_w].isFirstMov();
-			main[orig_h][orig_w].removePiece();
-			main[h][w].addPiece(type, player);
+			bool first = main(orig_h,orig_w).isFirstMov();
+			main(orig_h,orig_w).removePiece();
+			main(h,w).addPiece(type, player);
+			++halfMoves;
+			target.possible = false;
 			if (type == 'K') {
 				mover->setKing(h, w);
-				++halfMoves;
+				if (player == RED) {
+					Red.setCastleKing(false);
+					Red.setCastleQueen(false);
+				}
+				else {
+					Green.setCastleKing(false);
+					Green.setCastleQueen(false);
+				}
+			}
+			else if (type == 'R') {
+				if (player == RED ? orig_h == 7 : orig_h == 0) {
+					if (orig_w == 0) {
+						player == RED ? Red.setCastleQueen(false) : Green.setCastleQueen(false);
+					}
+					else if (orig_w == 7) {
+						player == RED ? Red.setCastleKing(false) : Green.setCastleKing(false);
+					}
+				}
 			}
 			else if (type == 'P'){
 				if (enp) {
@@ -25,39 +44,30 @@ namespace Chess {
 				}
 				halfMoves = 0;
 			}
-			else {
-				target.possible = false;
-				++halfMoves;
-			}
-			main[h][w].checkPiecePoint()->firstMove();
+			main(h,w).makeFirstMov();
+			++turn;
 			return true;
 		}
 
-		bool Board::makeFakeMove(char type, int orig_h, int orig_w, int h, int w, int player, bool& check) {
-			Player* mover;
-			if (player == RED) {
-				mover = &Red;
-			}
-			else {
-				mover = &Green;
-			}
-			bool first = main[orig_h][orig_w].isFirstMov();
+		bool Board::makeFakeMove(char type, int orig_h, int orig_w, int h, int w, int player) {
+			Player* mover = player == RED ? &Red : &Green;
+			bool first = main(orig_h,orig_w).isFirstMov();
 			
-			main[orig_h][orig_w].removePiece();
-			main[h][w].addPiece(type, player);
+			main(orig_h,orig_w).removePiece();
+			main(h,w).addPiece(type, player);
 			if (type == 'K') {
 				mover->setKing(h, w);
 			}
-			int player_checked;
+			int player_checked = player;
 			int totChecked = whoChecked(player_checked);
 			//rollback
 			if (type == 'K') {
 				mover->setKing(orig_h, orig_w);
 			}
-			main[h][w].removePiece();
-			main[orig_h][orig_w].addPiece(type, player);
+			main(h,w).removePiece();
+			main(orig_h,orig_w).addPiece(type, player);
 			if (not first) {
-				main[orig_h][orig_w].checkPiecePoint()->firstMove();
+				main(orig_h,orig_w).makeFirstMov();
 			}
 			if (totChecked == 0) {
 				return true;
@@ -75,7 +85,6 @@ namespace Chess {
 					return false;
 				}
 				else {
-					check = true;
 					return true;
 				}
 			}
@@ -86,7 +95,7 @@ namespace Chess {
 			return false;
 		}
 
-		bool Board::makeFakeMovePro(int orig_h, int orig_w, int h, int w, int player, bool& check) {
+		bool Board::makeFakeMovePro(int orig_h, int orig_w, int h, int w, int player) {
 			Player* mover;
 			if (player == RED) {
 				mover = &Red;
@@ -94,19 +103,20 @@ namespace Chess {
 			else {
 				mover = &Green;
 			}
-			bool first = main[orig_h][orig_w].isFirstMov();
+			bool first = main(orig_h,orig_w).isFirstMov();
 			std::vector<char> types = { 'Q', 'N', 'R', 'B' };
+			bool check = false;
 			int i = 0;
 			while (i < 4 and not check) {
-				main[h][w].addPiece(types[i], player);
-				main[orig_h][orig_w].removePiece();
-				int player_checked;
+				main(h,w).addPiece(types[i], player);
+				main(orig_h,orig_w).removePiece();
+				int player_checked = player;
 				int totChecked = whoChecked(player_checked);
 
-				main[h][w].removePiece();
-				main[orig_h][orig_w].addPiece('P', player);
+				main(h,w).removePiece();
+				main(orig_h,orig_w).addPiece('P', player);
 				if (not first) {
-					main[orig_h][orig_w].checkPiecePoint()->firstMove();
+					main(orig_h,orig_w).makeFirstMov();
 				}
 
 				if (totChecked == 1) {
@@ -155,7 +165,7 @@ namespace Chess {
 				std::cout << "#1::Invalid position for a promotion" << std::endl;
 				return false;
 			}
-			if (main[h][w].hasPiece()) {
+			if (main(h,w).hasPiece()) {
 				std::cout << "#2::The pawn is coliding with another piece (occupied tile)" << std::endl;
 				return false;
 			}
@@ -169,20 +179,21 @@ namespace Chess {
 			}
 			if (hasFriendly('P', h + pawnConst, w, player)) {
 				//Make the move
-				main[h + pawnConst][w].removePiece();
-				main[h][w].addPiece(type, player);
-				int player_checked;
+				main(h + pawnConst,w).removePiece();
+				main(h,w).addPiece(type, player);
+				int player_checked = player;
 				if (isChecked(player_checked) and player_checked == player) {
 					if (MODE == DEBUG) {
 						std::cout << "#10::The king is in check" << std::endl;
 					}
-					main[h][w].removePiece();
-					main[h + pawnConst][w].addPiece('P', player);
+					main(h,w).removePiece();
+					main(h + pawnConst,w).addPiece('P', player);
 					return false;
 				}
-				main[h][w].checkPiecePoint()->firstMove();
+				main(h,w).makeFirstMov();
 				target.possible = false;
 				halfMoves = 0;
+				++turn;
 				return true;
 			}
 			std::cout << "#4::No pawn available to make that move" << std::endl;

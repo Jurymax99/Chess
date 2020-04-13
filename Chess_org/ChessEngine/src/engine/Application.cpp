@@ -1,9 +1,11 @@
 #include "Application.h"
+#include "Board.h"
 #include "Utilities.h"
 #include <stack>
 #include <fstream>
 #include <windows.h>
-#include <shellapi.h>		//For browser search
+#include <shellapi.h>		// for browser search
+#include <string>			// for std::getline and std::cin.ignore()
 #include <thread>
 #include "Timer.h"
 #include "Dummy.h"
@@ -159,20 +161,33 @@ namespace Chess {
 		void Application::play() {
 			std::cout << "PLAY MODE" << std::endl;
 			std::cout << "Game #" << gameCount << " started" << std::endl;
-			Board* mainBoard = new Board;
-			mainBoard->update();
-			mainBoard -> printBoard();
+			Board mainBoard;
+			std::cout << "Do you want to load a FEN? Y/n\n";
+			char ans;
+			std::cin >> ans;
+			if (ans == 'Y') {
+				std::cout << "Enter the FEN in one line\n";
+				std::string FEN;
+				std::cin.ignore();
+				std::getline(std::cin, FEN);
+				mainBoard = Board(FEN);
+			}
+
+			mainBoard.update();
+			mainBoard.printBoard();
+			std::string FEN;
+			mainBoard.createFEN();
 			int currentPlayer;
 			std::string mov;
 			while (not ended) {
-				//Red's turn
-				currentPlayer = RED;
+				currentPlayer = mainBoard.checkPlayer();
 				Board::Ending ending;
-				if (mainBoard->isEnded(currentPlayer, ending)) {
+				if (mainBoard.isEnded(currentPlayer, ending)) {
 					print_end(ending);
 					break;
 				}
-				std::cout << "Red's turn" << std::endl;
+				currentPlayer == RED ? std::cout << "Red" : std::cout << "Green";
+				std::cout << "'s turn" << std::endl;
 				std::cout << "Insert your movement: " << std::endl;
 				std::cin >> mov;
 				if (mov == "quit") {
@@ -181,10 +196,11 @@ namespace Chess {
 				}
 				bool enp = false;
 				//Check if movement is valid
-				while (not ended and not mainBoard -> move(mov, currentPlayer, enp)) {
-					std::cout << "Red's turn" << std::endl;
-					mainBoard->update();
-					mainBoard->printBoard();
+				while (not ended and not mainBoard.move(mov, currentPlayer, enp)) {
+					currentPlayer == RED ? std::cout << "Red" : std::cout << "Green";
+					std::cout << "'s turn" << std::endl;
+					mainBoard.update();
+					mainBoard.printBoard();
 					std::cout << "Cannot perform movement, please try again:" << std::endl;
 					std::cin >> mov;
 					if (mov == "quit") {
@@ -197,42 +213,10 @@ namespace Chess {
 				}
 				enp = false;
 				std::cout << "Piece successfully moved" << std::endl;
-				mainBoard->update();
-				mainBoard->printBoard();
-				//Green's turn
-				currentPlayer = GREEN;
-				if (mainBoard->isEnded(currentPlayer, ending)) {
-					print_end(ending);
-					break;
-				}
-				std::cout << "Green's turn" << std::endl;
-				std::cout << "Insert your movement: " << std::endl;
-				std::cin >> mov;
-				if (mov == "quit") {
-					ended = true;
-					break;
-				}
-				//Check if movement is valid
-				while (not ended and not mainBoard->move(mov, currentPlayer, enp)) {
-					std::cout << "Green's turn" << std::endl;
-					mainBoard->update();
-					mainBoard->printBoard();
-					std::cout << "Cannot perform movement, please try again:" << std::endl;
-					std::cin >> mov;
-					if (mov == "quit") {
-						ended = true;
-						break;
-					}
-				}
-				if (ended) {
-					break;
-				}
-				enp = false;
-				std::cout << "Piece successfully moved" << std::endl;
-				mainBoard->update();
-				mainBoard->printBoard();
+				mainBoard.update();
+				mainBoard.printBoard();
+				mainBoard.createFEN();
 			}
-			delete mainBoard;
 			if (MODE == DEBUG) {
 				printHelpDebug();
 			}
@@ -242,68 +226,85 @@ namespace Chess {
 		}
 
 		void Application::playComputer() {
+			//CONTINUE: r2r2k1/pppb1ppp/3bp3/3p4/4q2P/2P1P3/PP1B1PP1/R2QKB1R b KQ - 0 16
 			std::cout << "PLAY AGAINST COMPUTER MODE" << std::endl;
 			std::cout << "Game #" << gameCount << " started" << std::endl;
-			Board* mainBoard = new Board;
-			mainBoard->update();
-			mainBoard->printBoard();
+			Board mainBoard = Board();
+			std::cout << "Do you want to load a FEN? Y/n\n";
+			char ans;
+			std::cin >> ans;
+			if (ans == 'Y') {
+				std::cout << "Enter the FEN in one line\n";
+				std::string FEN;
+				std::cin.ignore();
+				std::getline(std::cin, FEN);
+				mainBoard = Board(FEN);
+			}
+			mainBoard.update();
+			mainBoard.printBoard();
 			int currentPlayer;
 			//Dummy player1(RED);
 			Dummy player2(GREEN);
+			Board::Ending ending;
 			std::string mov;
-			std::chrono::seconds dura(1);
+			//std::chrono::seconds dura(1);
 			while (not ended) {
-				//Red's turn
-				currentPlayer = RED;
-				Board::Ending ending;
-				if (mainBoard->isEnded(currentPlayer, ending)) {
-					print_end(ending);
-					break;
-				}
-				std::cout << "Red's turn" << std::endl;
-				std::cout << "Insert your movement: " << std::endl;
-				std::cin >> mov;
-				if (mov == "quit") {
-					ended = true;
-					break;
-				}
-				bool enp = false;
-				//Check if movement is valid
-				while (not ended and not mainBoard->move(mov, currentPlayer, enp)) {
+				currentPlayer = mainBoard.checkPlayer();
+				if (currentPlayer == RED) {
+					//Red's turn
+					currentPlayer = RED;
+					if (mainBoard.isEnded(currentPlayer, ending)) {
+						print_end(ending);
+						break;
+					}
 					std::cout << "Red's turn" << std::endl;
-					mainBoard->update();
-					mainBoard->printBoard();
-					std::cout << "Cannot perform movement, please try again:" << std::endl;
+					std::cout << "Insert your movement: " << std::endl;
 					std::cin >> mov;
 					if (mov == "quit") {
 						ended = true;
 						break;
 					}
+					bool enp = false;
+					//Check if movement is valid
+					while (not ended and not mainBoard.move(mov, currentPlayer, enp)) {
+						std::cout << "Red's turn" << std::endl;
+						mainBoard.update();
+						mainBoard.printBoard();
+						std::cout << "Cannot perform movement, please try again:" << std::endl;
+						std::cin >> mov;
+						if (mov == "quit") {
+							ended = true;
+							break;
+						}
+					}
+					if (ended) {
+						break;
+					}
+					enp = false;
+					//player1.move(*mainBoard);
+					std::cout << "Piece successfully moved" << std::endl;
+					mainBoard.update();
+					mainBoard.printBoard();
+					mainBoard.createFEN();
+					//std::this_thread::sleep_for(dura);
 				}
-				if (ended) {
-					break;
+				else {
+					//AI's turn
+					currentPlayer = GREEN;
+					if (mainBoard.isEnded(currentPlayer, ending)) {
+						print_end(ending);
+						break;
+					}
+					std::cout << "Green's turn" << std::endl;
+
+					player2.move(mainBoard);
+					std::cout << "Piece successfully moved" << std::endl;
+					mainBoard.update();
+					mainBoard.printBoard();
+					mainBoard.createFEN();
+					//std::this_thread::sleep_for(dura);
 				}
-				enp = false;
-				//player1.move(*mainBoard);
-				std::cout << "Piece successfully moved" << std::endl;
-				mainBoard->update();
-				mainBoard->printBoard();
-				//std::this_thread::sleep_for(dura);
-				//AI's turn
-				currentPlayer = GREEN;
-				if (mainBoard->isEnded(currentPlayer, ending)) {
-					print_end(ending);
-					break;
-				}
-				std::cout << "Green's turn" << std::endl;
-				
-				player2.move(*mainBoard);
-				std::cout << "Piece successfully moved" << std::endl;
-				mainBoard->update();
-				mainBoard->printBoard();
-				//std::this_thread::sleep_for(dura);
 			}
-			delete mainBoard;
 			if (MODE == DEBUG) {
 				printHelpDebug();
 			}
@@ -618,8 +619,8 @@ namespace Chess {
 			Timer tmr;
 			while (inFile >> mov) {
 				++gameNum;
-				std::unique_ptr<Board> mainBoard(new Board);
-				mainBoard->update();
+				Board mainBoard;
+				mainBoard.update();
 				std::string result;
 				while (inFile >> result and result != "[Result");
 				inFile >> result;
@@ -655,7 +656,7 @@ namespace Chess {
 							break;
 						}
 					}
-					if (mainBoard->isEnded(currentPlayer, ending)) {
+					if (mainBoard.isEnded(currentPlayer, ending)) {
 						if (ending == Board::Ending::CHECKMATE) {
 							++checkmates;
 						}
@@ -686,17 +687,17 @@ namespace Chess {
 					}
 					bool enp = false;
 					//Check if movement is valid
-					if (not mainBoard->move(mov, currentPlayer, enp)) {
+					if (not mainBoard.move(mov, currentPlayer, enp)) {
 						if (MODE == DEBUG) {
 							std::cout << "Red's turn" << std::endl;
-							mainBoard->update();
+							mainBoard.update();
 						}
 						//mainBoard->printBoard();
 						std::cout << "Cannot perform movement " << mov << " number " << ((count) / 2) + 1 << " for player red" << std::endl;
 						std::cout << bullshit << std::endl;
 					}
 					enp = false;
-					mainBoard->update();
+					mainBoard.update();
 					if (MODE == DEBUG) {
 						std::cout << "Piece successfully moved" << std::endl;
 					}
@@ -705,7 +706,7 @@ namespace Chess {
 					if (MODE == DEBUG) {
 						std::cout << "Green's turn" << std::endl;
 					}
-					if (mainBoard->isEnded(currentPlayer, ending)) {
+					if (mainBoard.isEnded(currentPlayer, ending)) {
 						if (ending == Board::Ending::CHECKMATE) {
 							++checkmates;
 						}
@@ -736,8 +737,8 @@ namespace Chess {
 						mov = mov.substr(0, mov.length() - 1);
 					}
 					//Check if movement is valid
-					if (not mainBoard->move(mov, currentPlayer, enp)) {
-						mainBoard->update();
+					if (not mainBoard.move(mov, currentPlayer, enp)) {
+						mainBoard.update();
 						if (MODE == DEBUG) {
 							std::cout << "Green's turn" << std::endl;
 						}
@@ -745,7 +746,7 @@ namespace Chess {
 						std::cout << "Cannot perform movement " << mov << " number " << ((count) / 2) + 1 << " for player green" << std::endl;
 						std::cout << bullshit << std::endl;
 					}
-					mainBoard->update();
+					mainBoard.update();
 					if (MODE == DEBUG) {
 						std::cout << "Piece successfully moved" << std::endl;
 					}
@@ -790,7 +791,7 @@ namespace Chess {
 			return ((int)result > 32);
 		}
 
-		void Application::print_end(Board::Ending status) const{
+		void Application::print_end(const Board::Ending& status) const{
 			switch (status) {
 				case Board::Ending::STALEMATE:
 					std::cout << "STALEMATE\n";

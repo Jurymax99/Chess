@@ -18,21 +18,16 @@ namespace Chess {
 			}
 		}
 
-		std::map<char, int> Dummy::evaluationPoints = { {'P',10}, {'N', 30}, {'B',30}, {'R', 50}, {'Q',90}, {'K', 900} };
+		std::unordered_map<char, float> Dummy::evaluationPoints = { {'P',10}, {'N', 30}, {'B',30.3}, {'R', 50}, {'Q',90}, {'K', 900} };
 
 		void Dummy::move(Board& b) {
-			moves.update(color, pieceCount, b);
 			Board a = b;
 			Move m;
-			int depth = 3;
-			/*int MM = minimax_r(a, depth, true);
-			std::cout << "Minimax analysis for depth " << depth << " is " << MM << std::endl;*/
-			std::cout << "Minimax analysis for depth " << depth << std::endl;
+			std::cout << "Minimax analysis for depth " << DEPTH << std::endl;
 
-			//int eval = evaluateBoard(a);
-			//captureMostPoints(m);
-			//choseRandMove(m);
-			m = minimax(a, depth);
+			float delta;
+			m = minimax(a, DEPTH, delta);
+			std::cout << "Delta of " << delta << std::endl;
 			printMove(m);
 			b.move(m, color);
 		}
@@ -41,23 +36,34 @@ namespace Chess {
 			return b.isEnded();
 		}
 
-		bool Dummy::gameOver2(Board& b, int& pen) {
+		bool Dummy::gameOver2(Board& b, float& pen, const int& depth, bool& ended) {
 			int checked;
-			return b.isEnded(color, checked, pen);
+			if (b.isEnded(color, checked, pen)) {
+				//std::cout << "MATE IN " << DEPTH - depth << std::endl;
+				if (DEPTH - depth <= 2) {
+					ended = checked == enemyColor;
+				}
+				return true;
+			}
+			return false;
 		}
 
-		//TODO: FIX TILE HAD ALREADY AN EXISTING PIECE
+		//TODO: WARNING KING HAS NO NUMERICAL VALUE
+		//FEN: r2r2k1/pppb1ppp/3b4/3pp2P/4q3/2P1P3/PP1B1PP1/R2QKB1R b KQ - 0 17
 
-		Move Dummy::minimax(Board position, int depth) {
-			int bestMove = -9999;
+		Move Dummy::minimax(Board& position, int depth, float& delta) {
+			float bestMove = -9999;
 			std::vector<Move> equals(0);
 			auto it = position.Green.moves.Set.begin();
+			int count = 1;
 			Move best = *it;
-			for (; it != position.Green.moves.Set.end(); ++it) {
+			bool ended = false;
+			for (; it != position.Green.moves.Set.end() and not ended; ++it) {
 				Board aux = position;
 				aux.move(*it, color);
+				//aux.Red.moves.update(RED, aux.Red.checkPieceCount(), aux);
 				aux.update();
-				int eval = minimax_r(aux, depth - 1, false);
+				float eval = minimax_r(aux, -10000, 10000, depth - 1, false, ended);
 				if (eval > bestMove) {
 					bestMove = eval;
 					best = *it;
@@ -70,46 +76,52 @@ namespace Chess {
 					best = *it;
 					equals.push_back(best);
 				}
+				std::cout << "Analised " << count << " out of " << position.Green.moves.Set.size() << " movements (last eval = " << eval << ")\n";
+				++count;
 			}
 			if (equals.size() > 0) {
 				int r = rand() % equals.size();
+				delta = bestMove;
 				return equals[r];
 			}
+			delta = bestMove;
 			return best;
 		}
 
-		int Dummy::minimax_r(Board position, int depth, bool maximizingPlayer) {
-			int pen = 0;
-			if (depth == 0 or gameOver2(position, pen)) {
+		/*float Dummy::minimaxStd_r(Board position, int depth, bool maximizingPlayer) {
+			float pen = 0;
+			if (depth == 0 or gameOver2(position, pen, depth)) {
 				return evaluateBoard(position) + pen;
 			}
 			if (maximizingPlayer) {
-				int maxEval = -9999;
+				float maxEval = -9999;
 				auto it = position.Green.moves.Set.begin();
 				for (; it != position.Green.moves.Set.end(); ++it) {
 					Board aux = position;
-					if (aux.main[it->source.h][it->source.w].hasPiece()) {
+					if (aux.main(it->source.h,it->source.w).hasPiece()) {
 						aux.move(*it, color);
 					}
 					else {
 						int a = 0;
 					}
-					aux.update();
-					int eval = minimax_r(aux, depth - 1, not maximizingPlayer);
+					aux.Red.moves.update(RED, aux.Red.checkPieceCount(), aux);
+					//aux.update();
+					float eval = minimaxStd_r(aux, depth - 1, not maximizingPlayer);
 					maxEval = std::max(maxEval, eval);
 				}
 				return maxEval;
 			}
 			else {
-				int minEval = 9999;
+				float minEval = 9999;
 				//position.update();
 				if (color == RED) {
 					auto it = position.Green.moves.Set.begin();
 					for (; it != position.Green.moves.Set.end(); ++it) {
 						Board aux = position;
 						aux.move(*it, enemyColor);
-						aux.update();
-						int eval = minimax_r(aux, depth - 1, not maximizingPlayer);
+						aux.Red.moves.update(RED, aux.Red.checkPieceCount(), aux);
+						//aux.update();
+						float eval = minimaxStd_r(aux, depth - 1, not maximizingPlayer);
 						minEval = std::min(minEval, eval);
 					}
 				}
@@ -118,27 +130,125 @@ namespace Chess {
 					for (; it != position.Red.moves.Set.end(); ++it) {
 						Board aux = position;
 						aux.move(*it, enemyColor);
-						aux.update();
-						int eval = minimax_r(aux, depth - 1, not maximizingPlayer);
+						aux.Green.moves.update(GREEN, aux.Green.checkPieceCount(), aux);
+						//aux.update();
+						float eval = minimaxStd_r(aux, depth - 1, not maximizingPlayer);
 						minEval = std::min(minEval, eval);
 					}
 				}
 				return minEval;
 			}
 			
+		}*/
+
+		float Dummy::minimax_r(Board& position, float alpha, float beta, int depth, bool maximizingPlayer, bool& ended) {
+			if (not ended) {
+				float pen = 0;
+				if (depth == 0 or gameOver2(position, pen, depth, ended)) {
+					return evaluateBoard(position) + pen;
+				}
+				if (maximizingPlayer) {
+					float maxEval = -9999;
+					auto it = position.Green.moves.Set.begin();
+					Board aux;
+					for (; it != position.Green.moves.Set.end(); ++it) {
+						aux = position;
+						if (aux.main(it->getSource().checkH(),it->getSource().checkW()).hasPiece()) {
+							aux.move(*it, color);
+						}
+						//aux.Red.moves.update(RED, aux.Red.checkPieceCount(), aux);
+						aux.update();
+						float eval = minimax_r(aux, alpha, beta, depth - 1, not maximizingPlayer, ended);
+						maxEval = std::max(maxEval, eval);
+						alpha = std::max(alpha, maxEval);
+						if (beta <= alpha) {
+							return maxEval;
+						}
+					}
+					return maxEval;
+				}
+				else {
+					float minEval = 9999;
+					//position.update();
+					/*if (color == RED) {
+						auto it = position.Green.moves.Set.begin();
+						Board aux;
+						for (; it != position.Green.moves.Set.end(); ++it) {
+							aux = position;
+							aux.move(*it, enemyColor);
+							aux.Red.moves.update(RED, aux.Red.checkPieceCount(), aux);
+							//aux.update();
+							float eval = minimax_r(aux, alpha, beta, depth - 1, not maximizingPlayer);
+							minEval = std::min(minEval, eval);
+							beta = std::min(beta, minEval);
+							if (beta <= alpha) {
+								return minEval;
+							}
+						}
+					}
+					else {*/
+					auto it = position.Red.moves.Set.begin();
+					Board aux;
+					for (; it != position.Red.moves.Set.end(); ++it) {
+						aux = position;
+						aux.move(*it, enemyColor);
+						//aux.Green.moves.update(GREEN, aux.Green.checkPieceCount(), aux);
+						aux.update();
+						float eval = minimax_r(aux, alpha, beta, depth - 1, not maximizingPlayer, ended);
+						minEval = std::min(minEval, eval);
+						beta = std::min(beta, minEval);
+						if (beta <= alpha) {
+							return minEval;
+						}
+					}
+					//}
+					return minEval;
+				}
+			}
+			return 9999;
+		}
+
+		float Dummy::evaluateByPos(char type, const int& i, const int& j, const int& player, const int& pieceCount) const{
+			switch (type) {
+				case 'P':
+					return 10 + (player == GREEN ? GreenPawnPos[i][j] : RedPawnPos[i][j]);
+				case 'N':
+					return 30 + (player == GREEN ? GreenKnightPos[i][j] : RedKnightPos[i][j]);
+				case 'B':
+					return 30 + (player == GREEN ? GreenBishopPos[i][j] : RedBishopPos[i][j]);
+				case 'R':
+					return 50 + (player == GREEN ? GreenRookPos[i][j] : RedRookPos[i][j]);
+				case 'Q':
+					return 90 + (player == GREEN ? GreenQueenPos[i][j] : RedQueenPos[i][j]);
+				case 'K':
+					//std::cout << "WARNING::King has no numerical value" << std::endl;
+					//evaluate endgame king
+					return 900 + (pieceCount < 15 ? EndKing[i][j] : (player == GREEN ? GreenKingPos[i][j] : RedKingPos[i][j]));
+				default:
+					std::cout << "No known piece type" << std::endl;
+					return -1;
+			}
 		}
 
 
-		int Dummy::evaluateBoard(const Board& b) const {
-			int eval = 0;
-			for (int i = 0; i < b.checkHeight(); ++i) {
-				for (int j = 0; j < b.checkWidth(); ++j) {
-					if (b.main[i][j].hasPiece()) {
-						if (b.main[i][j].checkPlayer() == color) {
-							eval += evaluationPoints[b.main[i][j].checkPieceType()];
+		float Dummy::evaluateBoard(const Board& b) const {
+			float eval = 0;
+			for (int i = 0; i < 8; ++i) {
+				for (int j = 0; j < 8; ++j) {
+					if (b.main(i,j).hasPiece()) {
+						if (b.main(i,j).checkPlayer() == color) {
+							//eval += evaluationPoints[b.main(i,j).checkPieceType()];
+							eval += evaluateByPos(b.main(i,j).checkPieceType(), i, j, color, b.checkPieces());
+							if (b.checkTurn() < 20 and not b.main(i,j).isFirstMov()) {
+								eval -= 0.5;
+							}
 						}
 						else {
-							eval -= evaluationPoints[b.main[i][j].checkPieceType()];
+							//eval -= evaluationPoints[b.main(i,j).checkPieceType()];
+							eval -= evaluateByPos(b.main(i,j).checkPieceType(), i, j, enemyColor, b.checkPieces());
+							if (b.checkTurn() < 20 and not b.main(i,j).isFirstMov()) {
+								eval += 0.5;
+							}
 						}
 					}
 				}
@@ -147,7 +257,7 @@ namespace Chess {
 		}
 
 
-		int Dummy::checkPoints(char type) const{
+		float Dummy::checkPoints(char type) const{
 			switch (type) {
 				case 'P':
 					return 1;
@@ -159,35 +269,17 @@ namespace Chess {
 				case 'Q':
 					return 9;
 				case 'K':
-					std::cout << "WARNING::King has no numerical value" << std::endl;
-					return -1;
+					//std::cout << "WARNING::King has no numerical value" << std::endl;
+					return 900;
 				default:
 					std::cout << "No known piece type" << std::endl;
 					return -1;
 			}
 		}
 
-		void Dummy::captureMostPoints(Move& m) {
-			auto it = moves.Set.begin();
-			int max = 0;
-			for (; it != moves.Set.end(); ++it) {
-				if (it->capture) {
-					if (checkPoints(it->killed) > max) {
-						max = checkPoints(it->killed);
-						m = *it;
-					}
-				}
-			}
-			std::cout << max << " kills found\n";
-			if (max == 0) {
-				choseRandMove(m);
-			}
-			printMove(m);
-		}
-
 		void Dummy::printMove(const Move& m) const{
-			std::cout << "Chosen move: " << char(m.source.w + 97) << char(8 - (m.source.h - 48));
-			std::cout << " to " << char(m.destination.w + 97) << char(8 - (m.destination.h - 48)) << std::endl;
+			std::cout << "Chosen move: " << char(m.getSource().checkW() + 97) << char(8 - (m.getSource().checkH()- 48));
+			std::cout << " to " << char(m.getDestination().checkW() + 97) << char(8 - (m.getDestination().checkH()- 48)) << std::endl;
 		}
 
 		void Dummy::choseRandMove(Move& m) {
@@ -198,5 +290,146 @@ namespace Chess {
 			}
 			m = *it;
 		}
+
+		const std::vector<std::vector<float>> Dummy::RedPawnPos = {
+			{0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0},
+			{5.0,  5.0,  5.0,  5.0,  5.0,  5.0,  5.0,  5.0},
+			{1.0,  1.0,  2.0,  3.0,  3.0,  2.0,  1.0,  1.0},
+			{0.5,  0.5,  1.0,  2.5,  2.5,  1.0,  0.5,  0.5},
+			{0.0,  0.0,  0.0,  2.0,  2.0,  0.0,  0.0,  0.0},
+			{0.5, -0.5, -1.0,  0.0,  0.0, -1.0, -0.5,  0.5},
+			{0.5,  1.0, 1.0,  -2.0, -2.0,  1.0,  1.0,  0.5},
+			{0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0}
+		};
+
+		const std::vector<std::vector<float>> Dummy::RedKnightPos = {
+			{-5.0, -4.0, -3.0, -3.0, -3.0, -3.0, -4.0, -5.0},
+			{-4.0, -2.0,  0.0,  0.0,  0.0,  0.0, -2.0, -4.0},
+			{-3.0,  0.0,  1.0,  1.5,  1.5,  1.0,  0.0, -3.0},
+			{-3.0,  0.5,  1.5,  2.0,  2.0,  1.5,  0.5, -3.0},
+			{-3.0,  0.0,  1.5,  2.0,  2.0,  1.5,  0.0, -3.0},
+			{-3.0,  0.5,  1.0,  1.5,  1.5,  1.0,  0.5, -3.0},
+			{-4.0, -2.0,  0.0,  0.5,  0.5,  0.0, -2.0, -4.0},
+			{-5.0, -4.0, -3.0, -3.0, -3.0, -3.0, -4.0, -5.0}
+		};
+
+		const std::vector<std::vector<float>> Dummy::RedBishopPos = {
+			{-2.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -2.0},
+			{-1.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -1.0},
+			{-1.0,  0.0,  0.5,  1.0,  1.0,  0.5,  0.0, -1.0},
+			{-1.0,  0.5,  0.5,  1.0,  1.0,  0.5,  0.5, -1.0},
+			{-1.0,  0.0,  1.0,  1.0,  1.0,  1.0,  0.0, -1.0},
+			{-1.0,  1.0,  1.0,  1.0,  1.0,  1.0,  1.0, -1.0},
+			{-1.0,  0.5,  0.0,  0.0,  0.0,  0.0,  0.5, -1.0},
+			{-2.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -2.0}
+		};
+
+		const std::vector<std::vector<float>> Dummy::RedRookPos = {
+			{0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0},
+			{0.5,  1.0,  1.0,  1.0,  1.0,  1.0,  1.0,  0.5},
+			{-0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -0.5},
+			{-0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -0.5},
+			{-0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -0.5},
+			{-0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -0.5},
+			{-0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -0.5},
+			{0.0,   0.0, 0.0,  0.5,  0.5,  0.0,  0.0,  0.0}
+		};
+
+		const std::vector<std::vector<float>> Dummy::RedQueenPos = {
+			{-2.0, -1.0, -1.0, -0.5, -0.5, -1.0, -1.0, -2.0},
+			{-1.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -1.0},
+			{-1.0,  0.0,  0.5,  0.5,  0.5,  0.5,  0.0, -1.0},
+			{-0.5,  0.0,  0.5,  0.5,  0.5,  0.5,  0.0, -0.5},
+			{0.0,  0.0,  0.5,  0.5,  0.5,  0.5,  0.0, -0.5},
+			{-1.0,  0.5,  0.5,  0.5,  0.5,  0.5,  0.0, -1.0},
+			{-1.0,  0.0,  0.5,  0.0,  0.0,  0.0,  0.0, -1.0},
+			{-2.0, -1.0, -1.0, -0.5, -0.5, -1.0, -1.0, -2.0}
+		};
+
+		const std::vector<std::vector<float>> Dummy::RedKingPos = {
+			{-3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0},
+			{-3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0},
+			{-3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0},
+			{-3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0},
+			{-2.0, -3.0, -3.0, -4.0, -4.0, -3.0, -3.0, -2.0},
+			{-1.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -1.0},
+			{2.0,  2.0,  0.0,  0.0,  0.0,  0.0,  2.0,  2.0},
+			{2.0,  3.0,  1.0,  0.0,  0.0,  1.0,  3.0,  2.0}
+		};
+
+		const std::vector<std::vector<float>> Dummy::EndKing = {
+			{-5.0, -3.0,  -0.5,  2.0,  2.0, -0.5, -3.0,  -5.0},
+			{-3.0, -0.5,   2.0,  3.5,  3.5,  2.0, -0.5,  -3.0},
+			{-0.5,  2.0,   3.5,  5.0,  5.0,  3.5,  2.0,  -0.5},
+			{2.0,   3.5,   5.0,  6.5,  6.5,  5.0,  3.5,   2.0},
+			{2.0,   3.5,   5.0,  6.5,  6.5,  5.0,  3.5,   2.0},
+			{-0.5,  2.0,   3.5,  5.0,  5.0,  3.5,  2.0,  -0.5},
+			{-3.0, -0.5,   2.0,  3.5,  3.5,  2.0,  -0.5, -3.0},
+			{-5.0, -3.0,  -0.5,  2.0,  2.0,  -0.5, -3.0, -5.0}
+		};
+
+		const std::vector<std::vector<float>> Dummy::GreenPawnPos = {
+			{0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0},
+			{0.5,  1.0, 1.0,  -2.0, -2.0,  1.0,  1.0,  0.5},
+			{0.5, -0.5, -1.0,  0.0,  0.0, -1.0, -0.5,  0.5},
+			{0.0,  0.0,  0.0,  2.0,  2.0,  0.0,  0.0,  0.0},
+			{0.5,  0.5,  1.0,  2.5,  2.5,  1.0,  0.5,  0.5},
+			{1.0,  1.0,  2.0,  3.0,  3.0,  2.0,  1.0,  1.0},
+			{5.0,  5.0,  5.0,  5.0,  5.0,  5.0,  5.0,  5.0},
+			{0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0}
+		};
+		const std::vector<std::vector<float>> Dummy::GreenKnightPos = {
+			{-5.0, -4.0, -3.0, -3.0, -3.0, -3.0, -4.0, -5.0},
+			{-4.0, -2.0,  0.0,  0.5,  0.5,  0.0, -2.0, -4.0},
+			{-3.0,  0.5,  1.0,  1.5,  1.5,  1.0,  0.5, -3.0},
+			{-3.0,  0.0,  1.5,  2.0,  2.0,  1.5,  0.0, -3.0},
+			{-3.0,  0.5,  1.5,  2.0,  2.0,  1.5,  0.5, -3.0},
+			{-3.0,  0.0,  1.0,  1.5,  1.5,  1.0,  0.0, -3.0},
+			{-4.0, -2.0,  0.0,  0.0,  0.0,  0.0, -2.0, -4.0},
+			{-5.0, -4.0, -3.0, -3.0, -3.0, -3.0, -4.0, -5.0}
+		};
+
+		const std::vector<std::vector<float>> Dummy::GreenBishopPos = {
+			{-2.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -2.0},
+			{-1.0,  0.5,  0.0,  0.0,  0.0,  0.0,  0.5, -1.0},
+			{-1.0,  1.0,  1.0,  1.0,  1.0,  1.0,  1.0, -1.0},
+			{-1.0,  0.0,  1.0,  1.0,  1.0,  1.0,  0.0, -1.0},
+			{-1.0,  0.5,  0.5,  1.0,  1.0,  0.5,  0.5, -1.0},
+			{-1.0,  0.0,  0.5,  1.0,  1.0,  0.5,  0.0, -1.0},
+			{-1.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -1.0},
+			{-2.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -2.0}
+		};
+
+		const std::vector<std::vector<float>> Dummy::GreenRookPos = {
+			{0.0,   0.0, 0.0,  0.5,  0.5,  0.0,  0.0,  0.0},
+			{-0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -0.5},
+			{-0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -0.5},
+			{-0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -0.5},
+			{-0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -0.5},
+			{-0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -0.5},
+			{0.5,  1.0,  1.0,  1.0,  1.0,  1.0,  1.0,  0.5},
+			{0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0},
+		};
+		const std::vector<std::vector<float>> Dummy::GreenQueenPos = {
+			{-2.0, -1.0, -1.0, -0.5, -0.5, -1.0, -1.0, -2.0},
+			{-1.0,  0.0,  0.5,  0.0,  0.0,  0.0,  0.0, -1.0},
+			{-1.0,  0.5,  0.5,  0.5,  0.5,  0.5,  0.0, -1.0},
+			{0.0,  0.0,  0.5,  0.5,  0.5,  0.5,  0.0, -0.5},
+			{-0.5,  0.0,  0.5,  0.5,  0.5,  0.5,  0.0, -0.5},
+			{-1.0,  0.0,  0.5,  0.5,  0.5,  0.5,  0.0, -1.0},
+			{-1.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -1.0},
+			{-2.0, -1.0, -1.0, -0.5, -0.5, -1.0, -1.0, -2.0},
+		};
+
+		const std::vector<std::vector<float>> Dummy::GreenKingPos = {
+			{2.0,  3.0,  1.0,  0.0,  0.0,  1.0,  3.0,  2.0},
+			{2.0,  2.0,  0.0,  0.0,  0.0,  0.0,  2.0,  2.0},
+			{-3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0},
+			{-2.0, -3.0, -3.0, -4.0, -4.0, -3.0, -3.0, -2.0},
+			{-3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0},
+			{-3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0},
+			{-1.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -1.0},
+			{-3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0},
+		};
 	}
 }
