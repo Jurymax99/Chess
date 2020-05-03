@@ -1,6 +1,10 @@
 		//TODO: 
-		//		-board fakemove with evaluation work with the same board all the time
+		//		-position hash-key
+		//		-3-fold repetition rule
+		//		-undo move
+		//		-sort moves by MostValuableVictimLessValuableAttacker (MvvLva)
 		//		-keep a stack of FENs to go back
-		//		-improve alpha-beta pruning to PVS or negascout
+		//		-improve negamax to PVS
+		//		-try multithreading
 		//		-flip board
 		//		-interactive GUI

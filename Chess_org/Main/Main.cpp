@@ -2,8 +2,8 @@
 
 int main() {
 	using namespace Chess::Engine;
-	std::unique_ptr<Application> app(new Application);
-	app->start();
+	Application app;
+	app.start();
 }
 
 /*

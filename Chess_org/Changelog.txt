@@ -70,4 +70,7 @@
 		//_____________________________________________________________________________________
 		//		- Much faster move generator
 		//		- Improved board and square representation using bitwise operations
-
+		//_____________________________________________________________________________________
+		//		- Much faster check detection
+		//		- Much faster move generator
+		//		- Improved AI's move algorithm using NegaMax with Alpha-Beta Pruning

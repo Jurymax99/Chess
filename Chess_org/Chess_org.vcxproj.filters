@@ -82,5 +82,11 @@
     <Text Include="Changelog.txt">
       <Filter>Resource Files</Filter>
     </Text>
+    <Text Include="TODO.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="Openings.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
 </Project>
