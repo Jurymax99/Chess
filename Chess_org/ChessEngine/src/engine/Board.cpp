@@ -9,47 +9,48 @@ namespace Chess {
 		Board::Board() {
 			Red = Player(RED);
 			Green = Player(GREEN);
-			target = { -1, -1, false };
+			target = { -1,-1, false };
 			halfMoves = 0;
 			turn = 0;
+			pieces = 32;
 			if (OUTPUT == NORMAL) {
-				std::cout << "Standard " << 8 << "x" << 8 << " board created with " << 32 << " pieces" << std::endl;
+				std::cout << "Standard 8 x 8 board created with 32 pieces" << std::endl;
 			}
 			//Green pieces
-			main(0,0).addPiece('R', GREEN);
-			main(0,1).addPiece('N', GREEN);
-			main(0,2).addPiece('B', GREEN);
-			main(0,3).addPiece('Q', GREEN);
-			main(0,4).addPiece('K', GREEN);
-			main(0,5).addPiece('B', GREEN);
-			main(0,6).addPiece('N', GREEN);
-			main(0,7).addPiece('R', GREEN);
-			main(1,0).addPiece('P', GREEN);
-			main(1,1).addPiece('P', GREEN);
-			main(1,2).addPiece('P', GREEN);
-			main(1,3).addPiece('P', GREEN);
-			main(1,4).addPiece('P', GREEN);
-			main(1,5).addPiece('P', GREEN);
-			main(1,6).addPiece('P', GREEN);
-			main(1,7).addPiece('P', GREEN);
+			main(0, 0).addPiece('R', GREEN);
+			main(0, 1).addPiece('N', GREEN);
+			main(0, 2).addPiece('B', GREEN);
+			main(0, 3).addPiece('Q', GREEN);
+			main(0, 4).addPiece('K', GREEN);
+			main(0, 5).addPiece('B', GREEN);
+			main(0, 6).addPiece('N', GREEN);
+			main(0, 7).addPiece('R', GREEN);
+			main(1, 0).addPiece('P', GREEN);
+			main(1, 1).addPiece('P', GREEN);
+			main(1, 2).addPiece('P', GREEN);
+			main(1, 3).addPiece('P', GREEN);
+			main(1, 4).addPiece('P', GREEN);
+			main(1, 5).addPiece('P', GREEN);
+			main(1, 6).addPiece('P', GREEN);
+			main(1, 7).addPiece('P', GREEN);
 
 			//Red pieces
-			main(6,0).addPiece('P', RED);
-			main(6,1).addPiece('P', RED);
-			main(6,2).addPiece('P', RED);
-			main(6,3).addPiece('P', RED);
-			main(6,4).addPiece('P', RED);
-			main(6,5).addPiece('P', RED);
-			main(6,6).addPiece('P', RED);
-			main(6,7).addPiece('P', RED);
-			main(7,0).addPiece('R', RED);
-			main(7,1).addPiece('N', RED);
-			main(7,2).addPiece('B', RED);
-			main(7,3).addPiece('Q', RED);
-			main(7,4).addPiece('K', RED);
-			main(7,5).addPiece('B', RED);
-			main(7,6).addPiece('N', RED);
-			main(7,7).addPiece('R', RED);
+			main(6, 0).addPiece('P', RED);
+			main(6, 1).addPiece('P', RED);
+			main(6, 2).addPiece('P', RED);
+			main(6, 3).addPiece('P', RED);
+			main(6, 4).addPiece('P', RED);
+			main(6, 5).addPiece('P', RED);
+			main(6, 6).addPiece('P', RED);
+			main(6, 7).addPiece('P', RED);
+			main(7, 0).addPiece('R', RED);
+			main(7, 1).addPiece('N', RED);
+			main(7, 2).addPiece('B', RED);
+			main(7, 3).addPiece('Q', RED);
+			main(7, 4).addPiece('K', RED);
+			main(7, 5).addPiece('B', RED);
+			main(7, 6).addPiece('N', RED);
+			main(7, 7).addPiece('R', RED);
 		}
 
 		void Board::printBoard(){
@@ -64,7 +65,7 @@ namespace Chess {
 			}
 		}
 
-		Board::Board(const std::string FEN) {
+		Board::Board(const std::string& FEN) {
 			//largest rnbqkbnr/pppppppp/pppppppp/pppppppp/pppppppp/pppppppp/PPPPPPPP/RNBQKBNR w KQkq pp 49 200
 			//shortest 1/1/1/1/1/1/1/1 w - - 0 1
 			Red = Player(RED);
@@ -74,8 +75,8 @@ namespace Chess {
 				*this = Board();
 				return;
 			}
-			int it, greencount, redcount;
-			it = greencount = redcount = 0;
+			int it, pieceCount;
+			it = pieceCount = 0;
 			for (int i = 0; i < 8; ++i) {
 				for (int j = 0; j < 8; ++j) {
 					if (std::isalpha(FEN[it])) {
@@ -84,14 +85,14 @@ namespace Chess {
 							if (FEN[it] == 'k') {
 								Green.setKing(i, j);
 							}
-							++greencount;
+							++pieceCount;
 						}
 						else {
 							main(i,j).addPiece(FEN[it], RED);
 							if (FEN[it] == 'K') {
 								Red.setKing(i, j);
 							}
-							++redcount;
+							++pieceCount;
 						}
 					}
 					else if(FEN[it] != '/'){
@@ -103,11 +104,10 @@ namespace Chess {
 			}
 
 			if (OUTPUT == NORMAL) {
-				std::cout << "Standard " << 8 << "x" << 8 << " board created with " << greencount + redcount << " pieces" << std::endl;
+				std::cout << "Standard " << 8 << "x" << 8 << " board created with " << pieceCount << " pieces" << std::endl;
 			}
 
-			Red.setPieceCount(redcount);
-			Green.setPieceCount(greencount);
+			pieces = pieceCount;
 
 			//turn
 			int playerToMove = FEN[it] == 'w' ? RED : GREEN;
@@ -150,9 +150,8 @@ namespace Chess {
 
 			//enpassant
 			if (FEN[it] != '-') {
-				int pawnConst = (playerToMove == RED) ? -1 : 1;
 				int tempW = FEN[it++] - 'a';
-				int tempH = 8 - ((FEN[it] - '0') + pawnConst);
+				int tempH = 8 - ((FEN[it] - '0') - playerToMove);
 				if (hasFriendly('P', tempH, tempW, -playerToMove)) {
 					target = { tempH, tempW, true };
 				}
@@ -163,15 +162,22 @@ namespace Chess {
 			else {
 				target.possible = false;
 			}
+			it += 2;
+
+			if (it >= FEN.length()) {
+				turn = playerToMove == RED ? 0 : 1;
+				halfMoves = 0;
+				return;
+			}
 
 			//halfMoves
-			it += 2;
 			std::string acum;
 			while (FEN[it] != ' ') {
 				acum += FEN[it];
 				++it;
 			}
 			halfMoves = std::stoi(acum);
+
 
 			//turn number
 			++it;
@@ -206,7 +212,7 @@ namespace Chess {
 						if (empty != 0) {
 							FEN += std::to_string(empty);
 						}
-						FEN += main(i,j).checkPlayer() == RED ? main(i,j).checkPieceType() : std::tolower(main(i,j).checkPieceType());
+						FEN += main(i, j).checkPlayer() == RED ? main(i, j).checkPieceType() : std::tolower(main(i, j).checkPieceType());
 						empty = 0;
 					}
 					else {
@@ -247,7 +253,7 @@ namespace Chess {
 			if (target.possible) {
 				int pawnConst = (turn % 2 == 0) ? 1 : -1;
 				FEN += char(target.w + 97);
-				FEN += std::to_string(8 - target.h+ pawnConst);
+				FEN += std::to_string(8 - target.h + pawnConst);
 			}
 			else {
 				FEN += '-';
@@ -279,13 +285,13 @@ namespace Chess {
 		void Board::printBoardRelease() const{
 			std::cout << "_______________________________________________________________" << std::endl;
 			Red.checkDeadRelease();
-			if (Green.checkScore() < Red.checkScore()) {
-				std::cout << "+" << Red.checkScore() - Green.checkScore();
+			if (Red.checkScore() < Green.checkScore()) {
+				std::cout << "+" << Green.checkScore() - Red.checkScore();
 			}
 			std::cout << std::endl;
 			Green.checkDeadRelease();
-			if (Red.checkScore() < Green.checkScore()) {
-				std::cout << "+" << Green.checkScore() - Red.checkScore();
+			if (Green.checkScore() < Red.checkScore()) {
+				std::cout << "+" << Red.checkScore() - Green.checkScore();
 			}
 			std::cout << std::endl;
 			std::cout << "_______________________________________________________________" << std::endl;
@@ -347,18 +353,16 @@ namespace Chess {
 		void Board::printBoardDebug(){
 			std::cout << "__________________________________________\n";
 			std::cout << "Halfmoves: " << halfMoves << std::endl;
-			//Rg1 Rg8 Rh1 Rh8 
-			//Rg1 Rh1 
 			std::cout << "__________________________________________\n";
 			std::cout << "__________________________________________" << std::endl;
 			Red.checkDeadDebug();
-			if (Green.checkScore() < Red.checkScore()) {
-				std::cout << "+" << Red.checkScore() - Green.checkScore();
+			if (Red.checkScore() < Green.checkScore()) {
+				std::cout << "+" << Green.checkScore() - Red.checkScore();
 			}
 			std::cout << std::endl;
 			Green.checkDeadDebug();
-			if (Red.checkScore() < Green.checkScore()) {
-				std::cout << "+" << Green.checkScore() - Red.checkScore();
+			if (Green.checkScore() < Red.checkScore()) {
+				std::cout << "+" << Red.checkScore() - Green.checkScore();
 			}
 			std::cout << std::endl;
 			std::cout << "__________________________________________\n";
@@ -381,11 +385,11 @@ namespace Chess {
 			std::cout << "__________________________________________\n";
 			std::cout << "__________________________________________\n";
 			std::cout << "   A    B    C    D    E    F    G    H\n";
-			Color::Modifier red(Color::FG_RED);
-			Color::Modifier green(Color::FG_GREEN);
-			Color::Modifier blue(Color::FG_BLUE);
-			Color::Modifier yellow(Color::FG_YELLOW);
-			Color::Modifier def(Color::FG_DEFAULT);
+			const Color::Modifier red(Color::FG_RED);
+			const Color::Modifier green(Color::FG_GREEN);
+			const Color::Modifier blue(Color::FG_BLUE);
+			const Color::Modifier yellow(Color::FG_YELLOW);
+			const Color::Modifier def(Color::FG_DEFAULT);
 			for (int i = 0; i < 8; ++i) {
 				std::cout << -i + 8 << "  ";
 				for (int j = 0; j < 8; ++j) {
@@ -395,7 +399,7 @@ namespace Chess {
 							std::cout << red << main(i,j).checkPieceType() << def << "    ";
 						}
 						else if (main(i,j).checkPlayer() == GREEN) {
-							std::cout << green << main(i,j).checkPieceType() << def << "    ";
+							std::cout << green << main(i, j).checkPieceType() << def << "    ";
 						}
 						else {
 							std::cout << std::endl << "ERROR::Pieces created with no player\n";
@@ -419,7 +423,7 @@ namespace Chess {
 			std::cout << "   A    B    C    D    E    F    G    H\n";
 		}
 
-		inline bool Board::contains(char c, std::string word) const {
+		inline bool Board::contains(char c, std::string word) const noexcept {
 			for (int i = 0; i < word.size(); ++i) {
 				if (c == word[i]) {
 					return true;
@@ -433,7 +437,7 @@ namespace Chess {
 				: Green.findMove(type, dest, *this);
 			if (not source.isNull()) {
 				bool enp = type == 'P' and abs(source.checkH() - dest.checkH()) == 2;
-				return makeMove(type, source.checkH(), source.checkW(), dest.checkH(), dest.checkW(), player, enp);
+				return makeMove(type, source, dest, player, enp);
 			}
 			return false;
 		}
@@ -443,6 +447,15 @@ namespace Chess {
 				: Green.findCapture(type, dest, *this);
 			if (not source.isNull()) {
 				return makeCapture(type, source.checkH(), source.checkW(), dest.checkH(), dest.checkW(), player);
+			}
+			return false;
+		}
+
+		bool Board::findPromotion(const Position& dest, char typePro, int player) {
+			Position source = player == RED ? Red.findPromotion(dest, *this)
+				: Green.findPromotion(dest, *this);
+			if (not source.isNull()) {
+				return pawnPromote(source, dest, typePro, player);
 			}
 			return false;
 		}
@@ -468,7 +481,7 @@ namespace Chess {
 				return false;
 			}
 			if (not source.isNull()) {
-				return makeMove(type, source.checkH(), source.checkW(), dest.checkH(), dest.checkW(), player, false);
+				return makeMove(type, source, dest, player, false);
 			}
 			return false;
 		}
@@ -503,7 +516,7 @@ namespace Chess {
 			Position found_source = player == RED ? Red.findDAmbMove(type, source, dest, *this)
 				: Green.findDAmbMove(type, source, dest, *this);
 			if (not found_source.isNull()) {
-				return makeMove(type, source.checkH(), source.checkW(), dest.checkH(), dest.checkW(), player, false);
+				return makeMove(type, source, dest, player, false);
 			}
 			return false;
 		}
@@ -531,7 +544,8 @@ namespace Chess {
 			return false;
 		}
 
-		bool Board::move(std::string movement, int player, bool& enp) {
+		bool Board::move(std::string movement, bool& enp) {
+			const int player = checkPlayer();
 			int rank_d, file_d;
 			if (OUTPUT == NORMAL) {
 				std::cout << "Your movement was " << movement << std::endl;
@@ -541,26 +555,22 @@ namespace Chess {
 				target.possible = true;
 				enp = true;
 			}
-
-			if (movement.length() < 2) {
-				return false;
-			}
-
-			//normal pawn move
-			else if (movement.length() == 2) {
-				Position dest = { 8 - (movement[1] - 48) , movement[0] - 97 };
-				return (player == RED ? dest.checkH()!= 0 : dest.checkH()!= 7) and findMove('P', dest, player);
-			}
-
-			//non-ambiguous other moves
-			else if (movement.length() == 3) {
+			Position dest, source;
+			switch (movement.length()) {
+			case 2:
+				//normal pawn move
+				dest = { 8 - (movement[1] - 48) , movement[0] - 97 };
+				return (player == RED ? dest.checkH() != 0 : dest.checkH() != 7) and findMove('P', dest, player);
+				break;
+			case 3:
+				//non-ambiguous other moves
 				if (movement == "O-O" or movement == "0-0") {
 					if (MODE == DEBUG) {
 						std::cout << "Kingside castling detected!" << std::endl;
 					}
 					return findKingsideCastling(player);
 				}
-				Position dest = { 8 - (movement[2] - 48) , movement[1] - 97 };
+				dest = { 8 - (movement[2] - 48) , movement[1] - 97 };
 				if (movement[0] != 'N' and
 					movement[0] != 'B' and
 					movement[0] != 'Q' and
@@ -570,17 +580,15 @@ namespace Chess {
 					return false;
 				}
 				return findMove(movement[0], dest, player);
-			}
-
-			//longer instructions
-			else if (movement.length() == 4) {
+				break;
+			case 4:
 				//captures
 				if (contains('x', movement)) {
 					if (MODE == DEBUG) {
 						std::cout << "Capture detected!" << std::endl;
 					}
 					//if first letter is lowercase it is a pawn capture
-					Position dest = { 8 - (movement[3] - 48) , movement[2] - 97 };
+					dest = { 8 - (movement[3] - 48) , movement[2] - 97 };
 					if (islower(movement[0])) {
 						//p.e: exf5
 						int file_s = movement[0] - 97;
@@ -601,14 +609,20 @@ namespace Chess {
 					if (MODE == DEBUG) {
 						std::cout << "Promotion detected!" << std::endl;
 					}
-					rank_d = 8 - (movement[1] - 48);
-					file_d = movement[0] - 97;
+					Position dest = Position(8 - (movement[1] - 48), movement[0] - 97);
 					char type = movement[3];
-					return pawnPromote(rank_d, file_d, type, player);
+					if (movement[3] != 'N' and
+						movement[3] != 'B' and
+						movement[3] != 'Q' and
+						movement[3] != 'R') {
+						std::cout << "Wrong type to promote" << std::endl;
+						return false;
+					}
+					return findPromotion(dest, type, player);
 				}
 				//ambiguous moves
 				else {
-					Position dest = { 8 - (movement[3] - 48) , movement[2] - 97 };
+					dest = { 8 - (movement[3] - 48) , movement[2] - 97 };
 					char dis = movement[1];
 					if (movement[0] != 'N' and
 						movement[0] != 'B' and
@@ -619,14 +633,14 @@ namespace Chess {
 					}
 					return findAmbiguousMove(movement[0], dis, dest, player);
 				}
-			}
-			//ambiguous captures
-			else if (movement.length() == 5) {
+				break;
+			case 5:
+				//ambiguous captures
 				if (contains('x', movement)) {
 					if (MODE == DEBUG) {
 						std::cout << "Capture detected!" << std::endl;
 					}
-					Position dest = { 8 - (movement[4] - 48) , movement[3] - 97 };
+					dest = { 8 - (movement[4] - 48) , movement[3] - 97 };
 					char dis = movement[1];
 
 					if (movement[0] != 'N' and
@@ -649,8 +663,8 @@ namespace Chess {
 					if (MODE == DEBUG) {
 						std::cout << "Double ambiguous detected!" << std::endl;
 					}
-					Position dest = { 8 - (movement[4] - 48) , movement[3] - 97 };
-					Position source = { 8 - (movement[2] - 48) , movement[1] - 97 };
+					dest = { 8 - (movement[4] - 48) , movement[3] - 97 };
+					source = { 8 - (movement[2] - 48) , movement[1] - 97 };
 
 					if (movement[0] != 'B' and
 						movement[0] != 'Q') {
@@ -659,10 +673,8 @@ namespace Chess {
 					}
 					return findDoubleAmbiguousMove(movement[0], source, dest, player);
 				}
-			}
-
-			//longer instructions
-			else if (movement.length() == 6) {
+				break;
+			case 6:
 				if (contains('x', movement)) {
 					//pawn promotion capture
 					if (contains('=', movement)) {
@@ -680,8 +692,8 @@ namespace Chess {
 						if (MODE == DEBUG) {
 							std::cout << "Capture detected!" << std::endl;
 						}
-						Position dest = { 8 - (movement[5] - 48) , movement[4] - 97 };
-						Position source = { 8 - (movement[2] - 48), movement[1] - 97 };
+						dest = { 8 - (movement[5] - 48) , movement[4] - 97 };
+						source = { 8 - (movement[2] - 48), movement[1] - 97 };
 						if (movement[0] != 'B' and
 							movement[0] != 'Q') {
 							std::cout << "Wrong type for this kind of move" << std::endl;
@@ -690,19 +702,38 @@ namespace Chess {
 						return findDoubleAmbiguousCapture(movement[0], source, dest, player);
 					}
 				}
+				break;
 			}
 			return false;
 		}
 
-		bool Board::move(const Move& m, int player) {
+		bool Board::move(const Move& m) {
+			const int player = checkPlayer();
 			char type = m.getType();
 			Position source = m.getSource();
 			Position dest = m.getDestination();
-			int pawnConst = player == RED ? 1 : -1;
-			bool correct_enp = type == 'P' and 
-				(player == RED ? source.checkH()== 3 : source.checkH()== 4) and
-				target.possible and 
-				(target.h == dest.checkH()+ pawnConst and dest.checkW() == target.w);
+			bool correct_captenp, act_enp;
+			correct_captenp = act_enp = false;
+
+			if (type == 'P') {
+				switch (source.checkH()) {
+				case 1:
+					act_enp = player == RED and dest.checkH() == 4;
+					break;
+				case 3:
+					correct_captenp = target.possible and player == RED and Position(target.h, target.w) == dest;
+					break;
+				case 4:
+					correct_captenp = target.possible and player == GREEN and Position(target.h, target.w) == dest;
+					break;
+				case 6:
+					act_enp = player == GREEN and dest.checkH() == 3;
+					break;
+				default:
+					break;
+				}
+			}
+
 			if (not m.isCapture()) {
 				if (m.isCastleKingside()) {
 					return castleKingside(player);
@@ -711,10 +742,10 @@ namespace Chess {
 					return castleQueenside(player);
 				}
 				else if (m.isPromotion()) {
-					return pawnPromote(dest.checkH(), dest.checkW(), 'Q', player);
+					return pawnPromote(source, dest, m.getPromotedType(), player);
 				}
 				else {
-					return makeMove(type, source.checkH(), source.checkW(), dest.checkH(), dest.checkW(), player, false);
+					return makeMove(type, source, dest, player, act_enp);
 				}
 			}
 			else{
@@ -722,7 +753,7 @@ namespace Chess {
 					return pawnPromoteCapture(source, dest, 'Q', player);
 				}
 				else if (type == 'P') {
-					return pawnCapture(source, dest, player, correct_enp);
+					return pawnCapture(source, dest, player, correct_captenp);
 				}
 				return makeCapture(type, source.checkH(), source.checkW(), dest.checkH(), dest.checkW(), player);
 			}
@@ -738,7 +769,7 @@ namespace Chess {
 				int player_checked = player;
 				//checkmate
 				if (not Red.hasMoves()){
-					if (isChecked(player_checked) and player_checked == RED) {
+					if (whoChecked(player_checked) and player_checked == RED) {
 						status = Ending::CHECKMATE;
 						return true;
 					}
@@ -753,7 +784,7 @@ namespace Chess {
 				int player_checked;
 				//checkmate
 				if (not Green.hasMoves()) {
-					if (isChecked(player_checked) and player_checked == GREEN) {
+					if (whoChecked(player_checked) and player_checked == GREEN) {
 						status = Ending::CHECKMATE;
 						return true;
 					}
@@ -777,47 +808,53 @@ namespace Chess {
 			return halfMoves == 50 or not Red.hasMoves() or not Green.hasMoves();
 		}
 
-		bool Board::isEnded(int player, int& checked, float& pen) {
+		bool Board::isEnded(int player, int& checked, float& pen, bool& mate) {
 			if (halfMoves == 50) {
-				pen = -100;
+				pen = 100;
 				return true;
 			}
 			else if (player == RED) {
 				//checkmate
 				checked = player;
 				if (not Red.hasMoves()) {
-					if (isChecked(checked) and checked == RED) {
+					if (whoChecked(checked) and checked == RED) {
 						pen = -900;
+						mate = true;
 						return true;
 					}
 					//stalemate
 					else {
-						pen = -100;
+						pen = 100;
 						checked = -1;
 						return true;
 					}
 				}
-				else if(not Green.hasMoves() and isChecked(checked) and checked == GREEN) {
-					pen = 900;
-					return true;
+				else if(not Green.hasMoves()){
+					if (whoChecked(checked) and checked == GREEN) {
+						pen = 900;
+						mate = true;
+						return true;
+					}
 				}
 			}
 			else if (player == GREEN) {
 				//checkmate
 				if (not Green.hasMoves()) {
-					if (isChecked(checked) and checked == GREEN) {
-						return true;
+					if (whoChecked(checked) and checked == GREEN) {
 						pen = -900;
+						mate = true;
+						return true;
 					}
 					//stalemate
 					else {
-						pen = -100;
+						pen = 100;
 						checked = -1;
 						return true;
 					}
 				}
-				else if (not Red.hasMoves() and isChecked(checked) and checked == RED) {
+				else if (not Red.hasMoves() and whoChecked(checked) and checked == RED) {
 					pen = 900;
+					mate = true;
 					return true;
 				}
 			}
@@ -828,14 +865,23 @@ namespace Chess {
 			return false;
 		}
 
-		Board& Board::operator=(const Board& b) {
-			Red = b.Red;
-			Green = b.Green;
-			target = b.target;
-			halfMoves = b.halfMoves;
-			turn = b.turn;
-			main = b.main;
-			return *this;
+		int Board::queenCount() const{
+			int auxCount = 0;
+			for (int i = 0; i < 64; ++i) {
+				if (main(i).checkPieceType() == 'Q') {
+					++auxCount;
+				}
+			}
+			return auxCount;
+		}
+
+		bool Board::hasQueen() const {
+			for (int i = 0; i < 64; ++i) {
+				if (main(i).checkPieceType() == 'Q') {
+					return true;
+				}
+			}
+			return false;
 		}
 
 		Board::Board(const Board& b){
@@ -847,11 +893,10 @@ namespace Chess {
 			main = b.main;
 		}
 
-
-
 		void Board::update() {
-			Red.updateMoveSet(*this);
-			Green.updateMoveSet(*this);
+			//Green.moves.update(*this);
+			//Red.moves.update(*this);
+			turn % 2 ? Green.moves.update(*this) : Red.moves.update(*this);
 		}
 
 		void Board::printThreats() const {

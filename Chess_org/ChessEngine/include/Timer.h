@@ -3,8 +3,7 @@
 #include <chrono>
 #include <ctime>
 
-class Timer
-{
+class Timer{
 public:
     Timer() : beg_(clock_::now()) {}
     void reset() { beg_ = clock_::now(); }

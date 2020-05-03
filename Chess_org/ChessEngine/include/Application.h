@@ -7,7 +7,7 @@ namespace Chess {
 			static int gameCount;
 			bool ended = true;
 		public:
-			Application();
+			Application() noexcept;
 			~Application();
 			void start();
 

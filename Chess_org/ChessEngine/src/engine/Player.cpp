@@ -6,19 +6,19 @@
 
 namespace Chess {
 	namespace Engine {
-		Player::Player() {
+		Player::Player() noexcept {
 			Dead = std::vector <char>();
+			moves = MoveSet(0);
 			int score = 0;
 			king = { 0,0 };
 			color = 0;
-			pieceCount = 16;
 		}
 
 		Player::Player(int color) {
 			this->color = color;
 			Dead = std::vector <char>();
+			moves = MoveSet(color);
 			int score = 0;
-			pieceCount = 16;
 			castleKing = castleQueen = true;
 			if (color == RED) {
 				king = { 7, 4 };
@@ -33,7 +33,6 @@ namespace Chess {
 		}
 
 		void Player::addDead(const char& piece) {
-			--pieceCount;
 			Dead.push_back(piece);
 			std::sort(Dead.begin(), Dead.end());
 		}
@@ -137,51 +136,36 @@ namespace Chess {
 
 		void Player::updateThreats(Board& b, const bool& clean) {
 			if (clean) {
-				for (int i = 0; i < 8; ++i) {
-					for (int j = 0; j < 8; ++j) {
-						b.main(i,j).removeThreat();
-					}
+				for (int i = 0; i < 64; ++i) {
+					b.main(i).removeThreat();
 				}
 			}
-			int pawnConst;
-			int i;
-			if (color == RED) {
-				pawnConst = -1;
-				i = 7;
-			}
-			else {
-				pawnConst = 1;
-				i = 0;
-			}
-			int auxCount = 0;
-			while((color == RED ? i >= 0 : i < 8) and auxCount <= pieceCount) {
-				for (int j = 0; j < 8 and auxCount <= pieceCount; ++j) {
+			for (int i = 0; i < 8; ++i) {
+				for (int j = 0; j < 8; ++j) {
 					//std::cout << char(j + 97) << char(8 - (i - 48)) << std::endl;
-					if (b.main(i,j).hasPiece() and b.main(i,j).checkPlayer() == color) {
+					if (b.main(i, j).checkPlayer() == color) {
 						switch (b.main(i,j).checkPieceType()) {
 						case 'P':
 							//Pawn
-							++auxCount;
-							if (b.inBound(i + pawnConst, j + 1)) {
-								if (not b.main(i + pawnConst,j + 1).hasPiece()) {
-									b.main(i + pawnConst,j + 1).setThreat(color);
+							if (b.inBound(i - color, j + 1)) {
+								if (not b.main(i - color,j + 1).hasPiece()) {
+									b.main(i - color,j + 1).setThreat(color);
 								}
-								else if (b.main(i + pawnConst,j + 1).checkPlayer() == -(color)) {
-									b.main(i + pawnConst,j + 1).setThreat(color);
+								else if (b.main(i - color,j + 1).checkPlayer() == -(color)) {
+									b.main(i - color,j + 1).setThreat(color);
 								}
 							}
-							if (b.inBound(i + pawnConst, j - 1)) {
-								if (not b.main(i + pawnConst,j - 1).hasPiece()) {
-									b.main(i + pawnConst,j - 1).setThreat(color);
+							if (b.inBound(i - color, j - 1)) {
+								if (not b.main(i - color,j - 1).hasPiece()) {
+									b.main(i - color,j - 1).setThreat(color);
 								}
-								else if (b.main(i + pawnConst,j - 1).checkPlayer() == -(color)) {
-									b.main(i + pawnConst,j - 1).setThreat(color);
+								else if (b.main(i - color,j - 1).checkPlayer() == -(color)) {
+									b.main(i - color,j - 1).setThreat(color);
 								}
 							}
 							break;
 						case 'N':
 							//Knight
-							++auxCount;
 							//Check -2, -1
 							addKnight(b, i - 2, j - 1);
 							//Check -2, 1
@@ -201,23 +185,19 @@ namespace Chess {
 							break;
 						case 'B':
 							//Bishop
-							++auxCount;
 							addBishopLike(b, i, j);
 							break;
 						case 'R':
 							//Rook
-							++auxCount;
 							addRookLike(b, i, j);
 							break;
 						case 'Q':
 							//Queen
-							++auxCount;
 							addRookLike(b, i, j);
 							addBishopLike(b, i, j);
 							break;
 						case 'K':
 							//King
-							++auxCount;
 							for (int ii = -1; ii < 2; ++ii) {
 								for (int jj = -1; jj < 2; ++jj) {
 									if (b.inBound(i + ii, j + jj)) {
@@ -234,9 +214,192 @@ namespace Chess {
 						}
 					}
 				}
-				color == RED ? --i : ++i;
 			}
 		}
+
+		bool Player::isThreatened(const Board& b) {
+			int it_h = king.checkH();
+			int it_w = king.checkW();
+			//Pawn
+			if (b.inBound(it_h - color, it_w + 1) and b.main(it_h - color, it_w + 1).checkPieceType() == 'P' and b.main(it_h - color, it_w + 1).checkPlayer() == (-color)) {
+				return true;
+			}
+			if (b.inBound(it_h - color, it_w - 1) and b.main(it_h - color, it_w - 1).checkPieceType() == 'P' and b.main(it_h - color, it_w - 1).checkPlayer() == (-color)) {
+				return true;
+			}
+			//Above
+			--it_h;
+			while (it_h >= 0 and not b.main(it_h, it_w).hasPiece()) {
+				--it_h;
+			}
+			if (it_h >= 0 and b.main(it_h, it_w).checkPlayer() == (-color)) {
+				char type = b.main(it_h, it_w).checkPieceType();
+				if (type == 'Q' or type == 'R') {
+					//std::cout << "Found " << type << " above\n";
+					return true;
+				}
+				else if (type == 'K' and std::abs(king.checkH() - it_h) == 1) {
+					return true;
+				}
+			}
+			//Below
+			it_h = king.checkH() + 1;
+			while (it_h <= 7 and not b.main(it_h, it_w).hasPiece()) {
+				++it_h;
+			}
+			if (it_h <= 7 and b.main(it_h, it_w).checkPlayer() == (-color)) {
+				char type = b.main(it_h, it_w).checkPieceType();
+				if (type == 'Q' or type == 'R') {
+					//std::cout << "Found " << type << " below\n";
+					return true;
+				}
+				else if (type == 'K' and std::abs(king.checkH() - it_h) == 1) {
+					return true;
+				}
+			}
+			//Left
+			it_h = king.checkH();
+			it_w = king.checkW() - 1;
+			while (it_w >= 0 and not b.main(it_h, it_w).hasPiece()) {
+				--it_w;
+			}
+			if (it_w >= 0 and b.main(it_h, it_w).checkPlayer() == (-color)) {
+				char type = b.main(it_h, it_w).checkPieceType();
+				if (type == 'Q' or type == 'R') {
+					//std::cout << "Found " << type << " left\n";
+					return true;
+				}
+				else if (type == 'K' and std::abs(king.checkW() - it_w) == 1) {
+					return true;
+				}
+			}
+			//Right
+			it_w = king.checkW() + 1;
+			while (it_w <= 7 and not b.main(it_h, it_w).hasPiece()) {
+				++it_w;
+			}
+			if (it_w <= 7 and b.main(it_h, it_w).checkPlayer() == (-color)) {
+				char type = b.main(it_h, it_w).checkPieceType();
+				if (type == 'Q' or type == 'R') {
+					//std::cout << "Found " << type << " right\n";
+					return true;
+				}
+				else if (type == 'K' and std::abs(king.checkW() - it_w) == 1) {
+					return true;
+				}
+			}
+			//Diagonal Up-Right
+			it_h = king.checkH() - 1;
+			it_w = king.checkW() + 1;
+			while (it_h >= 0 and it_w <= 7 and not b.main(it_h, it_w).hasPiece()) {
+				--it_h;
+				++it_w;
+			}
+			if (it_h >= 0 and it_w <= 7 and b.main(it_h, it_w).checkPlayer() == (-color)) {
+				char type = b.main(it_h, it_w).checkPieceType();
+				if (type == 'Q' or type == 'B') {
+					//std::cout << "Found " << type << " Up-Right\n";
+					return true;
+				}
+				else if (type == 'K' and std::abs(king.checkW() - it_w) == 1 and std::abs(king.checkH() - it_h) == 1) {
+					return true;
+				}
+			}
+			//Diagonal Up-Left
+			it_h = king.checkH() - 1;
+			it_w = king.checkW() - 1;
+			while (it_h >= 0 and it_w >= 0 and not b.main(it_h, it_w).hasPiece()) {
+				--it_h;
+				--it_w;
+			}
+			if (it_h >= 0 and it_w >= 0 and b.main(it_h, it_w).checkPlayer() == (-color)) {
+				char type = b.main(it_h, it_w).checkPieceType();
+				if (type == 'Q' or type == 'B') {
+					//std::cout << "Found " << type << " Up-Right\n";
+					return true;
+				}
+				else if (type == 'K' and std::abs(king.checkW() - it_w) == 1 and std::abs(king.checkH() - it_h) == 1) {
+					return true;
+				}
+			}
+			//Diagonal Down-Right
+			it_h = king.checkH() + 1;
+			it_w = king.checkW() + 1;
+			while (it_h <= 7 and it_w <= 7 and not b.main(it_h, it_w).hasPiece()) {
+				++it_h;
+				++it_w;
+			}
+			if (it_h <= 7 and it_w <= 7 and b.main(it_h, it_w).checkPlayer() == (-color)) {
+				char type = b.main(it_h, it_w).checkPieceType();
+				if (type == 'Q' or type == 'B') {
+					//std::cout << "Found " << type << " Up-Right\n";
+					return true;
+				}
+				else if (type == 'K' and std::abs(king.checkW() - it_w) == 1 and std::abs(king.checkH() - it_h) == 1) {
+					return true;
+				}
+			}
+			//Diagonal Down-Left
+			it_h = king.checkH() + 1;
+			it_w = king.checkW() - 1;
+			while (it_h <= 7 and it_w >= 0 and not b.main(it_h, it_w).hasPiece()) {
+				++it_h;
+				--it_w;
+			}
+			if (it_h <= 7 and it_w >= 0 and b.main(it_h, it_w).checkPlayer() == (-color)) {
+				char type = b.main(it_h, it_w).checkPieceType();
+				if (type == 'Q' or type == 'B') {
+					//std::cout << "Found " << type << " Up-Right\n";
+					return true;
+				}
+				else if (type == 'K' and std::abs(king.checkW() - it_w) == 1 and std::abs(king.checkH() - it_h) == 1) {
+					return true;
+				}
+			}
+			
+			it_h = king.checkH();
+			it_w = king.checkW();
+			//Knight
+			//Check -2, -1
+			if (threatKnight(b, it_h - 2, it_w - 1)) {
+				return true;
+			}
+			//Check -2, 1
+			if (threatKnight(b, it_h - 2, it_w + 1)) {
+				return true;
+			}
+			//Check -1, 2
+			if (threatKnight(b, it_h - 1, it_w + 2)) {
+				return true;
+			}
+			//Check 1, 2
+			if (threatKnight(b, it_h + 1, it_w + 2)) {
+				return true;
+			}
+			//Check 2, 1
+			if (threatKnight(b, it_h + 2, it_w + 1)) {
+				return true;
+			}
+			//Check 2, -1
+			if (threatKnight(b, it_h + 2, it_w - 1)) {
+				return true;
+			}
+			//Check 1,-2
+			if (threatKnight(b, it_h + 1, it_w - 2)) {
+				return true;
+			}
+			//Check -1, -2
+			if (threatKnight(b, it_h - 1, it_w - 2)) {
+				return true;
+			}
+
+			return false;
+		}
+
+		inline bool Player::threatKnight(const Board& b, int i, int j) {
+			return b.inBound(i, j) and b.main(i, j).checkPieceType() == 'N' and b.main(i, j).checkPlayer() == (-color);
+		}
+
 		void Player::checkDeadRelease() const {
 			int k;
 			if (color == RED) {

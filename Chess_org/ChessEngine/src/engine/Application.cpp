@@ -12,7 +12,7 @@
 
 namespace Chess {
 	namespace Engine {
-		Application::Application() {
+		Application::Application() noexcept {
 			std::cout << "Chess started ...\n";
 		}
 
@@ -175,7 +175,6 @@ namespace Chess {
 
 			mainBoard.update();
 			mainBoard.printBoard();
-			std::string FEN;
 			mainBoard.createFEN();
 			int currentPlayer;
 			std::string mov;
@@ -196,7 +195,7 @@ namespace Chess {
 				}
 				bool enp = false;
 				//Check if movement is valid
-				while (not ended and not mainBoard.move(mov, currentPlayer, enp)) {
+				while (not ended and not mainBoard.move(mov, enp)) {
 					currentPlayer == RED ? std::cout << "Red" : std::cout << "Green";
 					std::cout << "'s turn" << std::endl;
 					mainBoard.update();
@@ -243,7 +242,7 @@ namespace Chess {
 			mainBoard.update();
 			mainBoard.printBoard();
 			int currentPlayer;
-			//Dummy player1(RED);
+			Dummy player1(RED);
 			Dummy player2(GREEN);
 			Board::Ending ending;
 			std::string mov;
@@ -252,13 +251,12 @@ namespace Chess {
 				currentPlayer = mainBoard.checkPlayer();
 				if (currentPlayer == RED) {
 					//Red's turn
-					currentPlayer = RED;
 					if (mainBoard.isEnded(currentPlayer, ending)) {
 						print_end(ending);
 						break;
 					}
 					std::cout << "Red's turn" << std::endl;
-					std::cout << "Insert your movement: " << std::endl;
+					/*std::cout << "Insert your movement: " << std::endl;
 					std::cin >> mov;
 					if (mov == "quit") {
 						ended = true;
@@ -266,7 +264,7 @@ namespace Chess {
 					}
 					bool enp = false;
 					//Check if movement is valid
-					while (not ended and not mainBoard.move(mov, currentPlayer, enp)) {
+					while (not ended and not mainBoard.move(mov, enp)) {
 						std::cout << "Red's turn" << std::endl;
 						mainBoard.update();
 						mainBoard.printBoard();
@@ -280,8 +278,8 @@ namespace Chess {
 					if (ended) {
 						break;
 					}
-					enp = false;
-					//player1.move(*mainBoard);
+					enp = false;*/
+					player1.move(mainBoard);
 					std::cout << "Piece successfully moved" << std::endl;
 					mainBoard.update();
 					mainBoard.printBoard();
@@ -290,13 +288,34 @@ namespace Chess {
 				}
 				else {
 					//AI's turn
-					currentPlayer = GREEN;
 					if (mainBoard.isEnded(currentPlayer, ending)) {
 						print_end(ending);
 						break;
 					}
 					std::cout << "Green's turn" << std::endl;
-
+					/*std::cout << "Insert your movement: " << std::endl;
+					std::cin >> mov;
+					if (mov == "quit") {
+						ended = true;
+						break;
+					}
+					bool enp = false;
+					//Check if movement is valid
+					while (not ended and not mainBoard.move(mov, enp)) {
+						std::cout << "Red's turn" << std::endl;
+						mainBoard.update();
+						mainBoard.printBoard();
+						std::cout << "Cannot perform movement, please try again:" << std::endl;
+						std::cin >> mov;
+						if (mov == "quit") {
+							ended = true;
+							break;
+						}
+					}
+					if (ended) {
+						break;
+					}
+					enp = false;*/
 					player2.move(mainBoard);
 					std::cout << "Piece successfully moved" << std::endl;
 					mainBoard.update();
@@ -316,9 +335,9 @@ namespace Chess {
 		void Application::manRead_pgn() {
 			std::cout << "READ MODE" << std::endl;
 			std::cout << "Game #" << gameCount << " started" << std::endl;
-			Board* mainBoard = new Board;
-			mainBoard->update();
-			mainBoard->printBoard();
+			Board mainBoard;
+			mainBoard.update();
+			mainBoard.printBoard();
 			int currentPlayer;
 			std::string mov;
 			while (not ended) {
@@ -338,10 +357,10 @@ namespace Chess {
 				}
 				bool enp = false;
 				//Check if movement is valid
-				while (not ended and not mainBoard->move(mov, currentPlayer, enp)) {
+				while (not ended and not mainBoard.move(mov, enp)) {
 					std::cout << "Red's turn" << std::endl;
-					mainBoard->update();
-					mainBoard->printBoard();
+					mainBoard.update();
+					mainBoard.printBoard();
 					std::cout << "Cannot perform movement, please try again:" << std::endl;
 					std::cin >> mov;
 					if (mov == "quit") {
@@ -354,8 +373,8 @@ namespace Chess {
 				}
 				enp = false;
 				std::cout << "Piece successfully moved" << std::endl;
-				mainBoard->update();
-				mainBoard->printBoard();
+				mainBoard.update();
+				mainBoard.printBoard();
 
 				//Green's turn
 				currentPlayer = GREEN;
@@ -370,10 +389,10 @@ namespace Chess {
 					mov = mov.substr(0, mov.length() - 1);
 				}
 				//Check if movement is valid
-				while (not ended and not mainBoard->move(mov, currentPlayer, enp)) {
+				while (not ended and not mainBoard.move(mov, enp)) {
 					std::cout << "Green's turn" << std::endl;
-					mainBoard->update();
-					mainBoard->printBoard();
+					mainBoard.update();
+					mainBoard.printBoard();
 					std::cout << "Cannot perform movement, please try again:" << std::endl;
 					std::cin >> mov;
 					if (mov == "quit") {
@@ -385,10 +404,9 @@ namespace Chess {
 					break;
 				}
 				std::cout << "Piece successfully moved" << std::endl;
-				mainBoard->update();
-				mainBoard->printBoard();
+				mainBoard.update();
+				mainBoard.printBoard();
 			}
-			delete mainBoard;
 			if (MODE == DEBUG) {
 				printHelpDebug();
 			}
@@ -402,34 +420,25 @@ namespace Chess {
 				std::cout << "READ FILE MODE" << std::endl;
 				std::cout << "Game #" << gameCount << " started" << std::endl;
 			}
-			Board* mainBoard = new Board;
+			Board mainBoard;
 			int currentPlayer;
 			std::ifstream inFile;
-			mainBoard->update();
+			mainBoard.update();
 			if (MODE == DEBUG) {
-				mainBoard->printBoard();
+				mainBoard.printBoard();
 			}
 			//system("dir");
-			std::string directory;
-			if (ENVIRONMENT == VISUAL) {
-				directory = "ChessEngine\\examples\\";
-			}
-			else {
-				directory = "..\\..\\Chess_org\\ChessEngine\\examples\\";
-			}
-			std::string full = "dir " + directory;
-			if (OUTPUT != MINIMAL) {
-				system(full.c_str());
+			std::string directory = "\\Users\\David\\source\\repos\\Chess_org\\Chess_org\\ChessEngine\\examples\\";
+			std::string full = "dir /d " + directory + "*.txt";
+			system(full.c_str());
 			std::cout << "You have these files available, type the one you'd like to read" << std::endl;
 			std::cout << "Format: E.g. if you want to read file named 3.txt, type 3" << std::endl;
-			}
 			std::string ans;
 			std::cin >> ans;
 			inFile.open(directory + ans + ".txt");
 			std::cout << ans << std::endl;
 			if (not inFile) {
 				std::cout << "Could not open file " << directory + ans + ".txt" << std::endl;
-				delete mainBoard;
 				if (MODE == DEBUG) {
 					printHelpDebug();
 				}
@@ -445,7 +454,7 @@ namespace Chess {
 			while (i < result.length() and result[i] != '"') {
 				++i;
 			}
-			std::string end = result.substr(1, i - 1);
+			const std::string end = result.substr(1, i - 1);
 			if (MODE == DEBUG) {
 				std::cout << end << std::endl;
 			}
@@ -455,8 +464,6 @@ namespace Chess {
 			Board::Ending ending;
 			int count = 0;
 			while (mov != end) {
-				//F 11c n F 12c n F 13c n F 14c n F 15c n F 16c n F 17c n F 18c n F 3 n F 19l n F 20l n F 21l n F 22l n
-				//F 11c n F 12c n F 13c n F 14c n F 15c n F 16c n F 17c n F 18c n F 3 n F 1 n F 4 n F 5 n F 6 n F 7 n F 8 n F 9 n F 10 n
 				//Red's turn
 				currentPlayer = RED;
 				if (OUTPUT == NORMAL) {
@@ -476,7 +483,7 @@ namespace Chess {
 						break;
 					}
 				}
-				if (mainBoard->isEnded(currentPlayer, ending)) {
+				if (mainBoard.isEnded(currentPlayer, ending)) {
 					break;
 				}
 				if (mov == end) {
@@ -498,17 +505,18 @@ namespace Chess {
 				}
 				bool enp = false;
 				//Check if movement is valid
-				if (not mainBoard->move(mov, currentPlayer, enp)) {
+				if (not mainBoard.move(mov, enp)) {
 					if (MODE == DEBUG) {
-						mainBoard->printBoard();
+						mainBoard.printBoard();
 					}
 					std::cout << "Cannot perform movement number " << ((count) / 2) + 1 << " for player red" << std::endl;
 				}
 				enp = false;
-				mainBoard->update();
+				mainBoard.update();
 				if (MODE == DEBUG) {
 					std::cout << "Piece successfully moved" << std::endl;
-					mainBoard->printBoard();
+					mainBoard.printBoard();
+					mainBoard.createFEN();
 				}
 				//Green's turn
 				currentPlayer = GREEN;
@@ -517,7 +525,7 @@ namespace Chess {
 					std::cout << "Insert your movement: " << std::endl;
 				}
 				inFile >> mov;
-				if (mainBoard->isEnded(currentPlayer, ending)) {
+				if (mainBoard.isEnded(currentPlayer, ending)) {
 					break;
 				}
 				if (mov == end) {
@@ -536,22 +544,23 @@ namespace Chess {
 					mov = mov.substr(0, mov.length() - 1);
 				}
 				//Check if movement is valid
-				if (not mainBoard->move(mov, currentPlayer, enp)) {
+				if (not mainBoard.move(mov, enp)) {
 					if (MODE == DEBUG) {
-						mainBoard->printBoard();
+						mainBoard.printBoard();
 					}
 					std::cout << "Cannot perform movement number " << ((count) / 2) + 1 << " for player green" << std::endl;
 				}
-				mainBoard->update();
+				mainBoard.update();
 				if (MODE == DEBUG) {
 					std::cout << "Piece successfully moved" << std::endl;
-					mainBoard->printBoard();
+					mainBoard.printBoard();
+					mainBoard.createFEN();
 				}
 				++count;
 			}
-			if (OUTPUT != MINIMAL) {
-				mainBoard->printBoard();
 				print_end(ending);
+			if (OUTPUT != MINIMAL) {
+				mainBoard.printBoard();
 				std::cout << "Do you want to open the match in your default browser? Y / n" << std::endl;
 				while (std::cin >> ans and ans != "Y" and ans != "n");
 				std::string aux;
@@ -562,17 +571,12 @@ namespace Chess {
 				}
 			}
 			inFile.close();
-			delete mainBoard;
-			if (OUTPUT != MINIMAL) {
-				if (MODE == DEBUG) {
-					printHelpDebug();
-				}
-				else {
-					printHelp();
-				}
+			std::cout << "GAME READ" << std::endl;
+			if (MODE == DEBUG) {
+				printHelpDebug();
 			}
 			else {
-				std::cout << "GAME READ" << std::endl;
+				printHelp();
 			}
 		}
 
@@ -583,14 +587,8 @@ namespace Chess {
 			int currentPlayer;
 			std::ifstream inFile;
 			//system("dir");
-			std::string directory;
-			if (ENVIRONMENT == VISUAL) {
-				directory = "ChessEngine\\examples\\";
-			}
-			else {
-				directory = "..\\..\\Chess_org\\ChessEngine\\examples\\";
-			}
-			std::string full = "dir " + directory;
+			std::string directory = "\\Users\\David\\source\\repos\\Chess_org\\Chess_org\\ChessEngine\\examples\\";
+			std::string full = "dir /d " + directory + "*.pgn";
 			//if (OUTPUT != MINIMAL) {
 				system(full.c_str());
 				std::cout << "You have these files available, type the one you'd like to read" << std::endl;
@@ -617,6 +615,7 @@ namespace Chess {
 
 			std::string mov;
 			Timer tmr;
+			int chCount = 0;
 			while (inFile >> mov) {
 				++gameNum;
 				Board mainBoard;
@@ -658,10 +657,13 @@ namespace Chess {
 					}
 					if (mainBoard.isEnded(currentPlayer, ending)) {
 						if (ending == Board::Ending::CHECKMATE) {
+							//std::cout << ++chCount << ": " <<  bullshit << std::endl;
 							++checkmates;
+							++victories;
 						}
 						else if (ending == Board::Ending::STALEMATE) {
 							++stalemates;
+							++defeats;
 						}
 						break;
 					}
@@ -687,7 +689,7 @@ namespace Chess {
 					}
 					bool enp = false;
 					//Check if movement is valid
-					if (not mainBoard.move(mov, currentPlayer, enp)) {
+					if (not mainBoard.move(mov, enp)) {
 						if (MODE == DEBUG) {
 							std::cout << "Red's turn" << std::endl;
 							mainBoard.update();
@@ -708,10 +710,13 @@ namespace Chess {
 					}
 					if (mainBoard.isEnded(currentPlayer, ending)) {
 						if (ending == Board::Ending::CHECKMATE) {
+							//std::cout << ++chCount << ": " << bullshit << std::endl;
 							++checkmates;
+							++defeats;
 						}
 						else if (ending == Board::Ending::STALEMATE) {
 							++stalemates;
+							++defeats;
 						}
 						break;
 					}
@@ -737,7 +742,7 @@ namespace Chess {
 						mov = mov.substr(0, mov.length() - 1);
 					}
 					//Check if movement is valid
-					if (not mainBoard.move(mov, currentPlayer, enp)) {
+					if (not mainBoard.move(mov, enp)) {
 						mainBoard.update();
 						if (MODE == DEBUG) {
 							std::cout << "Green's turn" << std::endl;
@@ -752,8 +757,8 @@ namespace Chess {
 					}
 					++count;
 				}
-				std::cout << "Game number " << gameNum << " succsessfuly read\n";
 				if (OUTPUT != MINIMAL) {
+					std::cout << "Game number " << gameNum << " succsessfuly read\n";
 					std::cout << "Ending: ";
 					print_end(ending);
 				}
@@ -762,8 +767,9 @@ namespace Chess {
 			inFile.close();
 			std::cout << "Time elapsed: " << t << " (" << double(gameNum)/t << " games/sec)\n";
 			std::cout << "READ " << gameNum << " game(s)\n";
-			std::cout << "Total victories: " << victories << std::endl;
-			std::cout << "Total defeats: " << defeats << std::endl;
+			std::cout << "White win rate " << (float(victories) / float(defeats + draws)) * 100 << "%\n";
+			std::cout << "Total white victories: " << victories << std::endl;
+			std::cout << "Total white defeats: " << defeats << std::endl;
 			std::cout << "Total draws: " << draws << std::endl;
 			std::cout << "Total checkmates: " << checkmates << std::endl;
 			std::cout << "Total stalemates: " << stalemates << std::endl;

@@ -8,16 +8,14 @@ namespace Chess {
 			int h;
 			int w_r = 7;	//rook file
 			int w_k = 4;	//king file
-			Player *mover, *enemy;
+			Player *mover;
 			if (player == RED) {
 				h = 7;
 				mover = &Red;
-				enemy = &Green;
 			}
 			else if (player == GREEN) {
 				h = 0;
 				mover = &Green;
-				enemy = &Red;
 			}
 			else {
 				std::cout << "No such known player " << player << std::endl;
@@ -49,16 +47,14 @@ namespace Chess {
 			int h;
 			int w_r = 0;	//rook file
 			int w_k = 4;	//king file
-			Player* mover, * enemy;
+			Player* mover;
 			if (player == RED) {
 				h = 7;
 				mover = &Red;
-				enemy = &Green;
 			}
 			else if (player == GREEN) {
 				h = 0;
 				mover = &Green;
-				enemy = &Red;
 			}
 			else {
 				std::cout << "No such known player " << player << std::endl;
@@ -89,7 +85,7 @@ namespace Chess {
 			int h;
 			int w_r = 7;	//rook file
 			int w_k = 4;	//king file
-			Player* mover, * enemy;
+			Player* mover, *enemy;
 			if (player == RED) {
 				h = 7;
 				mover = &Red;
@@ -116,8 +112,8 @@ namespace Chess {
 					return false;
 				}
 			}
-			for (int i = w_k + 1; i < w_r; ++i) {
-				//if (enemy->findThreat(h, i)) {
+			enemy->updateThreats(*this, true);
+			for (int i = w_k; i < w_r; ++i) {
 				if ((-player) == main(h,i).isThreatened()) {
 					if (MODE == DEBUG) {
 						std::cout << "There is a threat in between" << std::endl;
@@ -138,7 +134,7 @@ namespace Chess {
 			main(h,w_k).addPiece('K', player);
 			mover->setKing(h, w_k);
 			int player_checked = player;
-			int totChecked = whoChecked(player_checked);
+			bool totChecked = whoChecked(player_checked);
 
 			main(h,w_k).removePiece();
 			main(h,w_r).removePiece();
@@ -147,30 +143,22 @@ namespace Chess {
 			main(h,w_k).addPiece('K', player);
 			main(h,w_r).addPiece('R', player);
 			mover->setKing(h, w_k);
-			if (totChecked == 0) {
+			if (not totChecked) {
 				return true;
 			}
-			else if (totChecked == 1) {
-				if (player_checked == player) {
-					if (MODE == DEBUG) {
-						if (player == RED) {
-							std::cout << "FAKEMOVE::The red king is in check" << std::endl;
-						}
-						else {
-							std::cout << "FAKEMOVE::The green king is in check" << std::endl;
-						}
-
+			if (player_checked == player) {
+				if (MODE == DEBUG) {
+					if (player == RED) {
+						std::cout << "FAKEMOVE::The red king is in check" << std::endl;
 					}
-					return false;
+					else {
+						std::cout << "FAKEMOVE::The green king is in check" << std::endl;
+					}
+
 				}
-				else {
-					return true;
-				}
-			}
-			else if (totChecked == 2) {
 				return false;
 			}
-			return false;
+			return true;
 		}
 		
 		bool Board::castleFakeQueenside(int player) {
@@ -204,7 +192,8 @@ namespace Chess {
 					return false;
 				}
 			}
-			for (int i = w_r + 2; i < w_k; ++i) {
+			enemy->updateThreats(*this, true);
+			for (int i = w_r + 2; i <= w_k; ++i) {
 				if ((-player) == main(h,i).isThreatened()) {
 					if (MODE == DEBUG) {
 						std::cout << "There is a threat in between" << std::endl;
@@ -224,7 +213,7 @@ namespace Chess {
 			main(h,w_k).addPiece('K', player);
 			mover->setKing(h, w_k);
 			int player_checked = player;
-			int totChecked = whoChecked(player_checked);
+			bool totChecked = whoChecked(player_checked);
 			main(h,w_k).removePiece();
 			main(h,w_r).removePiece();
 			w_r = 0;
@@ -232,83 +221,40 @@ namespace Chess {
 			main(h,w_k).addPiece('K', player);
 			main(h,w_r).addPiece('R', player);
 			mover->setKing(h, w_k);
-			if (totChecked == 0) {
+			if (not totChecked) {
 				return true;
 			}
-			else if (totChecked == 1) {
-				if (player_checked == player) {
-					if (MODE == DEBUG) {
-						if (player == RED) {
-							std::cout << "FAKEMOVE::The red king is in check" << std::endl;
-						}
-						else {
-							std::cout << "FAKEMOVE::The green king is in check" << std::endl;
-						}
-
+			if (player_checked == player) {
+				if (MODE == DEBUG) {
+					if (player == RED) {
+						std::cout << "FAKEMOVE::The red king is in check" << std::endl;
 					}
-					return false;
+					else {
+						std::cout << "FAKEMOVE::The green king is in check" << std::endl;
+					}
+
 				}
-				else {
-					return true;
-				}
-			}
-			else if (totChecked == 2) {
 				return false;
 			}
-			return false;
+			return true;
 		}
 
-		bool Board::isChecked(int& player) {
-			//See if any king is in the positions threatened by other player
-			player == RED ? Green.updateThreats(*this, true) : Red.updateThreats(*this, true);
-			Position RedKing = Red.checkKingPosition();
-			Position GreenKing = Green.checkKingPosition();
-
-			if (main(RedKing.checkH(),RedKing.checkW()).isThreatened() == GREEN) {
-				if (MODE == DEBUG) {
-					std::cout << "Red king is in check" << std::endl;
+		bool Board::whoChecked(int& player) {
+			switch (checkPlayer()) {
+			case RED:
+				if (Red.isThreatened(*this)) {
+					player = RED;
+					return true;
 				}
-
-				player = RED;
-				return true;
-			}
-			if (main(GreenKing.checkH(),GreenKing.checkW()).isThreatened() == RED) {
-				if (MODE == DEBUG) {
-					std::cout << "Green king is in check" << std::endl;
+				break;
+			default:
+				if (Green.isThreatened(*this)) {
+					player = GREEN;
+					return true;
 				}
-				player = GREEN;
-				return true;
+				break;
 			}
-			player = 0;
 			return false;
-		}
-
-
-		// if only 1 player checked returns 1 and count = id of the player
-		// else returns a 2 
-		// if nobody is checked returns a 0
-		int Board::whoChecked(int& player) {
-			player == RED ? Green.updateThreats(*this, true) : Red.updateThreats(*this, true);
-			int count = 0;
-			Position RedKing = Red.checkKingPosition();
-			Position GreenKing = Green.checkKingPosition();
-
-			if (main(RedKing.checkH(),RedKing.checkW()).isThreatened() == GREEN) {
-				if (MODE == DEBUG) {
-					std::cout << "Red king is in check" << std::endl;
-				}
-
-				player = RED;
-				++count;
-			}
-			if (main(GreenKing.checkH(),GreenKing.checkW()).isThreatened() == RED) {
-				if (MODE == DEBUG) {
-					std::cout << "Green king is in check" << std::endl;
-				}
-				player = GREEN;
-				++count;
-			}
-			return count;
 		}
 	}
 }

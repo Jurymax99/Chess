@@ -8,7 +8,7 @@ namespace Chess {
 				(1 << 2);
 		}
 
-		Tile::Tile(const Tile& t){
+		Tile::Tile(const Tile& t) {
 			tile = t.tile;
 		}
 

@@ -12,7 +12,7 @@ namespace Chess {
 
 		class Player {
 		protected:
-			int color, score, pieceCount;
+			int color, score;
 			std::vector <char> Dead;
 			Position king;
 			bool castleKing, castleQueen;
@@ -24,11 +24,14 @@ namespace Chess {
 
 		public:
 			MoveSet moves;
-			Player();
+			Player() noexcept;
 			Player(int color);
 
 			void addDead(const char& piece);
 			void updateThreats(Board& b, const bool& clean);
+			
+			bool isThreatened(const Board& b);
+			bool threatKnight(const Board& b, int i, int j);
 
 			inline Position findMove(char type, const Position& dest, const Board& b) const { return  moves.findMove(type, dest, b); }
 			inline Position findAmbRMove(char type, int source_h, const Position& dest, const Board& b) const { return  moves.findMoveR(type, source_h, dest, b); }
@@ -38,41 +41,40 @@ namespace Chess {
 			inline Position findAmbRCapture(char type, int source_h, const Position& dest, const Board& b) const { return  moves.findCaptureR(type, source_h, dest, b); }
 			inline Position findAmbFCapture(char type, int source_w, const Position& dest, const Board& b) const { return  moves.findCaptureF(type, source_w, dest, b); }
 			inline Position findDAmbCapture(char type, const Position& source, const Position& dest, const Board& b) const{ return moves.findCaptureDA(type, source, dest, b); }
+			inline Position findPromotion(const Position& dest, const Board& b) const { return  moves.findPromote(dest, b); }
 			inline bool findKingsideCastling(const Board& b) const {return moves.findKingsideCastling(b);}
 			inline bool findQueensideCastling(const Board& b) const {return moves.findQueensideCastling(b);}
 			
 			void checkDeadRelease() const;
 			void checkDeadDebug() const;
 
-			inline int checkPieceCount() const { return pieceCount; };
+			inline void setCastleKing(const bool& cond) noexcept { castleKing = cond; }
 
-			inline void setPieceCount(const int& count) { pieceCount = count; };
+			inline void setCastleQueen(const bool& cond) noexcept { castleQueen = cond; }
 
-			inline void setCastleKing(const bool& cond) { castleKing = cond; }
+			inline bool checkCastleKing() const noexcept { return castleKing; }
 
-			inline void setCastleQueen(const bool& cond) { castleQueen = cond; }
-
-			inline bool checkCastleKing() const { return castleKing; }
-
-			inline bool checkCastleQueen() const { return castleQueen; }
+			inline bool checkCastleQueen() const noexcept { return castleQueen; }
 			
-			inline void setKing(int h, int w) { king = { h,w }; }
+			inline void setKing(const int& h, const int& w) { king = { h,w }; }
+
+			inline void setKing(const Position& p) { king = { p.checkH(), p.checkW() }; }
 			
-			inline Position checkKingPosition() const{return king;}
+			inline Position checkKingPosition() const noexcept { return king; }
 			
 			inline void checkKing() const { std::cout << "king is at [" << char(king.checkW() + 97) << char(8 - char(king.checkH() - 48)) << "]" << std::endl; }
 			
-			inline void checkMoves() const { if (MODE == DEBUG) moves.checkDebug(color); };
+			inline void checkMoves() const { moves.checkDebug(); };
 
-			inline bool hasMoves() const { return not moves.empty(); }
+			inline bool hasMoves() const { return moves.SetSize(); }
 			
-			inline void addScore(int score){this->score += score;}
+			inline void addScore(int score) noexcept { this->score += score; }
 			
-			inline int checkScore() const { return score; }
+			inline int checkScore() const noexcept { return score; }
 
-			inline int checkColor() const { return color; }
+			inline int checkColor() const noexcept { return color; }
 			
-			inline void updateMoveSet(Board& b) {moves.update(color, pieceCount, b);}
+			inline void updateMoveSet(Board& b) {moves.update(b);}
 
 		};
 	}

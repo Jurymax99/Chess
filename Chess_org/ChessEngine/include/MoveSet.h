@@ -1,6 +1,4 @@
 #pragma once
-//#include <set>
-//#include <unordered_set>
 #include <vector>
 #include "Utilities.h"
 
@@ -12,12 +10,11 @@ namespace Chess {
 		class MoveSet {
 		private:
 			friend class Dummy;
-			//std::unordered_set<Move, MyHashFunction> Set;
-			std::vector<Move> Set;
-			//std::set<Move> Set;
-			void addKnight(Board& b, int orig_h, int orig_w, int i, int j, int color);
-			void addRookLike(Board& b, int i, int j, char type, int color);
-			void addBishopLike(Board& b, int i, int j, char type, int color);
+			int color, size;
+			std::vector<Move> Set = std::vector<Move>(300);
+			void addKnight(Board& b, const int& orig_h, const int& orig_w, const int& i, const int& j, int& k);
+			void addRookLike(Board& b, const int& i, const int& j, const char& type, int& k);
+			void addBishopLike(Board& b, const int& i, const int& j, const char& type, int& k);
 
 			struct find_move_by_piece;
 			struct find_moveDA_by_piece;
@@ -29,21 +26,33 @@ namespace Chess {
 			struct find_captureF_by_piece;
 			struct find_kingside;
 			struct find_queenside;
+			struct find_promote;
 
 		public:
-			void update(int color, int pieceCount, Board& b);
-			void checkDebug(int color) const;
-			bool empty() const;
-			Position findMove(char type, const Position& dest, const Board& b) const;
-			Position findMoveDA(char type, const Position& source, const Position& dest, const Board& b) const;
-			Position findMoveR(char type, int source_h, const Position& dest, const Board& b) const;
-			Position findMoveF(char type, int source_w, const Position& dest, const Board& b) const;
-			Position findCapture(char type, const Position& dest, const Board& b) const;
-			Position findCaptureDA(char type, const Position& source, const Position& dest, const Board& b) const;
-			Position findCaptureR(char type, int source_h, const Position& dest, const Board& b) const;
-			Position findCaptureF(char type, int source_w, const Position& dest, const Board& b) const;
+			MoveSet();
+			MoveSet(const int& color);
+
+			void update(Board& b);
+			void checkDebug() const;
+			Position findMove(const char& type, const Position& dest, const Board& b) const;
+			Position findMoveDA(const char& type, const Position& source, const Position& dest, const Board& b) const;
+			Position findMoveR(const char& type, const int& source_h, const Position& dest, const Board& b) const;
+			Position findMoveF(const char& type, const int& source_w, const Position& dest, const Board& b) const;
+			Position findCapture(const char& type, const Position& dest, const Board& b) const;
+			Position findCaptureDA(const char& type, const Position& source, const Position& dest, const Board& b) const;
+			Position findCaptureR(const char& type, const int& source_h, const Position& dest, const Board& b) const;
+			Position findCaptureF(const char& type, const int& source_w, const Position& dest, const Board& b) const;
 			bool findKingsideCastling(const Board& b) const;
 			bool findQueensideCastling(const Board& b) const;
+			Position findPromote(const Position& p, const Board& b) const;
+
+
+			inline bool empty() const noexcept { return Set.empty(); }
+
+			inline int SetSize() const noexcept { return size; }
+
+			void sortMoves();
+
 		};
 	}
 }
